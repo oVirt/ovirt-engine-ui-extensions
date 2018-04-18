@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, number, object, shape, arrayOf, func } from 'prop-types'
+import PropTypes from 'prop-types'
 import $ from 'jquery'
 import d3 from 'd3'
 
@@ -19,7 +19,7 @@ class HeatMap extends React.Component {
 
   render () {
     return (
-      <div className='heatmap-container' style={this.props.containerStyle} ref={(e) => { this._heatMapContainer = e }}>
+      <div className='heatmap-container' style={this.props.containerStyle} ref={e => { this._heatMapContainer = e }}>
         <svg className='heatmap-svg' />
       </div>
     )
@@ -53,7 +53,7 @@ class HeatMap extends React.Component {
       .attr('y', (d, i) => (i % numberOfRows * blockSize) + blockPadding)
       .attr('width', blockSize - (2 * blockPadding))
       .attr('height', blockSize - (2 * blockPadding))
-      .style('fill', (d) => color(d.value))
+      .style('fill', d => color(d.value))
       .attr('data-index', (d, i) => i)
       .attr('data-role', 'heat-map-block')
 
@@ -62,7 +62,7 @@ class HeatMap extends React.Component {
       blocks.call(highlightBlock, false)
       d3.select(this).call(highlightBlock, true)
     })
-    blocks.on('click', (d) => { onBlockClick(d) })
+    blocks.on('click', d => { onBlockClick(d) })
     svg.on('mouseleave', () => { blocks.call(highlightBlock, true) })
 
     // tooltips are done via jQuery
@@ -109,18 +109,18 @@ class HeatMap extends React.Component {
 
 /* eslint-disable react/no-unused-prop-types */
 HeatMap.propTypes = {
-  data: arrayOf(shape({
-    value: number, // from range <0, 1>
-    name: string
+  data: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.number, // from range <0, 1>
+    name: PropTypes.string
   })).isRequired,
-  thresholds: shape({
-    domain: arrayOf(number), // threshold scale domain
-    colors: arrayOf(string)  // threshold scale color range
+  thresholds: PropTypes.shape({
+    domain: PropTypes.arrayOf(PropTypes.number), // threshold scale domain
+    colors: PropTypes.arrayOf(PropTypes.string)  // threshold scale color range
   }),
-  maxBlockSize: number,
-  blockPadding: number,
-  containerStyle: object,
-  onBlockClick: func // (dataItem:object) => void
+  maxBlockSize: PropTypes.number,
+  blockPadding: PropTypes.number,
+  containerStyle: PropTypes.object,
+  onBlockClick: PropTypes.func // (dataItem:object) => void
 }
 
 HeatMap.defaultProps = {

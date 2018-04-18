@@ -4,7 +4,7 @@ import messageDescriptors from './intl/messages'
 function messageDescriptorsToFormatFunctions (descriptors) {
   const result = {}
 
-  Object.keys(descriptors).forEach((key) => {
+  Object.keys(descriptors).forEach(key => {
     const id = descriptors[key].id
     const defaultMessage = descriptors[key].defaultMessage
 

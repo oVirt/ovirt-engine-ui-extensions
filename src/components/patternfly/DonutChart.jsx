@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, number, bool, object, shape, oneOf, func } from 'prop-types'
+import PropTypes from 'prop-types'
 import c3 from 'c3'
 import d3 from 'd3'
 import { msg } from '../../intl-messages'
@@ -28,7 +28,7 @@ class DonutChart extends React.Component {
   render () {
     return (
       <div className='donut-chart-pf' style={this.props.containerStyle}>
-        <div ref={(e) => { this._chartContainer = e }} />
+        <div ref={e => { this._chartContainer = e }} />
       </div>
     )
   }
@@ -117,17 +117,17 @@ class DonutChart extends React.Component {
 // See: https://github.com/yannickcr/eslint-plugin-react/issues/1135
 /* eslint-disable react/no-unused-prop-types */
 DonutChart.propTypes = {
-  used: number.isRequired,
-  total: number.isRequired,
-  unit: string.isRequired,
-  thresholds: shape({
-    enabled: bool,
-    warning: number,
-    error: number
+  used: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  unit: PropTypes.string.isRequired,
+  thresholds: PropTypes.shape({
+    enabled: PropTypes.bool,
+    warning: PropTypes.number,
+    error: PropTypes.number
   }),
-  centerLabel: oneOf(['used', 'available', 'percent']),
-  containerStyle: object,
-  onDataClick: func // (d, element) => void
+  centerLabel: PropTypes.oneOf(['used', 'available', 'percent']),
+  containerStyle: PropTypes.object,
+  onDataClick: PropTypes.func // (d, element) => void
 }
 
 DonutChart.defaultProps = {

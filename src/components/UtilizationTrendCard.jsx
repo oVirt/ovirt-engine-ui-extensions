@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, number, bool, shape, arrayOf } from 'prop-types'
+import PropTypes from 'prop-types'
 import { searchPrefixes, searchFields, storageUnitTable, webadminPlaces } from '../constants'
 import { msg } from '../intl-messages'
 import { formatNumber0D, formatNumber1D } from '../utils/intl'
@@ -51,15 +51,15 @@ class UtilizationTrendCard extends React.Component {
             <div>{msg.available()}</div>
             <div>
               {showValueAsPercentage
-                ? msg.utilizationCardAvailableOfPercent({ total: round(total) })
-                : msg.utilizationCardAvailableOfUnit({ total: round(summaryTotal, 1), unit: summaryUnit })
+                ? msg.dashboardUtilizationCardAvailableOfPercent({ total: round(total) })
+                : msg.dashboardUtilizationCardAvailableOfUnit({ total: round(summaryTotal, 1), unit: summaryUnit })
               }
             </div>
           </div>
 
-          <Tooltip text={msg.utilizationCardOverCommitTooltip()}>
+          <Tooltip text={msg.dashboardUtilizationCardOverCommitTooltip()}>
             <div className='overcommit-text' style={{ clear: 'left', paddingTop: 5 }}>
-              {msg.utilizationCardOverCommit({
+              {msg.dashboardUtilizationCardOverCommit({
                 overcommit: round(overcommit),
                 allocated: round(allocated)
               })}
@@ -76,78 +76,89 @@ class UtilizationTrendCard extends React.Component {
           centerLabel={donutCenterLabel}
           onDataClick={() => {
             this._utilizationDialog.show()
-          }} />
+          }}
+        />
 
         {/* sparkline chart */}
         <SparklineChart
           data={history}
           total={total}
           unit={unit}
-          tooltipType={sparklineTooltipType} />
+          tooltipType={sparklineTooltipType}
+        />
 
         {/* utilization dialog  */}
         <ModalDialog
           title={utilizationDialogTitle}
           modalContainerClass='overutilization-dialog'
-          ref={(e) => { this._utilizationDialog = e }}>
+          ref={e => { this._utilizationDialog = e }}>
 
           {utilization.hosts &&
             <div>
-              <ObjectUtilizationListTitle text={msg.utilizationCardDialogHostListTitle({
-                hostCount: utilization.hosts.length
-              })} />
+              <ObjectUtilizationListTitle
+                text={msg.dashboardUtilizationCardDialogHostListTitle({
+                  hostCount: utilization.hosts.length
+                })}
+              />
               <ObjectUtilizationList
                 data={utilization.hosts}
                 unit={unit}
-                emptyListText={msg.utilizationCardDialogEmptyHostList()}
+                emptyListText={msg.dashboardUtilizationCardDialogEmptyHostList()}
                 thresholds={thresholds}
                 utilizationFooterLabel={utilizationFooterLabel}
-                onObjectNameClick={(dataItem) => {
+                onObjectNameClick={dataItem => {
                   applySearch(webadminPlaces.host, searchPrefixes.host, [{
                     name: searchFields.name,
                     values: [dataItem.name]
                   }])
-                }} />
+                }}
+              />
             </div>
           }
 
           {utilization.storage &&
             <div>
-              <ObjectUtilizationListTitle text={msg.utilizationCardDialogStorageListTitle({
-                storageCount: utilization.storage.length
-              })} />
+              <ObjectUtilizationListTitle
+                text={msg.dashboardUtilizationCardDialogStorageListTitle({
+                  storageCount: utilization.storage.length
+                })}
+              />
               <ObjectUtilizationList
                 data={utilization.storage}
                 unit={unit}
-                emptyListText={msg.utilizationCardDialogEmptyStorageList()}
+                emptyListText={msg.dashboardUtilizationCardDialogEmptyStorageList()}
                 thresholds={thresholds}
                 utilizationFooterLabel={utilizationFooterLabel}
-                onObjectNameClick={(dataItem) => {
+                onObjectNameClick={dataItem => {
                   applySearch(webadminPlaces.storage, searchPrefixes.storage, [{
                     name: searchFields.name,
                     values: [dataItem.name]
                   }])
-                }} />
+                }}
+              />
             </div>
           }
 
           {utilization.vms &&
             <div>
-              <ObjectUtilizationListTitle text={msg.utilizationCardDialogVmListTitle({
-                vmCount: utilization.vms.length
-              })} />
+              <ObjectUtilizationListTitle
+                text={msg.dashboardUtilizationCardDialogVmListTitle({
+                  vmCount: utilization.vms.length
+                })}
+              />
               <ObjectUtilizationList
                 data={utilization.vms}
                 unit={unit}
-                emptyListText={msg.utilizationCardDialogEmptyVmList()}
+                emptyListText={msg.dashboardUtilizationCardDialogEmptyVmList()}
                 thresholds={thresholds}
                 utilizationFooterLabel={utilizationFooterLabel}
-                onObjectNameClick={(dataItem) => {
+                onObjectNameClick={dataItem => {
                   applySearch(webadminPlaces.vm, searchPrefixes.vm, [{
                     name: searchFields.name,
                     values: [dataItem.name]
                   }])
-                }} />
+                }}
+              />
             </div>
           }
 
@@ -159,24 +170,24 @@ class UtilizationTrendCard extends React.Component {
 }
 
 const dataShape = UtilizationTrendCard.dataShape = {
-  used: number,
-  total: number,
-  overcommit: number,
-  allocated: number,
+  used: PropTypes.number,
+  total: PropTypes.number,
+  overcommit: PropTypes.number,
+  allocated: PropTypes.number,
   history: SparklineChart.propTypes.data,
-  utilization: shape({
-    hosts: arrayOf(shape(ObjectUtilizationList.dataItemShape)),
-    storage: arrayOf(shape(ObjectUtilizationList.dataItemShape)),
-    vms: arrayOf(shape(ObjectUtilizationList.dataItemShape))
+  utilization: PropTypes.shape({
+    hosts: PropTypes.arrayOf(PropTypes.shape(ObjectUtilizationList.dataItemShape)),
+    storage: PropTypes.arrayOf(PropTypes.shape(ObjectUtilizationList.dataItemShape)),
+    vms: PropTypes.arrayOf(PropTypes.shape(ObjectUtilizationList.dataItemShape))
   })
 }
 
 UtilizationTrendCard.propTypes = {
-  data: shape(dataShape).isRequired,
-  title: string.isRequired,
-  unit: string.isRequired,
-  utilizationDialogTitle: string.isRequired,
-  showValueAsPercentage: bool,
+  data: PropTypes.shape(dataShape).isRequired,
+  title: PropTypes.string.isRequired,
+  unit: PropTypes.string.isRequired,
+  utilizationDialogTitle: PropTypes.string.isRequired,
+  showValueAsPercentage: PropTypes.bool,
   donutCenterLabel: DonutChart.propTypes.centerLabel,
   sparklineTooltipType: SparklineChart.propTypes.tooltipType,
   utilizationFooterLabel: ObjectUtilizationList.propTypes.utilizationFooterLabel

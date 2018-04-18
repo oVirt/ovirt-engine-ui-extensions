@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, arrayOf } from 'prop-types'
+import PropTypes from 'prop-types'
 import HeatMap from './HeatMap'
 
 // PatternFly reference:
@@ -7,7 +7,7 @@ import HeatMap from './HeatMap'
 
 // TODO(vs) this should be an integral part of HeatMap component (needs refactor)
 
-function HeatMapLegend ({ colors, labels }) {
+const HeatMapLegend = ({ colors, labels }) => {
   const reversedColors = colors.slice().reverse()
   const reversedLabels = labels.slice().reverse()
 
@@ -26,8 +26,8 @@ function HeatMapLegend ({ colors, labels }) {
 }
 
 HeatMapLegend.propTypes = {
-  colors: arrayOf(string),
-  labels: arrayOf(string)
+  colors: PropTypes.arrayOf(PropTypes.string),
+  labels: PropTypes.arrayOf(PropTypes.string)
 }
 
 HeatMapLegend.defaultProps = {

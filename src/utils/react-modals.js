@@ -7,13 +7,9 @@ import { getWebAdminDocumentBody } from './webadmin-dom'
  * Example:
  *
  * ```
- * showModal(({ container, destroyModal }) => {
- *   return (
- *     <MyModal show={true} container={container} onExited={destroyModal}>
- *       ... modal bits go here ...
- *     </MyModal>
- *   )
- * })
+ * showModal(({ container, destroyModal }) => (
+ *   <MyModal show container={container} onExited={destroyModal} />
+ * ))
  * ```
  */
 export const showModal = (modalCreator) => {

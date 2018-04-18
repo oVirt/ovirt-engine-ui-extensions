@@ -123,10 +123,11 @@ function extractTimeZoneName (locale, timeZone) {
   return tzName
 }
 
-// TODO(sd): If Intl polyfill ever adds a timezone name (specifically UTC) to it's formatted
-//           output, or PhantonJS adds Intl support, a new test can be added to verifiy that
-//           initTimeZone() works. The test would just verify that if the undefined and 'UTC'
-//           time zone names are not the same, then the formatted output is different.
+// TODO(sd): If Intl polyfill ever adds a timezone name (specifically UTC) to it's formatted output,
+// or PhantonJS adds Intl support, a new test can be added to verifiy that initTimeZone() works.
+// The test would just verify that if the undefined and 'UTC' time zone names are not the same,
+// then the formatted output is different.
+// TODO(vs): PhantomJS is discontinued, we should move to Jest.
 
 describe('DateTime Formatters', function () {
   describe('format dates and date+times (en-US)', function () {
@@ -229,7 +230,7 @@ describe('MessageFormat custom number styles', function () {
     { locale: 'fr-FR', groupSeparator: '\u00A0', decimalSeparator: ',' }
   ]
 
-  localeTests.forEach((test) => {
+  localeTests.forEach(test => {
     let { locale: l, groupSeparator: g, decimalSeparator: d } = test
 
     describe(`numbers in messages (${l})`, function () {

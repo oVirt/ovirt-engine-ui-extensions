@@ -2,7 +2,9 @@ export const pluginName = 'dashboard'
 
 export const pluginBasePath = `plugin/${pluginName}`
 
-export const dashboardPlaceToken = 'dashboard-main'
+// This flag is a hint to components that normally work with remote data. If set to true,
+// such components should use fake data instead of communicating with remote endpoint(s).
+export const useFakeData = false
 
 export const defaultLocale = 'en-US'
 
@@ -27,6 +29,8 @@ export const supportedTimeZones = [
   undefined,
   'UTC'
 ]
+
+export const dashboardPlaceToken = 'dashboard-main'
 
 export const searchPrefixes = {
   dc: 'DataCenter',
@@ -71,3 +75,9 @@ export const storageUnitTable = [
 
 // number of characters before giving more space to bar chart labels
 export const utilizationListGridNameThreshold = 30
+
+export const entityTypes = {
+  vm: 'VirtualMachine'
+}
+
+export const vmUpStates = ['Up', 'PoweringUp', 'RebootInProgress', 'Paused']

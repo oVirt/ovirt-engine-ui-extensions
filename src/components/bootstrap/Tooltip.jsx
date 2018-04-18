@@ -1,5 +1,5 @@
 import React from 'react'
-import { bool, string, element } from 'prop-types'
+import PropTypes from 'prop-types'
 import $ from 'jquery'
 import { cloneElementWithCustomRef } from '../../utils/react'
 
@@ -24,15 +24,15 @@ class Tooltip extends React.Component {
 
   render () {
     const child = React.Children.only(this.props.children)
-    return cloneElementWithCustomRef(child, (e) => { this._childElement = e })
+    return cloneElementWithCustomRef(child, e => { this._childElement = e })
   }
 }
 
 Tooltip.propTypes = {
-  children: element.isRequired,
-  text: string.isRequired,
-  placement: string,
-  hideOnClick: bool
+  children: PropTypes.element.isRequired,
+  text: PropTypes.string.isRequired,
+  placement: PropTypes.string,
+  hideOnClick: PropTypes.bool
 }
 
 export default Tooltip

@@ -40,7 +40,7 @@ Symlink plugin resources to `ui-plugins` directory as following:
 
 === Accessing plugin
 
-Open WebAdmin in your browser, you should land on *Dashboard* main tab automatically:
+Open WebAdmin in your browser, you should land on *Dashboard* place automatically:
 
   https://engine.example:8443/ovirt-engine/webadmin/WebAdmin.html
 
@@ -95,7 +95,6 @@ Alternatively, use the explicit `zanata-cli` command to control which locale you
  % yarn intl:extract
  % cd intl
  % zanata-cli push --push-type source --locales de,es,fr,it,ja,ko,pt-BR,zh-CN
-
 
 ==== Pull updated translations from Zanata
 

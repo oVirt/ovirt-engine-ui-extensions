@@ -9,7 +9,7 @@ export function convertValue (unitTable = [], unit, value, minThreshold = 0.1, m
     throw new TypeError('value must be a number or an array')
   }
 
-  const availableUnits = unitTable.map((obj) => obj.unit)
+  const availableUnits = unitTable.map(obj => obj.unit)
   if (availableUnits.includes(unit)) {
     const reversedUnitTable = unitTable.slice(0).reverse()
 
@@ -19,7 +19,7 @@ export function convertValue (unitTable = [], unit, value, minThreshold = 0.1, m
       if (newUnit === obj.unit && leMinThreshold && index + 1 < unitTable.length) {
         const nextObj = unitTable[index + 1]
         newUnit = nextObj.unit
-        newValue = newValue.map((val) => val * nextObj.factor)
+        newValue = newValue.map(val => val * nextObj.factor)
       }
     })
 
@@ -29,7 +29,7 @@ export function convertValue (unitTable = [], unit, value, minThreshold = 0.1, m
       if (newUnit === obj.unit && geMaxThreshold && index + 1 < reversedUnitTable.length) {
         const nextObj = reversedUnitTable[index + 1]
         newUnit = nextObj.unit
-        newValue = newValue.map((val) => val / obj.factor)
+        newValue = newValue.map(val => val / obj.factor)
       }
     })
   }

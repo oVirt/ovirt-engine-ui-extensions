@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, number, shape, arrayOf, func } from 'prop-types'
+import PropTypes from 'prop-types'
 import { msg } from '../intl-messages'
 import { formatNumber0D } from '../utils/intl'
 import Tooltip from './bootstrap/Tooltip'
@@ -10,11 +10,11 @@ import Tooltip from './bootstrap/Tooltip'
 // TODO(vs) replace with
 //  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/Cards/AggregateStatusCard
 
-function AggregateStatusCard ({
+const AggregateStatusCard = ({
   data: { totalCount, statuses },
   title, mainIconClass, statusTypeToText, statusTypeToIconClass,
   noStatusText, noStatusIconClass, onTotalCountClick, onStatusCountClick
-}) {
+}) => {
   function getStatusItemTooltip (statusItem) {
     return `${statusTypeToText(statusItem.type)}: ${formatNumber0D(statusItem.count)}`
   }
@@ -24,7 +24,7 @@ function AggregateStatusCard ({
 
       {/* header */}
       <h2 className='card-pf-title'>
-        <a href='#' onClick={(event) => {
+        <a href='#' onClick={event => {
           event.preventDefault()
           onTotalCountClick()
         }}>
@@ -39,10 +39,10 @@ function AggregateStatusCard ({
       <div className='card-pf-body'>
         <p className='card-pf-aggregate-status-notifications'>
 
-          {statuses.map((statusItem) => (
+          {statuses.map(statusItem => (
             <span className='card-pf-aggregate-status-notification' key={statusItem.type}>
               <Tooltip text={getStatusItemTooltip(statusItem)}>
-                <a href='#' onClick={(event) => {
+                <a href='#' onClick={event => {
                   event.preventDefault()
                   onStatusCountClick(statusItem)
                 }}>
@@ -69,50 +69,50 @@ function AggregateStatusCard ({
 
 const statusTypeInfo = {
   up: {
-    text () { return msg.statusTypeUp() },
+    text () { return msg.dashboardStatusTypeUp() },
     iconClass: 'fa fa-arrow-circle-o-up'
   },
   down: {
-    text () { return msg.statusTypeDown() },
+    text () { return msg.dashboardStatusTypeDown() },
     iconClass: 'fa fa-arrow-circle-o-down'
   },
   error: {
-    text () { return msg.statusTypeError() },
+    text () { return msg.dashboardStatusTypeError() },
     iconClass: 'pficon pficon-error-circle-o'
   },
   warning: {
-    text () { return msg.statusTypeWarning() },
+    text () { return msg.dashboardStatusTypeWarning() },
     iconClass: 'pficon pficon-warning-triangle-o'
   },
   alert: {
-    text () { return msg.statusTypeAlert() },
+    text () { return msg.dashboardStatusTypeAlert() },
     iconClass: 'pficon pficon-flag'
   }
 }
 
 const dataShape = AggregateStatusCard.dataShape = {
-  totalCount: number,
-  statuses: arrayOf(shape({
-    type: string, // should be unique within the array
-    count: number
+  totalCount: PropTypes.number,
+  statuses: PropTypes.arrayOf(PropTypes.shape({
+    type: PropTypes.string, // should be unique within the array
+    count: PropTypes.number
   }))
 }
 
 AggregateStatusCard.propTypes = {
-  data: shape(dataShape).isRequired,
-  title: string.isRequired,
-  mainIconClass: string.isRequired,
-  statusTypeToText: func,      // (statusType:string) => string
-  statusTypeToIconClass: func, // (statusType:string) => string
-  noStatusText: string,
-  noStatusIconClass: string,
-  onTotalCountClick: func,     // () => void
-  onStatusCountClick: func     // (statusItem:object) => void
+  data: PropTypes.shape(dataShape).isRequired,
+  title: PropTypes.string.isRequired,
+  mainIconClass: PropTypes.string.isRequired,
+  statusTypeToText: PropTypes.func,      // (statusType:string) => string
+  statusTypeToIconClass: PropTypes.func, // (statusType:string) => string
+  noStatusText: PropTypes.string,
+  noStatusIconClass: PropTypes.string,
+  onTotalCountClick: PropTypes.func,     // () => void
+  onStatusCountClick: PropTypes.func     // (statusItem:object) => void
 }
 
 AggregateStatusCard.defaultProps = {
   statusTypeToText (statusType) {
-    return statusTypeInfo[statusType] ? statusTypeInfo[statusType].text() : msg.statusTypeUnknown()
+    return statusTypeInfo[statusType] ? statusTypeInfo[statusType].text() : msg.dashboardStatusTypeUnknown()
   },
   statusTypeToIconClass (statusType) {
     return statusTypeInfo[statusType] ? statusTypeInfo[statusType].iconClass : 'fa fa-question'

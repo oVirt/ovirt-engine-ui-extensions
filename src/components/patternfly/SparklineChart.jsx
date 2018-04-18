@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, number, bool, object, shape, arrayOf, oneOf, instanceOf } from 'prop-types'
+import PropTypes from 'prop-types'
 import c3 from 'c3'
 import { storageUnitTable } from '../../constants'
 import { msg } from '../../intl-messages'
@@ -28,7 +28,7 @@ class SparklineChart extends React.Component {
 
   render () {
     return (
-      <div className='sparkline-chart' style={this.props.containerStyle} ref={(e) => { this._chartContainer = e }} />
+      <div className='sparkline-chart' style={this.props.containerStyle} ref={e => { this._chartContainer = e }} />
     )
   }
 
@@ -38,8 +38,8 @@ class SparklineChart extends React.Component {
       data: {
         type: 'area',
         columns: [
-          ['date'].concat(data.map((obj) => obj.date)),
-          ['used'].concat(data.map((obj) => obj.value))
+          ['date'].concat(data.map(obj => obj.date)),
+          ['used'].concat(data.map(obj => obj.value))
         ],
         names: {
           date: 'Date',
@@ -142,16 +142,16 @@ class SparklineChart extends React.Component {
 
 /* eslint-disable react/no-unused-prop-types */
 SparklineChart.propTypes = {
-  data: arrayOf(shape({
-    value: number,
-    date: instanceOf(Date)
+  data: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.number,
+    date: PropTypes.instanceOf(Date)
   })).isRequired,
-  total: number.isRequired,
-  unit: string.isRequired,
-  showXAxis: bool,
-  showYAxis: bool,
-  tooltipType: oneOf(['default', 'percent', 'percentPerDate', 'valuePerDate', 'usagePerDate']),
-  containerStyle: object
+  total: PropTypes.number.isRequired,
+  unit: PropTypes.string.isRequired,
+  showXAxis: PropTypes.bool,
+  showYAxis: PropTypes.bool,
+  tooltipType: PropTypes.oneOf(['default', 'percent', 'percentPerDate', 'valuePerDate', 'usagePerDate']),
+  containerStyle: PropTypes.object
 }
 
 SparklineChart.defaultProps = {

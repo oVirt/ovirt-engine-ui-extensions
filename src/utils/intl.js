@@ -21,12 +21,12 @@ export function currentLocale () {
   return locale
 }
 
-/*
-   ECMA-402 Intl spec says that implementations need to, at the very least, support 2 time zones.  First
-   is 'undefined' and equates to the "runtime's default time zone".  Second is 'UTC'.  Even though the
-   undefined value is ambiguous and we don't know what it is unless we parse a formatted string, using a
-   default of 'UTC' doesn't provide the desired user experience.  Until there is a better option, the
-   browser default time zone will be used.
+/**
+ * ECMA-402 Intl spec says that implementations need to, at the very least, support 2 time zones.
+ * First is 'undefined' and equates to the "runtime's default time zone". Second is 'UTC'. Even
+ * though the undefined value is ambiguous and we don't know what it is unless we parse a formatted
+ * string, using a default of 'UTC' doesn't provide the desired user experience. Until there is
+ * a better option, the browser default time zone will be used.
  */
 let timeZone
 
@@ -119,10 +119,9 @@ export function formatNumber1D (num) {
 }
 
 /**
- * Format a date object to a string with numeric month, day and year in the order and style dictated by
- * the module's current time zone.
+ * Format a date object to a string with numeric month, day and year in the order
+ * and style dictated by the module's current time zone.
  *
- * @param date
  * @returns {string} locale specific formatted month, day and year
  */
 export function formatDate (date) {
@@ -136,11 +135,12 @@ export function formatDate (date) {
 }
 
 /**
- * Format a date object to a string with numeric month, day and year plus hour, minute, second and time zone name
- * in the order and style dictated by the module's current time zone.
+ * Format a date object to a string with numeric month, day and year plus hour, minute,
+ * second and time zone name in the order and style dictated by the module's current
+ * time zone.
  *
- * @param date
- * @returns {string} locale specific formatted month, day, year, hour, minute, second and time zone name
+ * @returns {string} locale specific formatted month, day, year, hour, minute, second
+ * and time zone name
  */
 export function formatDateTime (date) {
   const fmt = new Intl.DateTimeFormat([ locale, defaultLocale ], {

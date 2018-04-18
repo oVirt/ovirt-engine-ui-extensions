@@ -1,7 +1,7 @@
 import React from 'react'
-import { string } from 'prop-types'
+import PropTypes from 'prop-types'
 
-function ObjectUtilizationListTitle ({ text }) {
+const ObjectUtilizationListTitle = ({ text }) => {
   return (
     <div className='row row-tile-pf'>
       <div className='col-md-12'>
@@ -12,7 +12,7 @@ function ObjectUtilizationListTitle ({ text }) {
 }
 
 ObjectUtilizationListTitle.propTypes = {
-  text: string.isRequired
+  text: PropTypes.string.isRequired
 }
 
 export default ObjectUtilizationListTitle

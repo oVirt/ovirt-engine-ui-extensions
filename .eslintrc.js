@@ -1,27 +1,24 @@
 module.exports = {
-  'extends': ['standard', 'standard-react'],
+  'extends': [
+    'standard',
+    'standard-react'
+  ],
   'env': {
     'browser': true,
     'mocha': true
   },
-
   'globals': {
     '__DEV__': false
   },
-
   'plugins': [
     'chai-friendly'
   ],
   'rules': {
-    'react/jsx-no-bind': [
-      1,
-      {
-        'ignoreRefs': true,
-        'allowArrowFunctions': true
-      }
-    ],
-    'no-unused-expressions': 0,
-    'chai-friendly/no-unused-expressions': 2,
-    'no-multi-spaces': ['error', { 'ignoreEOLComments': true }]
+    'no-multi-spaces': ['error', {
+      'ignoreEOLComments': true
+    }],
+    // disable original no-unused-expressions rule and use chai-friendly replacement
+    'no-unused-expressions': 'off',
+    'chai-friendly/no-unused-expressions': 'error'
   }
 }

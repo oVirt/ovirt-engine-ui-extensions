@@ -1,5 +1,6 @@
 import React from 'react'
-import { shape, instanceOf, func } from 'prop-types'
+import PropTypes from 'prop-types'
+import { noop } from 'patternfly-react'
 import { searchPrefixes, searchFields, heatMapThresholds, heatMapLegendLabels, storageUnitTable, webadminPlaces } from '../constants'
 import { msg } from '../intl-messages'
 import { formatNumber1D } from '../utils/intl'
@@ -14,7 +15,12 @@ import HeatMapLegend from './patternfly/HeatMapLegend'
 import HeightMatching from './helper/HeightMatching'
 import classNames from 'classnames'
 
-function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData }, lastUpdated, onRefreshData = () => {} }) {
+const GlobalDashboard = ({ data, lastUpdated, onRefreshData }) => {
+  if (!data) {
+    // no data available, don't render anything
+    return null
+  }
+
   const storageUtilizationFooterLabel = (used, total, unit) => {
     const { unit: newUnit, value: newUsed } = convertValue(storageUnitTable, unit, used)
     return (
@@ -23,6 +29,8 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
       </div>
     )
   }
+
+  const { inventory, globalUtilization, heatMapData } = data
   const showGlusterCard = inventory.volume.totalCount > 0
   const statusCardClass = classNames('col-xs-4', 'col-sm-4', {
     'col-md-1': showGlusterCard,
@@ -53,106 +61,112 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
         <div className={statusCardClass}>
           <AggregateStatusCard
             data={inventory.dc}
-            title={msg.statusCardDataCenterTitle()}
+            title={msg.dashboardStatusCardDataCenterTitle()}
             mainIconClass='fa fa-building-o'
             onTotalCountClick={() => {
               applySearch(webadminPlaces.dc, searchPrefixes.dc)
             }}
-            onStatusCountClick={(statusItem) => {
+            onStatusCountClick={statusItem => {
               applySearch(webadminPlaces.dc, searchPrefixes.dc, [{
                 name: searchFields.status,
                 values: statusItem.statusValues
               }])
-            }} />
+            }}
+          />
         </div>
 
         <div className={statusCardClass}>
           <AggregateStatusCard
             data={inventory.cluster}
-            title={msg.statusCardClusterTitle()}
+            title={msg.dashboardStatusCardClusterTitle()}
             mainIconClass='pficon pficon-cluster'
             noStatusText={msg.notAvailableShort()}
             noStatusIconClass=''
             onTotalCountClick={() => {
               applySearch(webadminPlaces.cluster, searchPrefixes.cluster)
-            }} />
+            }}
+          />
         </div>
 
         <div className={statusCardClass}>
           <AggregateStatusCard
             data={inventory.host}
-            title={msg.statusCardHostTitle()}
+            title={msg.dashboardStatusCardHostTitle()}
             mainIconClass='pficon pficon-screen'
             onTotalCountClick={() => {
               applySearch(webadminPlaces.host, searchPrefixes.host)
             }}
-            onStatusCountClick={(statusItem) => {
+            onStatusCountClick={statusItem => {
               applySearch(webadminPlaces.host, searchPrefixes.host, [{
                 name: searchFields.status,
                 values: statusItem.statusValues
               }])
-            }} />
+            }}
+          />
         </div>
 
         <div className={statusCardClass}>
           <AggregateStatusCard
             data={inventory.storage}
-            title={msg.statusCardStorageTitle()}
+            title={msg.dashboardStatusCardStorageTitle()}
             mainIconClass='pficon pficon-storage-domain'
             onTotalCountClick={() => {
               applySearch(webadminPlaces.storage, searchPrefixes.storage)
             }}
-            onStatusCountClick={(statusItem) => {
+            onStatusCountClick={statusItem => {
               applySearch(webadminPlaces.storage, searchPrefixes.storage, [{
                 name: searchFields.status,
                 values: statusItem.statusValues
               }])
-            }} />
+            }}
+          />
         </div>
 
         {showGlusterCard &&
           <div className={statusCardClass}>
             <AggregateStatusCard
               data={inventory.volume}
-              title={msg.statusCardGlusterVolumeTitle()}
+              title={msg.dashboardStatusCardGlusterVolumeTitle()}
               mainIconClass='pficon pficon-volume'
               onTotalCountClick={() => {
                 applySearch(webadminPlaces.volume, searchPrefixes.volume)
               }}
-              onStatusCountClick={(statusItem) => {
+              onStatusCountClick={statusItem => {
                 applySearch(webadminPlaces.volume, searchPrefixes.volume, [{
                   name: searchFields.status,
                   values: statusItem.statusValues
                 }])
-              }} />
+              }}
+            />
           </div>
         }
 
         <div className={statusCardClass}>
           <AggregateStatusCard
             data={inventory.vm}
-            title={msg.statusCardVmTitle()}
+            title={msg.dashboardStatusCardVmTitle()}
             mainIconClass='pficon pficon-virtual-machine'
             onTotalCountClick={() => {
               applySearch(webadminPlaces.vm, searchPrefixes.vm)
             }}
-            onStatusCountClick={(statusItem) => {
+            onStatusCountClick={statusItem => {
               applySearch(webadminPlaces.vm, searchPrefixes.vm, [{
                 name: searchFields.status,
                 values: statusItem.statusValues
               }])
-            }} />
+            }}
+          />
         </div>
 
         <div className={statusCardClass}>
           <AggregateStatusCard
             data={inventory.event}
-            title={msg.statusCardEventTitle()}
+            title={msg.dashboardStatusCardEventTitle()}
             mainIconClass='fa fa-bell'
             onTotalCountClick={() => {
               applySearch(webadminPlaces.event, searchPrefixes.event)
             }}
-            onStatusCountClick={(statusItem) => {
+            onStatusCountClick={statusItem => {
               applySearch(webadminPlaces.event, searchPrefixes.event, [{
                 name: searchFields.severity,
                 values: statusItem.statusValues
@@ -161,7 +175,8 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                 values: statusItem.searchSince ? [statusItem.searchSince] : [],
                 operator: '>'
               }])
-            }} />
+            }}
+          />
         </div>
 
       </HeightMatching>
@@ -171,7 +186,7 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
         <div className='col-md-12'>
           <div className='card-pf'>
             <div className='card-pf-heading'>
-              <h2 className='card-pf-title'>{msg.globalUtilizationHeading()}</h2>
+              <h2 className='card-pf-title'>{msg.dashboardGlobalUtilizationHeading()}</h2>
             </div>
             <div className='card-pf-body'>
               <HeightMatching className='row' selector='.utilization-chart-pf .overcommit-text'>
@@ -181,11 +196,12 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                     data={globalUtilization.cpu}
                     title={msg.cpuTitle()}
                     unit=''
-                    utilizationDialogTitle={msg.utilizationCardCpuDialogTitle()}
+                    utilizationDialogTitle={msg.dashboardUtilizationCardCpuDialogTitle()}
                     showValueAsPercentage
                     donutCenterLabel='percent'
                     sparklineTooltipType='percentPerDate'
-                    utilizationFooterLabel='percent' />
+                    utilizationFooterLabel='percent'
+                  />
                 </div>
 
                 <div className='col-xs-12 col-sm-4 col-md-4'>
@@ -193,10 +209,11 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                     data={globalUtilization.memory}
                     title={msg.memoryTitle()}
                     unit='GiB'
-                    utilizationDialogTitle={msg.utilizationCardMemoryDialogTitle()}
+                    utilizationDialogTitle={msg.dashboardUtilizationCardMemoryDialogTitle()}
                     donutCenterLabel='used'
                     sparklineTooltipType='valuePerDate'
-                    utilizationFooterLabel={storageUtilizationFooterLabel} />
+                    utilizationFooterLabel={storageUtilizationFooterLabel}
+                  />
                 </div>
 
                 <div className='col-xs-12 col-sm-4 col-md-4'>
@@ -204,10 +221,11 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                     data={globalUtilization.storage}
                     title={msg.storageTitle()}
                     unit='TiB'
-                    utilizationDialogTitle={msg.utilizationCardStorageDialogTitle()}
+                    utilizationDialogTitle={msg.dashboardUtilizationCardStorageDialogTitle()}
                     donutCenterLabel='used'
                     sparklineTooltipType='valuePerDate'
-                    utilizationFooterLabel={storageUtilizationFooterLabel} />
+                    utilizationFooterLabel={storageUtilizationFooterLabel}
+                  />
                 </div>
 
               </HeightMatching>
@@ -222,7 +240,7 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
           <div className='heatmap-card'>
             <div className='card-pf'>
               <div className='card-pf-heading'>
-                <h2 className='card-pf-title'>{msg.clusterUtilizationHeading()}</h2>
+                <h2 className='card-pf-title'>{msg.dashboardClusterUtilizationHeading()}</h2>
               </div>
               <div className='card-pf-body'>
                 <div className='row'>
@@ -233,12 +251,13 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                       <HeatMap
                         data={heatMapData.cpu}
                         thresholds={heatMapThresholds}
-                        onBlockClick={(dataItem) => {
+                        onBlockClick={dataItem => {
                           applySearch(webadminPlaces.host, searchPrefixes.host, [{
                             name: searchFields.cluster,
                             values: [dataItem.name]
                           }])
-                        }} />
+                        }}
+                      />
                     </div>
 
                     <div className='col-xs-12 col-sm-6 col-md-6 container-heatmap-tile'>
@@ -246,12 +265,13 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                       <HeatMap
                         data={heatMapData.memory}
                         thresholds={heatMapThresholds}
-                        onBlockClick={(dataItem) => {
+                        onBlockClick={dataItem => {
                           applySearch(webadminPlaces.host, searchPrefixes.host, [{
                             name: searchFields.cluster,
                             values: [dataItem.name]
                           }])
-                        }} />
+                        }}
+                      />
                     </div>
 
                     <div className='col-xs-12 col-sm-12 col-md-12'>
@@ -268,7 +288,7 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
           <div className='heatmap-card'>
             <div className='card-pf'>
               <div className='card-pf-heading'>
-                <h2 className='card-pf-title'>{msg.storageUtilizationHeading()}</h2>
+                <h2 className='card-pf-title'>{msg.dashboardStorageUtilizationHeading()}</h2>
               </div>
               <div className='card-pf-body'>
                 <div className='row'>
@@ -279,12 +299,13 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
                       <HeatMap
                         data={heatMapData.storage}
                         thresholds={heatMapThresholds}
-                        onBlockClick={(dataItem) => {
+                        onBlockClick={dataItem => {
                           applySearch(webadminPlaces.storage, searchPrefixes.storage, [{
                             name: searchFields.name,
                             values: [dataItem.name]
                           }])
-                        }} />
+                        }}
+                      />
                     </div>
 
                     <div className='col-xs-12 col-sm-12 col-md-12'>
@@ -304,21 +325,21 @@ function GlobalDashboard ({ data: { inventory, globalUtilization, heatMapData },
 }
 
 const dataShape = {
-  inventory: shape({
-    dc: shape(AggregateStatusCard.dataShape),
-    cluster: shape(AggregateStatusCard.dataShape),
-    host: shape(AggregateStatusCard.dataShape),
-    storage: shape(AggregateStatusCard.dataShape),
-    volume: shape(AggregateStatusCard.dataShape),
-    vm: shape(AggregateStatusCard.dataShape),
-    event: shape(AggregateStatusCard.dataShape)
+  inventory: PropTypes.shape({
+    dc: PropTypes.shape(AggregateStatusCard.dataShape),
+    cluster: PropTypes.shape(AggregateStatusCard.dataShape),
+    host: PropTypes.shape(AggregateStatusCard.dataShape),
+    storage: PropTypes.shape(AggregateStatusCard.dataShape),
+    volume: PropTypes.shape(AggregateStatusCard.dataShape),
+    vm: PropTypes.shape(AggregateStatusCard.dataShape),
+    event: PropTypes.shape(AggregateStatusCard.dataShape)
   }),
-  globalUtilization: shape({
-    cpu: shape(UtilizationTrendCard.dataShape),
-    memory: shape(UtilizationTrendCard.dataShape),
-    storage: shape(UtilizationTrendCard.dataShape)
+  globalUtilization: PropTypes.shape({
+    cpu: PropTypes.shape(UtilizationTrendCard.dataShape),
+    memory: PropTypes.shape(UtilizationTrendCard.dataShape),
+    storage: PropTypes.shape(UtilizationTrendCard.dataShape)
   }),
-  heatMapData: shape({
+  heatMapData: PropTypes.shape({
     cpu: HeatMap.propTypes.data,
     memory: HeatMap.propTypes.data,
     storage: HeatMap.propTypes.data
@@ -326,9 +347,15 @@ const dataShape = {
 }
 
 GlobalDashboard.propTypes = {
-  data: shape(dataShape).isRequired,
-  lastUpdated: instanceOf(Date).isRequired,
-  onRefreshData: func
+  data: PropTypes.shape(dataShape),
+  lastUpdated: PropTypes.instanceOf(Date),
+  onRefreshData: PropTypes.func
+}
+
+GlobalDashboard.defaultProps = {
+  data: null,
+  lastUpdated: new Date(0),
+  onRefreshData: noop
 }
 
 export default GlobalDashboard

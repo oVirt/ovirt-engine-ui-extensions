@@ -1,20 +1,28 @@
-/*
- * Defines all of the Strings for the application.  Every key will become a function
- * that will format the text in the currently configured locale at runtime.
+/**
+ * Defines all of the localized strings used in the application.
  *
- * Valid format for this Object literal is:
- *   {
- *     stringName: {
- *       id: 'locationUsed.stringName',
- *       defaultMessage: 'English text',
- *       description: 'Hint for the translators to understand where _stringName_ is used in the app'
- *     },
- *     stringName2: { ... },
- *     ...
- *     stringNameN: { ... }
- *   }
+ * Every key becomes a function that will format the text in the currently configured
+ * locale at runtime.
+ *
+ * Example common message (key has no prefix):
+ * ```
+ * stringName: {
+ *   id: 'common.stringName',
+ *   defaultMessage: 'English text',
+ *   description: 'Hint for translators to understand where the string is used in the app'
+ * }
+ * ```
+ *
+ * Example context-specific message (key has context-specific prefix):
+ * ```
+ * dashboardStringName: {
+ *   id: 'dashboard.stringName',
+ *   defaultMessage: 'English text',
+ *   description: 'Hint for translators to understand where the string is used in the app'
+ * }
+ * ```
  */
-module.exports = exports = {
+const messageDescriptors = {
 
   // common strings
 
@@ -22,6 +30,18 @@ module.exports = exports = {
     id: 'common.closeButton',
     defaultMessage: 'Close',
     description: 'label of `Close` button used in dialogs'
+  },
+
+  okButton: {
+    id: 'common.okButton',
+    defaultMessage: 'OK',
+    description: 'label of `OK` button used in dialogs'
+  },
+
+  cancelButton: {
+    id: 'common.cancelButton',
+    defaultMessage: 'Cancel',
+    description: 'label of `Cancel` button used in dialogs'
   },
 
   notAvailableShort: {
@@ -90,220 +110,266 @@ module.exports = exports = {
     description: 'text shown to compare currently used vs. total value'
   },
 
-  // context-specific strings
+  // dashboard related strings
 
-  mainTabTitle: {
-    id: 'mainTab.title',
+  dashboardTitle: {
+    id: 'dashboard.title',
     defaultMessage: 'Dashboard',
-    description: 'title of the Dashboard main tab'
+    description: 'title of the Dashboard place'
   },
 
-  dataLoading: {
-    id: 'mainTab.dataLoading',
+  dashboardDataLoading: {
+    id: 'dashboard.dataLoading',
     defaultMessage: 'Loading data...',
-    description: 'title shown when Dashboard main tab is currently loading data'
+    description: 'title shown when Dashboard place is currently loading data'
   },
 
-  dataError: {
-    id: 'mainTab.dataError',
+  dashboardDataError: {
+    id: 'dashboard.dataError',
     defaultMessage: 'Error!',
-    description: 'title shown when Dashboard main tab failed to load data'
+    description: 'title shown when Dashboard place failed to load data'
   },
 
-  dataErrorDetail: {
-    id: 'mainTab.dataErrorDetail',
+  dashboardDataErrorDetail: {
+    id: 'dashboard.dataErrorDetail',
     defaultMessage: 'Could not fetch dashboard data. Please ensure that data warehouse is properly installed and configured.',
-    description: 'detail shown when Dashboard main tab failed to load data'
+    description: 'detail shown when Dashboard place failed to load data'
   },
 
-  refreshButtonTooltip: {
-    id: 'mainTab.refreshButtonTooltip',
+  dashboardRefreshButtonTooltip: {
+    id: 'dashboard.refreshButtonTooltip',
     defaultMessage:
       'Manually refresh dashboard. With default server settings, status card' +
       ' data is updated once a minute and utilization data is updated once every 5 minutes.',
     description: 'tooltip on the refresh button to explain it is manual update and with what frequency the data is updated'
   },
 
-  lastUpdated: {
-    id: 'mainTab.lastUpdated',
+  dashboardLastUpdated: {
+    id: 'dashboard.lastUpdated',
     defaultMessage: 'Last Updated',
     description: 'label that indicates date/time of last dashboard data update'
   },
 
-  globalUtilizationHeading: {
-    id: 'mainTab.globalUtilizationHeading',
+  dashboardGlobalUtilizationHeading: {
+    id: 'dashboard.globalUtilizationHeading',
     defaultMessage: 'Global Utilization',
     description: 'heading of `Global Utilization` section'
   },
 
-  clusterUtilizationHeading: {
-    id: 'mainTab.clusterUtilizationHeading',
+  dashboardClusterUtilizationHeading: {
+    id: 'dashboard.clusterUtilizationHeading',
     defaultMessage: 'Cluster Utilization',
     description: 'heading of `Cluster Utilization` section'
   },
 
-  storageUtilizationHeading: {
-    id: 'mainTab.storageUtilizationHeading',
+  dashboardStorageUtilizationHeading: {
+    id: 'dashboard.storageUtilizationHeading',
     defaultMessage: 'Storage Utilization',
     description: 'heading of `Storage Utilization` section'
   },
 
-  statusCardDataCenterTitle: {
-    id: 'mainTab.statusCardDataCenterTitle',
+  dashboardStatusCardDataCenterTitle: {
+    id: 'dashboard.statusCardDataCenterTitle',
     defaultMessage: 'Data Centers',
     description: 'title of `Data Centers` status card'
   },
 
-  statusCardClusterTitle: {
-    id: 'mainTab.statusCardClusterTitle',
+  dashboardStatusCardClusterTitle: {
+    id: 'dashboard.statusCardClusterTitle',
     defaultMessage: 'Clusters',
     description: 'title of `Clusters` status card'
   },
 
-  statusCardHostTitle: {
-    id: 'mainTab.statusCardHostTitle',
+  dashboardStatusCardHostTitle: {
+    id: 'dashboard.statusCardHostTitle',
     defaultMessage: 'Hosts',
     description: 'title of `Hosts` status card'
   },
 
-  statusCardStorageTitle: {
-    id: 'mainTab.statusCardStorageTitle',
+  dashboardStatusCardStorageTitle: {
+    id: 'dashboard.statusCardStorageTitle',
     defaultMessage: 'Data Storage Domains',
     description: 'title of `Data Storage Domains` status card'
   },
 
-  statusCardGlusterVolumeTitle: {
-    id: 'mainTab.statusCardGlusterVolumeTitle',
+  dashboardStatusCardGlusterVolumeTitle: {
+    id: 'dashboard.statusCardGlusterVolumeTitle',
     defaultMessage: 'Gluster Volumes',
     description: 'title of `Gluster Volumes` status card'
   },
 
-  statusCardVmTitle: {
-    id: 'mainTab.statusCardVmTitle',
+  dashboardStatusCardVmTitle: {
+    id: 'dashboard.statusCardVmTitle',
     defaultMessage: 'Virtual Machines',
     description: 'title of `Virtual Machines` status card'
   },
 
-  statusCardEventTitle: {
-    id: 'mainTab.statusCardEventTitle',
+  dashboardStatusCardEventTitle: {
+    id: 'dashboard.statusCardEventTitle',
     defaultMessage: 'Events',
     description: 'title of `Events` status card'
   },
 
-  statusTypeUp: {
-    id: 'mainTab.statusTypeUp',
+  dashboardStatusTypeUp: {
+    id: 'dashboard.statusTypeUp',
     defaultMessage: 'Up',
     description: 'text shown for `Up` status'
   },
 
-  statusTypeDown: {
-    id: 'mainTab.statusTypeDown',
+  dashboardStatusTypeDown: {
+    id: 'dashboard.statusTypeDown',
     defaultMessage: 'Down',
     description: 'text shown for `Down` status'
   },
 
-  statusTypeError: {
-    id: 'mainTab.statusTypeError',
+  dashboardStatusTypeError: {
+    id: 'dashboard.statusTypeError',
     defaultMessage: 'Error',
     description: 'text shown for `Error` status'
   },
 
-  statusTypeWarning: {
-    id: 'mainTab.statusTypeWarning',
+  dashboardStatusTypeWarning: {
+    id: 'dashboard.statusTypeWarning',
     defaultMessage: 'Warning',
     description: 'text shown for `Warning` status'
   },
 
-  statusTypeAlert: {
-    id: 'mainTab.statusTypeAlert',
+  dashboardStatusTypeAlert: {
+    id: 'dashboard.statusTypeAlert',
     defaultMessage: 'Alert',
     description: 'text shown for `Alert` status'
   },
 
-  statusTypeUnknown: {
-    id: 'mainTab.statusTypeUnknown',
+  dashboardStatusTypeUnknown: {
+    id: 'dashboard.statusTypeUnknown',
     defaultMessage: 'Unknown status',
     description: 'text shown for status not recognized by Dashboard'
   },
 
-  utilizationCardAvailableOfPercent: {
-    id: 'mainTab.utilizationCardAvailableOfPercent',
+  dashboardUtilizationCardAvailableOfPercent: {
+    id: 'dashboard.utilizationCardAvailableOfPercent',
     defaultMessage: 'of {total, number}%',
     description: 'part of utilization card\'s summary'
   },
 
-  utilizationCardAvailableOfUnit: {
-    id: 'mainTab.utilizationCardAvailableOfUnit',
+  dashboardUtilizationCardAvailableOfUnit: {
+    id: 'dashboard.utilizationCardAvailableOfUnit',
     defaultMessage: 'of {total, number} {unit}',
     description: 'part of utilization card\'s summary'
   },
 
-  utilizationCardOverCommit: {
-    id: 'mainTab.utilizationCardOverCommit',
+  dashboardUtilizationCardOverCommit: {
+    id: 'dashboard.utilizationCardOverCommit',
     defaultMessage: 'Virtual resources - Committed: {overcommit, number}%, Allocated: {allocated, number}%',
     description: 'shown below utilization card\'s summary'
   },
 
-  utilizationCardOverCommitTooltip: {
-    id: 'mainTab.utilizationCardOverCommitTooltip',
+  dashboardUtilizationCardOverCommitTooltip: {
+    id: 'dashboard.utilizationCardOverCommitTooltip',
     defaultMessage:
       'The committed and allocated virtual resources are percentages indicating the running virtual resource' +
       ' compared to actual resources.',
     description: 'tooltip for the virtual resource over commit below utilization card\'s summary'
   },
 
-  utilizationCardDialogHostListTitle: {
-    id: 'mainTab.utilizationCardDialogHostListTitle',
+  dashboardUtilizationCardDialogHostListTitle: {
+    id: 'dashboard.utilizationCardDialogHostListTitle',
     defaultMessage: 'Hosts ({hostCount, number})',
     description: 'title of `Hosts` list in utilization card\'s dialog'
   },
 
-  utilizationCardDialogEmptyHostList: {
-    id: 'mainTab.utilizationCardDialogEmptyHostList',
+  dashboardUtilizationCardDialogEmptyHostList: {
+    id: 'dashboard.utilizationCardDialogEmptyHostList',
     defaultMessage: 'There are currently no utilized hosts',
     description: 'shown when `Hosts` list in utilization card\'s dialog is empty'
   },
 
-  utilizationCardDialogStorageListTitle: {
-    id: 'mainTab.utilizationCardDialogStorageListTitle',
+  dashboardUtilizationCardDialogStorageListTitle: {
+    id: 'dashboard.utilizationCardDialogStorageListTitle',
     defaultMessage: 'Storage Domains ({storageCount, number})',
     description: 'title of `Storage Domains` list in utilization card\'s dialog'
   },
 
-  utilizationCardDialogEmptyStorageList: {
-    id: 'mainTab.utilizationCardDialogEmptyStorageList',
+  dashboardUtilizationCardDialogEmptyStorageList: {
+    id: 'dashboard.utilizationCardDialogEmptyStorageList',
     defaultMessage: 'There are currently no utilized storage domains',
     description: 'shown when `Storage Domains` list in utilization card\'s dialog is empty'
   },
 
-  utilizationCardDialogVmListTitle: {
-    id: 'mainTab.utilizationCardDialogVmListTitle',
+  dashboardUtilizationCardDialogVmListTitle: {
+    id: 'dashboard.utilizationCardDialogVmListTitle',
     defaultMessage: 'Virtual Machines ({vmCount, number})',
     description: 'title of `Virtual Machines` list in utilization card\'s dialog'
   },
 
-  utilizationCardDialogEmptyVmList: {
-    id: 'mainTab.utilizationCardDialogEmptyVmList',
+  dashboardUtilizationCardDialogEmptyVmList: {
+    id: 'dashboard.utilizationCardDialogEmptyVmList',
     defaultMessage: 'There are currently no utilized virtual machines',
     description: 'shown when `Virtual Machines` list in utilization card\'s dialog is empty'
   },
 
-  utilizationCardCpuDialogTitle: {
-    id: 'mainTab.utilizationCardCpuDialogTitle',
+  dashboardUtilizationCardCpuDialogTitle: {
+    id: 'dashboard.utilizationCardCpuDialogTitle',
     defaultMessage: 'Top Utilized Resources (CPU)',
     description: 'title of resource utilization dialog for `CPU` utilization card'
   },
 
-  utilizationCardMemoryDialogTitle: {
-    id: 'mainTab.utilizationCardMemoryDialogTitle',
+  dashboardUtilizationCardMemoryDialogTitle: {
+    id: 'dashboard.utilizationCardMemoryDialogTitle',
     defaultMessage: 'Top Utilized Resources (Memory)',
     description: 'title of resource utilization dialog for `Memory` utilization card'
   },
 
-  utilizationCardStorageDialogTitle: {
-    id: 'mainTab.utilizationCardStorageDialogTitle',
+  dashboardUtilizationCardStorageDialogTitle: {
+    id: 'dashboard.utilizationCardStorageDialogTitle',
     defaultMessage: 'Top Utilized Resources (Storage)',
     description: 'title of resource utilization dialog for `Storage` utilization card'
+  },
+
+  // modal dialog related strings
+
+  migrateVmDialogTitle: {
+    id: 'migrate.vm.dialogTitle',
+    defaultMessage: 'Migrate VM(s)',
+    description: 'title of VM migrate dialog'
+  },
+
+  migrateVmButton: {
+    id: 'migrate.vm.buttonLabel',
+    defaultMessage: 'Migrate',
+    description: 'label of `Migrate` button in VM migrate dialog'
+  },
+
+  migrateVmDataError: {
+    id: 'migrate.vm.dataError',
+    defaultMessage: 'Could not fetch data needed for the migrate operation',
+    description: 'error message shown when VM migrate dialog failed to load its data'
+  },
+
+  migrateVmNoAvailableHost: {
+    id: 'migrate.vm.noAvailableHost',
+    defaultMessage: 'No available host to migrate to',
+    description: 'error message shown when there are no hosts the VMs can migrate to'
+  },
+
+  migrateVmErrorTemplate: {
+    id: 'migrate.vm.errorTemplate',
+    defaultMessage: 'Unable to migrate VM {vmName}, reason: {message}',
+    description: 'error message shown when a migrate operation failed for the given VM'
+  },
+
+  migrateVmSelectHostLabel: {
+    id: 'migrate.vm.selectHostLabel',
+    defaultMessage: 'Select Destination Host',
+    description: 'label for the dropdown used to select migration target host'
+  },
+
+  migrateVmAutomaticallySelectHost: {
+    id: 'migrate.vm.autoSelectHost',
+    defaultMessage: 'Select Host Automatically',
+    description: 'label for the default migration target host dropdown option'
   }
 
 }
+
+module.exports = exports = messageDescriptors

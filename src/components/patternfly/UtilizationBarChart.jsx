@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, number, bool, shape, oneOf, oneOfType, func } from 'prop-types'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { msg } from '../../intl-messages'
 import { formatNumber0D, formatNumber1D } from '../../utils/intl'
@@ -12,10 +12,10 @@ import Tooltip from '../bootstrap/Tooltip'
 // TODO(vs) replace with
 //  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/UtilizationBar
 
-function UtilizationBarChart ({
+const UtilizationBarChart = ({
   used, total, unit, thresholds, layout, title, footerLabel,
   titleLabelWidth, footerLabelWidth
-}) {
+}) => {
   const percentUsed = used / total * 100
   const percentAvailable = 100 - percentUsed
 
@@ -109,22 +109,22 @@ function UtilizationBarChart ({
 }
 
 UtilizationBarChart.propTypes = {
-  used: number.isRequired,
-  total: number.isRequired,
-  unit: string.isRequired,
-  thresholds: shape({
-    enabled: bool,
-    warning: number,
-    error: number
+  used: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  unit: PropTypes.string.isRequired,
+  thresholds: PropTypes.shape({
+    enabled: PropTypes.bool,
+    warning: PropTypes.number,
+    error: PropTypes.number
   }),
-  layout: oneOf(['regular', 'inline']),
-  title: string,   // custom title
-  footerLabel: oneOfType([
-    oneOf(['actual', 'percent']),
-    func // (used:number, total:number, unit:string) => void
+  layout: PropTypes.oneOf(['regular', 'inline']),
+  title: PropTypes.string,   // custom title
+  footerLabel: PropTypes.oneOfType([
+    PropTypes.oneOf(['actual', 'percent']),
+    PropTypes.func // (used:number, total:number, unit:string) => void
   ]),
-  titleLabelWidth: string, // used with 'inline' layout
-  footerLabelWidth: string // used with 'inline' layout
+  titleLabelWidth: PropTypes.string, // used with 'inline' layout
+  footerLabelWidth: PropTypes.string // used with 'inline' layout
 }
 
 UtilizationBarChart.defaultProps = {

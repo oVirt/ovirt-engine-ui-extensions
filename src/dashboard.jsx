@@ -14,7 +14,7 @@ import 'patternfly/dist/css/patternfly-additions.min.css'
 // have that React component import the CSS. Once we update our code to use only
 // patternfly-react components, remove dependency on PatternFly as well as related
 // dependencies like jQuery and C3/D3.
-import '../static/css/main-tab.css'
+import '../static/css/dashboard.css'
 
 // TODO(vs): For now, we use Bootstrap JavaScript library providing interactive
 // components via jQuery plugins. Eventually, we should use only patternfly-react
@@ -31,23 +31,23 @@ const appRoot = document.getElementById('app')
 appInit.run().then(() => {
   const loadingPlaceholder = (
     <div className='text-center'>
-      <h2>{msg.dataLoading()}</h2>
+      <h2>{msg.dashboardDataLoading()}</h2>
       <div className='spinner spinner-lg' />
     </div>
   )
 
   const errorPlaceholder = (
     <div className='text-center'>
-      <h2>{msg.dataError()}</h2>
+      <h2>{msg.dashboardDataError()}</h2>
       <span style={{ fontSize: 15 }}>
-        {msg.dataErrorDetail()}
+        {msg.dashboardDataErrorDetail()}
       </span>
     </div>
   )
 
   ReactDOM.render(
     <DashboardDataProvider loading={loadingPlaceholder} error={errorPlaceholder}>
-      <GlobalDashboard data={{}} lastUpdated={new Date(0)} />
+      <GlobalDashboard />
     </DashboardDataProvider>,
     appRoot
   )

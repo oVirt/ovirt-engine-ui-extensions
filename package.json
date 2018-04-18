@@ -18,11 +18,13 @@
     "intl:pull-all": "cd zanata && zanata-cli pull --pull-type trans --locales $npm_package_zanataLocales",
     "intl:apply": "rip po2json 'extra/messages/po/dashboard-messages.*.po' -m 'extra/messages/**/*.json' -o 'src/intl/translations.json'",
     "intl:normalize": "node zanata/normalize-translations.js",
-    "pretest": "eslint src --ext js,jsx",
+    "lint": "eslint src --ext js,jsx",
+    "pretest": "yarn lint",
     "test": "NODE_ENV=test karma start --single-run --no-auto-watch",
     "test:watch": "NODE_ENV=test karma start --no-single-run --auto-watch"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "bootstrap": "=3.3.7",
     "c3": "^0.6.2",
     "classnames": "^2.2.3",
@@ -37,14 +39,14 @@
     "patternfly-react": "^2.2.1",
     "prop-types": "^15.6.0",
     "react": "^16.3.1",
-    "react-dom": "^16.3.1"
+    "react-dom": "^16.3.1",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.2.5",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "chai": "^3.5.0",

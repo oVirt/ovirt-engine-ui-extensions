@@ -1,5 +1,5 @@
 import React from 'react'
-import { func } from 'prop-types'
+import PropTypes from 'prop-types'
 import { msg } from '../intl-messages'
 import Tooltip from './bootstrap/Tooltip'
 
@@ -7,11 +7,11 @@ import Tooltip from './bootstrap/Tooltip'
 //  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/Tooltip
 //  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/OverlayTrigger
 
-function RefreshDataControl ({ onRefresh }) {
+const RefreshDataControl = ({ onRefresh }) => {
   return (
-    <Tooltip text={msg.refreshButtonTooltip()} placement='bottom' hideOnClick>
+    <Tooltip text={msg.dashboardRefreshButtonTooltip()} placement='bottom' hideOnClick>
       <div className='btn-group'>
-        <button type='button' className='btn btn-default' onClick={(event) => {
+        <button type='button' className='btn btn-default' onClick={event => {
           event.preventDefault()
           onRefresh()
         }}>
@@ -24,7 +24,7 @@ function RefreshDataControl ({ onRefresh }) {
 }
 
 RefreshDataControl.propTypes = {
-  onRefresh: func.isRequired
+  onRefresh: PropTypes.func.isRequired
 }
 
 export default RefreshDataControl

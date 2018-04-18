@@ -14,6 +14,9 @@ const isProd = env === 'production'
 const isDev = env === 'development'
 const isTest = env === 'test'
 
+// common modules required by all entry points
+const commonModules = ['babel-polyfill', 'whatwg-fetch']
+
 // define specific TTF fonts to embed in CSS via data urls
 let ttfFontsToEmbed
 
@@ -32,12 +35,14 @@ const config = module.exports = {
             presets: [
               ['env', {
                 targets: {
-                  browsers: [ 'last 2 versions', 'not ie < 11', 'firefox esr' ]
+                  browsers: ['last 2 versions', 'not ie < 11', 'firefox esr']
                 },
                 debug: false
               }],
               'react'
             ],
+            // TODO(vs): do we still need this?
+            //  https://github.com/tc39/proposals/blob/master/finished-proposals.md
             plugins: ['transform-object-rest-spread']
           }
         }
@@ -47,7 +52,7 @@ const config = module.exports = {
         include: /(node_modules)|(static\/css)/,
         use: isProd
           ? ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader?sourceMap' })
-          : [ 'style-loader', 'css-loader' ]
+          : ['style-loader', 'css-loader']
       },
       {
         test: /\.css$/,
@@ -111,8 +116,8 @@ const config = module.exports = {
 // common development and production build configuration
 if (isDev || isProd) {
   config.entry = {
-    'plugin': ['babel-polyfill', './src/plugin.js'],
-    'main-tab': ['babel-polyfill', './src/main-tab.jsx']
+    'plugin': commonModules.concat(['./src/plugin.jsx']),
+    'dashboard': commonModules.concat(['./src/dashboard.jsx'])
   }
   config.output = {
     filename: '[name].js',
@@ -131,10 +136,10 @@ if (isDev || isProd) {
       name: 'webpackManifest'
     }),
     new HtmlWebpackPlugin({
-      filename: 'main-tab.html',
-      template: 'static/html/main-tab.template.ejs',
+      filename: 'dashboard.html',
+      template: 'static/html/dashboard.template.ejs',
       inject: true,
-      chunks: ['vendor', 'main-tab']
+      chunks: ['vendor', 'dashboard']
     }),
     new HtmlWebpackPlugin({
       filename: 'plugin.html',

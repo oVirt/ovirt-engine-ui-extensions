@@ -28,7 +28,7 @@ beforeEach(function setupFakeEnv (done) {
     'engineBaseUrl',
     'currentLocale',
     'currentTimeZone' // TODO(vs) this API function isn't currently available
-  ].forEach((apiMethod) => {
+  ].forEach(apiMethod => {
     pluginApiStubs[apiMethod] = sandbox.stub()
   })
   pluginApiStubs.currentLocale.returns(defaultLocale)
@@ -42,7 +42,7 @@ beforeEach(function setupFakeEnv (done) {
 
   appInit.run()
     .then(() => { done() })
-    .catch((error) => { done(error) })
+    .catch(error => { done(error) })
 })
 
 afterEach(function disposeFakeEnv () {

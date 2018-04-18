@@ -24,12 +24,12 @@ function normalizeMessagesForDiff (messages) {
 
   // normalize the key and message from any of the valid source formats
   if (Array.isArray(messages)) {
-    messages.forEach((val) => {
+    messages.forEach(val => {
       const { id: name, defaultMessage: msg } = val
       normalForm[name] = { msg: msg }
     })
   } else {
-    Object.keys(messages).forEach((key) => {
+    Object.keys(messages).forEach(key => {
       if (messages[key].id && messages[key].defaultMessage) {
         const { id: name, defaultMessage: msg } = messages[key]
         normalForm[name] = { msg: msg }
@@ -42,12 +42,12 @@ function normalizeMessagesForDiff (messages) {
   }
 
   // extract the format arguments from the messages
-  Object.keys(normalForm).forEach((name) => {
+  Object.keys(normalForm).forEach(name => {
     const parsed = normalForm[name].msg ? parser.parse(normalForm[name].msg) : { type: 'empty' }
     const args = normalForm[name].args = {}
 
     if (parsed.type === 'messageFormatPattern') {
-      parsed.elements.forEach((element) => {
+      parsed.elements.forEach(element => {
         if (element.type === 'argumentElement') {
           args[element.id] = (element.format && element.format.type) || null
         }
@@ -60,19 +60,19 @@ function normalizeMessagesForDiff (messages) {
 
 describe('validate messageDescriptors from ./intl/messages.js', function () {
   it('every key has a non-empty id', function () {
-    Object.keys(messageDescriptors).forEach((key) => {
+    Object.keys(messageDescriptors).forEach(key => {
       expect(messageDescriptors[key], `key[${key}]`).to.have.property('id').that.is.a('string').and.is.not.empty
     })
   })
 
   it('every key has a non-empty defaultMessage', function () {
-    Object.keys(messageDescriptors).forEach((key) => {
+    Object.keys(messageDescriptors).forEach(key => {
       expect(messageDescriptors[key], `key[${key}]`).to.have.property('defaultMessage').that.is.a('string').and.is.not.empty
     })
   })
 
   it('every key has a non-empty description', function () {
-    Object.keys(messageDescriptors).forEach((key) => {
+    Object.keys(messageDescriptors).forEach(key => {
       expect(messageDescriptors[key], `key[${key}]`).to.have.property('description').that.is.a('string').and.is.not.empty
     })
   })
@@ -81,7 +81,7 @@ describe('validate messageDescriptors from ./intl/messages.js', function () {
 describe('verify the content of each locale in translations.json', function () {
   const englishNormalForm = normalizeMessagesForDiff(messageDescriptors)
 
-  Object.keys(translatedMessages).forEach((locale) => {
+  Object.keys(translatedMessages).forEach(locale => {
     describe(`check ${locale}`, function () {
       const localeNormalForm = normalizeMessagesForDiff(translatedMessages[locale])
 
@@ -91,8 +91,8 @@ describe('verify the content of each locale in translations.json', function () {
 
       it('messages match ICU arguments', function () {
         Object.keys(localeNormalForm)
-          .filter((name) => englishNormalForm[name])
-          .forEach((name) => {
+          .filter(name => englishNormalForm[name])
+          .forEach(name => {
             expect(englishNormalForm, `message [${name}]`).to.have.property(name)
             expect(localeNormalForm[name].args, `message [${name}]`).to.deep.equal(englishNormalForm[name].args)
           })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, node } from 'prop-types'
+import PropTypes from 'prop-types'
 import $ from 'jquery'
 import { msg } from '../../intl-messages'
 import WebAdminBodyPortal from '../helper/WebAdminBodyPortal'
@@ -11,7 +11,7 @@ class ModalDialog extends React.Component {
   render () {
     return (
       <WebAdminBodyPortal>
-        <div className={`modal fade ${this.props.modalContainerClass}`} role='dialog' ref={(e) => { this._modalContainer = e }}>
+        <div className={`modal fade ${this.props.modalContainerClass}`} role='dialog' ref={e => { this._modalContainer = e }}>
           <div className='modal-dialog'>
             <div className='modal-content'>
 
@@ -39,9 +39,9 @@ class ModalDialog extends React.Component {
 }
 
 ModalDialog.propTypes = {
-  children: node,
-  title: string.isRequired,
-  modalContainerClass: string
+  children: PropTypes.node,
+  title: PropTypes.string.isRequired,
+  modalContainerClass: PropTypes.string
 }
 
 ModalDialog.defaultProps = {

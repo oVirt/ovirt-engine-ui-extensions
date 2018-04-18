@@ -6,7 +6,7 @@ import { initLocale, initTimeZone } from '../utils/intl'
 const polyfillIntlFn = (resolve, reject) => {
   if (!global.Intl) {
     // use dynamic import code splitting to fetch all required modules
-    require.ensure([], (require) => {
+    require.ensure([], require => {
       require('intl')
       require('intl/locale-data/jsonp/en')
       require('intl/locale-data/jsonp/de')
@@ -20,7 +20,7 @@ const polyfillIntlFn = (resolve, reject) => {
       require('intl/locale-data/jsonp/cs')
       resolve()
     }, 'intl-polyfill')
-      .catch((error) => { reject(`failed to load intl-polyfill: ${error}`) })
+      .catch(error => { reject(`failed to load intl-polyfill: ${error}`) })
   } else {
     resolve()
   }
@@ -50,11 +50,10 @@ export default {
         new Promise(polyfillIntlFn)
       ])
         .then(() => { resolve() })
-        .catch(
-          (error) => {
-            console.error(`Application init failed: ${error}`)
-            reject(error)
-          })
+        .catch(error => {
+          console.error(`Application init failed: ${error}`)
+          reject(error)
+        })
     })
   }
 }
