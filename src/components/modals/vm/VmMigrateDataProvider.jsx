@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { bindMethods } from 'patternfly-react'
 import { hostAutoSelectItemValue } from './VmMigrateModalBody'
 import DataProvider from '../../helper/DataProvider'
 import { useFakeData } from '../../../constants'
@@ -103,59 +102,53 @@ async function migrateToHost (targetHostId, vms) {
   return errors
 }
 
-class VmMigrateDataProvider extends React.Component {
-  constructor (props) {
-    super(props)
-    bindMethods(this, ['fetchData'])
+const VmMigrateDataProvider = ({ children, vmIds }) => {
+  async function fetchData () {
+    const vms = await fetchVms(vmIds)
+    const targetHosts = await fetchTargetHosts(vms)
+    return { vms, targetHosts }
   }
 
-  async fetchData () {
-    this._vms = await fetchVms(this.props.vmIds)
-    // TODO(vs) could be refactored into fetchVmsAndTargetHosts,
-    // removing the need to remember VMs through 'this' and therefore
-    // allowing VmMigrateDataProvider to be a functional component
-    return fetchTargetHosts(this._vms)
-  }
+  return (
+    <DataProvider fetchData={fetchData}>
 
-  render () {
-    return (
-      <DataProvider fetchData={this.fetchData}>
+      {({ data, fetchError, fetchInProgress }) => {
+        // expecting single child component
+        const child = React.Children.only(children)
 
-        {({ data, fetchError, fetchInProgress }) => {
-          // expecting single child component
-          const child = React.Children.only(this.props.children)
-
-          // handle data loading and error scenarios
-          if (fetchError) {
-            return React.cloneElement(child, {
-              errorMessage: msg.migrateVmDataError()
-            })
-          } else if (fetchInProgress || !data) {
-            return React.cloneElement(child, {
-              isLoading: true
-            })
-          }
-
-          // check if there are any target hosts available
-          if (data.length === 0) {
-            return React.cloneElement(child, {
-              errorMessage: msg.migrateVmNoAvailableHost()
-            })
-          }
-
-          // pass relevant data and operations to child component
+        // handle data loading and error scenarios
+        if (fetchError) {
           return React.cloneElement(child, {
-            hostSelectItems: data.map(host => ({
-              value: host.id,
-              text: host.name
-            })),
-            migrateToHost: (hostId) => migrateToHost(hostId, this._vms)
+            errorMessage: msg.migrateVmDataError()
           })
-        }}
+        } else if (fetchInProgress || !data) {
+          return React.cloneElement(child, {
+            isLoading: true
+          })
+        }
 
-      </DataProvider>
-    )
-  }
+        // unwrap data
+        const { vms, targetHosts } = data
+
+        // check if there are any target hosts available
+        if (targetHosts.length === 0) {
+          return React.cloneElement(child, {
+            errorMessage: msg.migrateVmNoAvailableHost()
+          })
+        }
+
+        // pass relevant data and operations to child component
+        return React.cloneElement(child, {
+          hostSelectItems: targetHosts.map(host => ({
+            value: host.id,
+            text: host.name
+          })),
+          migrateToHost: (hostId) => migrateToHost(hostId, vms)
+        })
+      }}
+
+    </DataProvider>
+  )
 }
 
 VmMigrateDataProvider.propTypes = {
