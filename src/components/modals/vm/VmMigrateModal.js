@@ -1,36 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { bindMethods, excludeKeys, filterKeys, Button, Spinner } from 'patternfly-react'
-import VmMigrateModalBody, { errorMessageToArray } from './VmMigrateModalBody'
+import { bindMethods, excludeKeys, filterKeys, noop, Button, Spinner } from 'patternfly-react'
+import VmMigrateModalBody from './VmMigrateModalBody'
 import StatefulModalPattern from '../StatefulModalPattern'
 
 class VmMigrateModal extends StatefulModalPattern {
   constructor (props) {
     super(props)
-    bindMethods(this, ['migrateAndClose', 'onHostSelectionChange'])
-  }
-
-  async migrateAndClose () {
-    const { hostAutoSelectItem, migrateToHost } = this.props
-    const hostId = this._hostId || (hostAutoSelectItem && hostAutoSelectItem.value)
-
-    if (hostId) {
-      this.setState({ migrateInProgress: true })
-      const result = await migrateToHost(hostId)
-      this.setState({ migrateInProgress: false })
-
-      if (!Array.isArray(result)) {
-        throw new Error('VmMigrateModal: migrateToHost function result is not an array')
-      }
-
-      if (result.length === 0) {
-        // all VMs were migrated successfully, close the modal
-        this.close()
-      } else {
-        // one or more VMs failed to migrate, keep the modal open
-        this.setState({ migrateErrors: result })
-      }
-    }
+    bindMethods(this, ['onHostSelectionChange'])
   }
 
   onHostSelectionChange (newHostId) {
@@ -45,37 +22,51 @@ class VmMigrateModal extends StatefulModalPattern {
 
   render () {
     const {
+      vmInfoLabel,
+      vmListLabel,
+      vmListShowAllLabel,
+      vmListShowLessLabel,
+      vmNames,
       hostSelectLabel,
+      hostSelectFieldHelp,
       hostSelectItems,
       hostAutoSelectItem,
-      errorMessage,
+      migrateToHost,
       isLoading,
-      okButtonLabel,
+      migrateButtonLabel,
       cancelButtonLabel
     } = this.props
-    const { migrateInProgress, migrateErrors = [] } = this.state
-    const allErrors = errorMessageToArray(errorMessage).concat(migrateErrors)
-    const hasError = allErrors.length > 0
+
+    const onMigrateButtonClick = () => {
+      const hostId = this._hostId || (hostAutoSelectItem && hostAutoSelectItem.value)
+      migrateToHost(hostId)
+      this.close()
+    }
 
     const modalBody = (
-      <Spinner loading={isLoading || migrateInProgress}>
+      <Spinner loading={isLoading}>
         <VmMigrateModalBody
+          vmInfoLabel={vmInfoLabel}
+          vmListLabel={vmListLabel}
+          vmListShowAllLabel={vmListShowAllLabel}
+          vmListShowLessLabel={vmListShowLessLabel}
+          vmNames={vmNames}
           hostSelectLabel={hostSelectLabel}
+          hostSelectFieldHelp={hostSelectFieldHelp}
           hostSelectItems={hostSelectItems}
           hostAutoSelectItem={hostAutoSelectItem}
           onHostSelectionChange={this.onHostSelectionChange}
-          errorMessage={allErrors}
         />
       </Spinner>
     )
 
     const modalButtons = (
       <React.Fragment>
-        <Button bsStyle='primary' onClick={this.migrateAndClose} disabled={hasError}>
-          {okButtonLabel}
-        </Button>
         <Button onClick={this.close}>
           {cancelButtonLabel}
+        </Button>
+        <Button bsStyle='primary' onClick={onMigrateButtonClick}>
+          {migrateButtonLabel}
         </Button>
       </React.Fragment>
     )
@@ -92,7 +83,7 @@ VmMigrateModal.propTypes = {
   ...excludeKeys(VmMigrateModalBody.propTypes, ['onHostSelectionChange']),
   migrateToHost: PropTypes.func,
   isLoading: PropTypes.bool,
-  okButtonLabel: PropTypes.string,
+  migrateButtonLabel: PropTypes.string,
   cancelButtonLabel: PropTypes.string
 }
 
@@ -101,9 +92,9 @@ VmMigrateModal.defaultProps = {
   ...excludeKeys(VmMigrateModalBody.defaultProps, ['onHostSelectionChange']),
   dialogClassName: 'modal-lg',
   title: 'Migrate VM(s)',
-  migrateToHost: () => Promise.resolve([]),
+  migrateToHost: noop,
   isLoading: false,
-  okButtonLabel: 'OK',
+  migrateButtonLabel: 'Migrate',
   cancelButtonLabel: 'Cancel'
 }
 

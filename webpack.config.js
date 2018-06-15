@@ -41,8 +41,6 @@ const config = module.exports = {
               }],
               'react'
             ],
-            // TODO(vs): do we still need this?
-            //  https://github.com/tc39/proposals/blob/master/finished-proposals.md
             plugins: ['transform-object-rest-spread']
           }
         }
@@ -116,8 +114,8 @@ const config = module.exports = {
 // common development and production build configuration
 if (isDev || isProd) {
   config.entry = {
-    'plugin': commonModules.concat(['./src/plugin.jsx']),
-    'dashboard': commonModules.concat(['./src/dashboard.jsx'])
+    'plugin': commonModules.concat(['./src/plugin.js']),
+    'dashboard': commonModules.concat(['./src/dashboard.js'])
   }
   config.output = {
     filename: '[name].js',

@@ -1,3 +1,4 @@
+// TODO(vs) change this to e.g. 'ovirt-engine-ui-extensions'
 export const pluginName = 'dashboard'
 
 export const pluginBasePath = `plugin/${pluginName}`
@@ -42,6 +43,14 @@ export const searchPrefixes = {
   volume: 'Volumes'
 }
 
+export const searchFields = {
+  name: 'name',
+  status: 'status',
+  severity: 'severity',
+  time: 'time',
+  cluster: 'cluster'
+}
+
 export const webadminPlaces = {
   dc: 'dataCenters',
   cluster: 'clusters',
@@ -52,12 +61,9 @@ export const webadminPlaces = {
   volume: 'volumes'
 }
 
-export const searchFields = {
-  name: 'name',
-  status: 'status',
-  severity: 'severity',
-  time: 'time',
-  cluster: 'cluster'
+export const webadminToastTypes = {
+  info: 'info',
+  danger: 'danger'
 }
 
 export const heatMapThresholds = {

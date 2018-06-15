@@ -9,6 +9,7 @@ import GlobalDashboard from './components/GlobalDashboard'
 
 import 'patternfly/dist/css/patternfly.min.css'
 import 'patternfly/dist/css/patternfly-additions.min.css'
+import 'patternfly-react/dist/css/patternfly-react.css'
 
 // TODO(vs): Move component-specific CSS next to the relevant React component and
 // have that React component import the CSS. Once we update our code to use only

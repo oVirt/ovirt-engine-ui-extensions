@@ -342,31 +342,55 @@ const messageDescriptors = {
 
   migrateVmDataError: {
     id: 'migrate.vm.dataError',
-    defaultMessage: 'Could not fetch data needed for the migrate operation',
-    description: 'error message shown when VM migrate dialog failed to load its data'
+    defaultMessage: 'Could not fetch data needed for VM migrate operation',
+    description: 'notification shown when VM migrate dialog failed to load its data'
   },
 
   migrateVmNoAvailableHost: {
     id: 'migrate.vm.noAvailableHost',
-    defaultMessage: 'No available host to migrate to',
-    description: 'error message shown when there are no hosts the VMs can migrate to'
+    defaultMessage: 'No available host to migrate VMs to',
+    description: 'notification shown when there are no hosts the VMs can migrate to'
   },
 
-  migrateVmErrorTemplate: {
-    id: 'migrate.vm.errorTemplate',
-    defaultMessage: 'Unable to migrate VM {vmName}, reason: {message}',
-    description: 'error message shown when a migrate operation failed for the given VM'
+  migrateVmInfoLabel: {
+    id: 'migrate.vm.vmInfoLabel',
+    defaultMessage: 'Migrate {value, number} Virtual Machines to the selected Host.',
+    description: 'label shown above the target host dropdown, informing the user about VMs that are about to be migrated'
+  },
+
+  migrateVmListLabel: {
+    id: 'migrate.vm.vmListLabel',
+    defaultMessage: 'Virtual Machines',
+    description: 'label for the VM list shown below the target host dropdown'
+  },
+
+  migrateVmListShowAllLabel: {
+    id: 'migrate.vm.vmListShowAllLabel',
+    defaultMessage: 'Show all Virtual Machines',
+    description: 'text of the link that allows showing all VMs in the VM list'
+  },
+
+  migrateVmListShowLessLabel: {
+    id: 'migrate.vm.vmListShowLessLabel',
+    defaultMessage: 'Show less Virtual Machines',
+    description: 'text of the link that allows showing less (up to 10) VMs in the VM list'
   },
 
   migrateVmSelectHostLabel: {
     id: 'migrate.vm.selectHostLabel',
-    defaultMessage: 'Select Destination Host',
+    defaultMessage: 'Destination Host',
     description: 'label for the dropdown used to select migration target host'
   },
 
-  migrateVmAutomaticallySelectHost: {
+  migrateVmSelectHostFieldHelp: {
+    id: 'migrate.vm.selectHostFieldHelp',
+    defaultMessage: 'Select \'Automatically Choose Host\' to allow the application to select the best suited Host for these Virtual Machines to migrate to.',
+    description: 'field help for the dropdown used to select migration target host'
+  },
+
+  migrateVmAutoSelectHost: {
     id: 'migrate.vm.autoSelectHost',
-    defaultMessage: 'Select Host Automatically',
+    defaultMessage: 'Automatically Choose Host',
     description: 'label for the default migration target host dropdown option'
   }
 

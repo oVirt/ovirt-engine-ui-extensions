@@ -30,7 +30,7 @@ const polyfillIntlFn = (resolve, reject) => {
 const initApplicationLocaleFn = (resolve, reject) => {
   const currentLocale = getPluginApi().currentLocale()
 
-  // TODO(sd): This should be simplified if/when currentTimeZone is added to the ovirt ui-plugin API
+  // TODO(sd): This should be simplified if/when currentTimeZone is added to the UI plugin API
   const currentTimeZone = getPluginApi().currentTimeZone ? getPluginApi().currentTimeZone() : defaultTimeZone
 
   if (supportedLocales.includes(currentLocale) && supportedTimeZones.includes(currentTimeZone)) {

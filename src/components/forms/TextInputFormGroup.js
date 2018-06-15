@@ -7,6 +7,7 @@ const TextInputFormGroup = ({
   label,
   help,
   fieldHelp,
+  fieldHelpPlacement,
   validationState,
   ...props
 }) => (
@@ -15,6 +16,7 @@ const TextInputFormGroup = ({
     label={label}
     help={help}
     fieldHelp={fieldHelp}
+    fieldHelpPlacement={fieldHelpPlacement}
     validationState={validationState}
   >
     <Form.FormControl type='text' {...props} />

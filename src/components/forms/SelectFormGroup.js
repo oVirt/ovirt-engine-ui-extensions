@@ -8,6 +8,7 @@ const SelectFormGroup = ({
   label,
   help,
   fieldHelp,
+  fieldHelpPlacement,
   validationState,
   items,
   usePlaceholder,
@@ -20,6 +21,7 @@ const SelectFormGroup = ({
     label={label}
     help={help}
     fieldHelp={fieldHelp}
+    fieldHelpPlacement={fieldHelpPlacement}
     validationState={validationState}
   >
     <Form.FormControl componentClass='select' {...props}>

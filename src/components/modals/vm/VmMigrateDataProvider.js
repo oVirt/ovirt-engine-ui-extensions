@@ -1,17 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import getPluginApi from '../../../plugin-api'
 import { hostAutoSelectItemValue } from './VmMigrateModalBody'
 import DataProvider from '../../helper/DataProvider'
-import { useFakeData } from '../../../constants'
+import { useFakeData, webadminToastTypes } from '../../../constants'
 import { engineGet, enginePost } from '../../../utils/fetch'
+import { randomId } from '../../../utils/random'
 import { msg } from '../../../intl-messages'
+
+function randomVms (vmCount) {
+  return Array.from(Array(vmCount), (element, index) => ({
+    id: randomId(),
+    name: `random-vm-${index}`,
+    host: { id: 'foo123' }
+  }))
+}
 
 const fetchVmsFakeData = {
   vm: [
-    // VM with host assigned
+    // VM with a host => this VM is running on that host
     { id: 'abc123', name: 'test-vm-1', host: { id: 'xyz789' } },
-    // VM without a host
-    { id: 'def456', name: 'test-vm-2' }
+    // VM without a host => this VM is not running
+    { id: 'def456', name: 'test-vm-2' },
+    // add some more randomly generated VMs
+    ...randomVms(20)
   ]
 }
 
@@ -21,15 +33,6 @@ const fetchTargetHostsFakeData = {
     { id: 'foo123', name: 'test-host-2' },
     { id: 'bar456', name: 'test-host-3' }
   ]
-}
-
-function migrateToHostFakeResult () {
-  return Math.random() < 1 ? {
-    status: 'failed',
-    fault: {
-      detail: 'Error: too many hamsters detected!'
-    }
-  } : {}
 }
 
 /**
@@ -51,9 +54,12 @@ async function fetchVms (vmIds) {
  * Resolve migration target hosts for the given VMs.
  */
 async function fetchTargetHosts (vms) {
-  const currentHostIds = vms
+  let currentHostIds = vms
     .filter(vm => vm.host && vm.host.id)
     .map(vm => vm.host.id)
+
+  // remove duplicate values
+  currentHostIds = [...new Set(currentHostIds)]
 
   const json = (useFakeData && fetchTargetHostsFakeData) ||
     await engineGet(`api/hosts?migration_target_of=${vms.map(vm => vm.id).join(',')}`)
@@ -63,9 +69,10 @@ async function fetchTargetHosts (vms) {
     throw new Error('VmMigrateDataProvider: Failed to fetch target hosts')
   }
 
+  // TODO(vs) we need to clarify this filter logic
   if (currentHostIds.length === 1) {
     // filter out the current host
-    return targetHosts.filter(host => host.id !== currentHostIds[0])
+    return targetHosts.filter(host => !currentHostIds.includes(host.id))
   } else {
     // multiple source hosts, don't filter
     return targetHosts
@@ -75,31 +82,28 @@ async function fetchTargetHosts (vms) {
 /**
  * Migrate VMs to the target host.
  *
- * Returns an array of error messages (strings) if one or more VMs failed
- * to migrate, or an empty array if all VMs were migrated successfully.
+ * This function doesn't need to be async, since `VmMigrateModal` is closed
+ * (no further interaction available) once the "Migrate" button is clicked.
  */
-async function migrateToHost (targetHostId, vms) {
-  const targetHost = targetHostId === hostAutoSelectItemValue
-    ? {} // any host
-    : { host: { id: targetHostId } }
-  const targetHostBody = JSON.stringify(targetHost)
-  const errors = []
-
-  for (const vm of vms) {
-    if (!vm.host || vm.host.id !== targetHostId) {
-      const json = (useFakeData && migrateToHostFakeResult()) ||
-        await enginePost(`api/vms/${vm.id}/migrate`, targetHostBody)
-
-      if (json.status === 'failed') {
-        errors.push(msg.migrateVmErrorTemplate({
-          vmName: vm.name,
-          message: json.fault.detail
-        }))
-      }
+function migrateToHost (targetHostId, vms) {
+  if (!targetHostId || useFakeData) {
+    if (useFakeData) {
+      getPluginApi().showToast(webadminToastTypes.info, 'Using fake data, nothing to migrate.')
     }
+    return
   }
 
-  return errors
+  const targetHost = targetHostId === hostAutoSelectItemValue
+    ? {} // let the server select host automatically
+    : { host: { id: targetHostId } }
+  const targetHostBody = JSON.stringify(targetHost)
+
+  vms.forEach(vm => {
+    if (!vm.host || vm.host.id !== targetHostId) {
+      // request VM migration but don't wait for response
+      enginePost(`api/vms/${vm.id}/migrate`, targetHostBody)
+    }
+  })
 }
 
 const VmMigrateDataProvider = ({ children, vmIds }) => {
@@ -118,13 +122,10 @@ const VmMigrateDataProvider = ({ children, vmIds }) => {
 
         // handle data loading and error scenarios
         if (fetchError) {
-          return React.cloneElement(child, {
-            errorMessage: msg.migrateVmDataError()
-          })
+          getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmDataError())
+          return React.cloneElement(child, { show: false })
         } else if (fetchInProgress || !data) {
-          return React.cloneElement(child, {
-            isLoading: true
-          })
+          return React.cloneElement(child, { isLoading: true })
         }
 
         // unwrap data
@@ -132,13 +133,13 @@ const VmMigrateDataProvider = ({ children, vmIds }) => {
 
         // check if there are any target hosts available
         if (targetHosts.length === 0) {
-          return React.cloneElement(child, {
-            errorMessage: msg.migrateVmNoAvailableHost()
-          })
+          getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmNoAvailableHost())
+          return React.cloneElement(child, { show: false })
         }
 
         // pass relevant data and operations to child component
         return React.cloneElement(child, {
+          vmNames: vms.map(vm => vm.name),
           hostSelectItems: targetHosts.map(host => ({
             value: host.id,
             text: host.name
