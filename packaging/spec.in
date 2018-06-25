@@ -1,0 +1,141 @@
+Name: ovirt-engine-dashboard
+Summary: oVirt Engine Dashboard
+Version: @RPM_VERSION@
+Release: 1@RPM_SNAPSHOT@%{?dist}
+License: ASL 2.0
+URL: http://www.ovirt.org/
+Source: @TAR_FILE@
+
+BuildArch: noarch
+
+@BUILD_REQUIRES@
+
+Requires: ovirt-engine-webadmin-portal >= 4.2
+
+%description
+oVirt UI plugin that gives overview of the virtualized environment and its specific objects.
+
+%prep
+
+# Unpack the source:
+%setup -q -n %{name}-%{version}
+
+# Set up Node.js environment with dependencies linked to ./node_modules:
+source %{_datadir}/ovirt-engine-nodejs-modules/setup-env.sh
+
+# Verify that dependency versions (semver ranges) in package.json have
+# matching resolutions in the yarn.lock file:
+yarn check
+
+# Build the application:
+yarn run build
+
+%install
+
+# Install the files:
+mkdir -p %{buildroot}%{_datadir}/%{name}
+cp -r dist/* %{buildroot}%{_datadir}/%{name}
+
+# Ensure that Engine ui-plugins directory exists:
+mkdir -p %{buildroot}%{_datadir}/ovirt-engine/ui-plugins
+
+# Link application's resources to Engine ui-plugins directory:
+ln -s "%{_datadir}/%{name}/dashboard.json" "%{buildroot}%{_datadir}/ovirt-engine/ui-plugins"
+ln -s "%{_datadir}/%{name}/dashboard-resources" "%{buildroot}%{_datadir}/ovirt-engine/ui-plugins"
+
+%files
+%{_datadir}/%{name}
+%{_datadir}/ovirt-engine/ui-plugins/dashboard.json
+%{_datadir}/ovirt-engine/ui-plugins/dashboard-resources
+%doc README.adoc
+%license LICENSE
+
+%changelog
+* Wed Jan 10 2018 Greg Sheremeta <gshereme@redhat.com> - 1.2.1-1
+- bump package version to 1.2.1-1
+- update translations from zanata
+- small bug fixes
+
+* Wed Nov 29 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-1
+- bump package version to 1.2.0-1
+- fix status card height matching
+- consume patternfly from npm and remove embedded rcue
+
+* Tue Nov 14 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-0.8
+- bump package version to 1.2.0-0.8
+- fix refresh button tooltip and remove refresh button menu
+
+* Fri Nov 3 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-0.7
+- bump package version to 1.2.0-0.7
+- adapt to plugin api change (remove revealPlace)
+
+* Mon Oct 30 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-0.6
+- bump package version to 1.2.0-0.6
+- add manual refresh button
+- fix issue with localizing numbers
+- use browser default time zone
+
+* Thu Feb 9 2017 Vojtech Szocs <vszocs@redhat.com> - 1.2.0-0.5
+- Use "yarn check" in check & build scripts to ensure consistency
+  between package.json and yarn.lock files.
+
+* Wed Feb 8 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-0.4
+- added build.packages.force that specify forced yum installs,
+  to work around CI caching issue.
+
+* Tue Feb 7 2017 Vojtech Szocs <vszocs@redhat.com> - 1.2.0-0.3
+- "automation" directory cleanup.
+- Node.js, Yarn and nodejs-modules versions are now specified in
+  the .packages file.
+
+* Fri Feb 3 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-0.2
+- Switch to yarn
+
+* Thu Jan 5 2017 Greg Sheremeta <gshereme@redhat.com> - 1.2.0-0.1
+- Bump ovirt-engine-nodejs-modules BuildRequires to 0.0.19.
+  Bump webadmin Requires to 4.2.
+
+* Fri Nov 25 2016 Greg Sheremeta <gshereme@redhat.com> - 1.1.0-0.4
+- Bump ovirt-engine-nodejs-modules BuildRequires to 0.0.16.
+  Bump ovirt-engine-nodejs BuildRequires to 6.9.1.
+
+* Tue Aug 2 2016 Vojtech Szocs <vszocs@redhat.com> - 1.1.0-0.3
+- Bump ovirt-engine-nodejs-modules BuildRequires to 0.0.12.
+- Bump ovirt-engine-webadmin-portal to 4.0.2 to leverage oVirt
+  UI plugin API enhancement: https://bugzilla.redhat.com/1361255
+
+* Thu Jul 28 2016 Vojtech Szocs <vszocs@redhat.com> - 1.1.0-0.2
+- Bump ovirt-engine-nodejs-modules BuildRequires to 0.0.10.
+
+* Wed Jul 20 2016 Vojtech Szocs <vszocs@redhat.com> - 1.1.0-0.1
+- Bump package version to 1.1.0.
+
+* Mon Jul 18 2016 Vojtech Szocs <vszocs@redhat.com> - 1.0.0-0.5
+- Bump ovirt-engine-nodejs-modules BuildRequires to 0.0.9.
+
+* Tue Jun 28 2016 Vojtech Szocs <vszocs@redhat.com> - 1.0.0-0.4
+- Bump Node.js BuildRequires to 4.4.6.
+
+* Tue Jun 14 2016 Vojtech Szocs <vszocs@redhat.com> - 1.0.0-0.3
+- Bump ovirt-engine-nodejs-modules require version.
+
+* Mon May 30 2016 Vojtech Szocs <vszocs@redhat.com> - 1.0.0-0.2
+- Require ovirt-engine-webadmin-portal 4.0.0 or greater.
+
+* Thu May 26 2016 Vojtech Szocs <vszocs@redhat.com> - 1.0.0-0.1
+- Bump package version to 1.0.0.
+
+* Fri May 20 2016 Vojtech Szocs <vszocs@redhat.com> - 0.0.1-2
+- Use setup-env.sh script provided by ovirt-engine-nodejs-modules.
+
+* Thu May 19 2016 Vojtech Szocs <vszocs@redhat.com> - 0.0.1-1
+- Define RPM release tag with optional snapshot information.
+
+* Wed May 18 2016 Vojtech Szocs <vszocs@redhat.com> - 0.0.1
+- Require ovirt-engine-webadmin-portal instead of ovirt-engine.
+
+* Fri May 6 2016 Vojtech Szocs <vszocs@redhat.com> - 0.0.1
+- Update spec file to link UI plugin resources to oVirt Engine.
+
+* Thu Apr 21 2016 Vojtech Szocs <vszocs@redhat.com> - 0.0.1
+- Initial packaging.

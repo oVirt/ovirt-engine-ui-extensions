@@ -1,0 +1,234 @@
+body, .containers-dashboard {
+    background-color: #F5F5F5
+}
+
+/* Utilization bar chart */
+.pf-utilization-bar-chart .progress-bar {
+  -webkit-transition: width .75s ease-in-out;
+  -moz-transition: width .75s ease-in-out;
+  -o-transition: width .75s ease-in-out;
+  transition: width .75s ease-in-out;
+}
+.pf-utilization-bar-chart .progress-bar.animate {
+  width: 0% !important;
+}
+
+/* Utilization trend card */
+.utilization-chart-pf .donut-chart-pf {
+  width: 100%;
+  float: left;
+  padding-top: 15px;
+}
+.utilization-chart-pf h3 {
+  font-weight: 400;
+}
+.utilization-chart-pf .current-values {
+  border-bottom: 1px solid #d1d1d1;
+  float: left;
+  padding: 0 5px 10px 0;
+  width: 100%;
+}
+.utilization-chart-pf .available-count {
+  margin: 3px 0;
+  padding-left: 0;
+  padding-right: 5px;
+}
+.utilization-chart-pf .available-text {
+  color: #333;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  margin: 2px 0;
+  padding: 0 5px;
+}
+.utilization-chart-pf .radial-chart {
+  float: left;
+  padding-top: 10px;
+  width: 100%;
+}
+.utilization-chart-pf .sparkline-chart {
+  float: left;
+  margin-left: -5px;
+  margin-right: -5px;
+  width: 100%;
+}
+.utilization-chart-pf .legend-text {
+  color: inherit;
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  margin-left: 0;
+}
+.utilization-chart-pf h3 {
+    margin-top: 7px;
+}
+
+/* Utilization dialog */
+.overutilization-dialog h4 {
+  font-size: 18px;
+  font-weight: 800;
+}
+.overutilization-dialog a {
+  vertical-align: middle;
+}
+.overutilization-dialog .modal-dialog {
+  width: 55%;
+  height: 55%;
+}
+.overutilization-dialog .modal-header {
+  border-bottom: 1px solid #d1d1d1;
+}
+.overutilization-dialog .modal-footer {
+  background-color: #fafafa;
+  border-top: 1px solid #d1d1d1;
+}
+.overutilization-dialog .no-overutilized {
+  padding: 20px;
+}
+.overutilization-dialog .overutilized-container {
+  padding: 10px;
+}
+.overutilization-dialog .overutilized-section {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.overutilization-dialog .row-tile-pf {
+  font-size: 14px;
+  font-weight: 300;
+}
+.overutilization-dialog .overutilized-section .progress-container.progress-description-left {
+  padding-left: 0px;
+}
+.overutilization-dialog .overutilized-section .overutilized-item-name {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.overutilization-dialog .overutilized-section .progress-label-right .progress-bar span {
+  margin-right: 10px;
+}
+.overutilization-dialog .overutilized-section .overutilized-item-name-container {
+  padding-right: 0px;
+}
+.overutilization-dialog .overutilized-section .overutilized-item-trend {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.overutilization-dialog .overutilized-section .overutilized-item-bar {
+  padding-right: 0px;
+}
+
+/* Heat map */
+.heatmap-legend {
+  font-size: 11px;
+  font-weight: normal;
+  line-height: 11px;
+  padding-top: 15px;
+  padding-bottom: 0;
+  display: inline-block;
+  position: relative;
+}
+.heatmap-legend-container {
+  width: 100%;
+  position: relative;
+}
+.heatmap-legend-container ul {
+  list-style-type: none;
+}
+.heatmap-legend-container li {
+  display: inline;
+}
+.heatmap-legend .color-box {
+  width: 11px;
+  height: 11px;
+  margin-left: 5px;
+  margin-right: 5px;
+  list-style-type: none;
+  float: left;
+}
+.heatmap-legend .legend-text {
+  font-size: 11px;
+  font-weight: normal;
+  line-height: 11px;
+  padding-right: 5px;
+  list-style-type: none;
+  float: left;
+}
+.heatmap-svg {
+  width: 100%;
+  height: 100%;
+}
+.heatmap-container rect {
+  cursor: pointer;
+}
+
+/* TODO (gs) -- remove this when https://patternfly.atlassian.net/browse/PTNFLY-1579 is fixed */
+.card-pf-aggregate-status-notification .pficon-warning-triangle-o {
+  position: relative;
+  top: 2px;
+}
+.global-dashboard-update-column {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px -10px;
+}
+
+/* These are small tweaks to try to make the dashboard squeeze into a 1920x1080
+   window without vertical scrolling. It fits great on Chrome, needs work on FF.
+*/
+.card-pf {
+    margin-bottom: 5px;
+}
+.card-pf-heading {
+    margin: 0 -20px 10px;
+}
+.card-pf-title {
+    margin: 12px 0;
+}
+.card-pf-body {
+    margin: 10px 0;
+}
+.card-pf-aggregate-status-notifications {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.card-pf-aggregate-status-notification {
+    white-space: nowrap;
+}
+.heatmap-chart-title {
+    margin-top: 5px;
+}
+
+/* Following media queries are required to split a row into seven equal columns
+   in bootstrap grid system. This is based on the reference implementation at
+   https://gist.github.com/kanakiyajay/15e4fc98248956614643
+*/
+@media (min-width: 768px) {
+  .seven-cols .col-md-1,
+  .seven-cols .col-sm-1,
+  .seven-cols .col-lg-1  {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .seven-cols .col-md-1,
+  .seven-cols .col-sm-1,
+  .seven-cols .col-lg-1 {
+    width: 14.285714285714285714285714285714%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .seven-cols .col-md-1,
+  .seven-cols .col-sm-1,
+  .seven-cols .col-lg-1 {
+    width: 14.285714285714285714285714285714%;
+  }
+}

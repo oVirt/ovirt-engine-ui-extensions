@@ -1,0 +1,19 @@
+# Dependencies managed by npm
+node_modules/
+
+# Distributable files
+dist/
+
+# Additional build artifacts
+extra/
+
+# Yarn log files
+yarn-error.log
+
+# IDE files
+.idea/
+.vscode/
+ovirt-engine-dashboard.iml
+
+# Zanata temporary files
+.zanata-cache/
