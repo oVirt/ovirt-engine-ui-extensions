@@ -13,7 +13,7 @@ script, specifying the version with the `tar_version` environment
 variable.
 
 For example, if the name of the file is
-`ovirt-engine-dashboard-0.0.1.tar.gz` then use the following command:
+`ovirt-engine-ui-extensions-0.0.1.tar.gz` then use the following command:
 
   $ tar_version=0.0.1 build.sh
 
@@ -25,4 +25,4 @@ you can also specify the `tar_file` environment variable:
 Resulting `.rpm` file will be created in the `noarch` subdirectory.
 
 When installed, the RPM will put the files into
-`/usr/share/ovirt-engine-dashboard` directory.
+`/usr/share/ovirt-engine-ui-extensions` directory.

@@ -14,8 +14,26 @@ const isProd = env === 'production'
 const isDev = env === 'development'
 const isTest = env === 'test'
 
+// browserslist query used by babel-preset-env
+// https://github.com/browserslist/browserslist#queries
+const targetBrowsers = [
+  // include browsers with at least 0.5% global coverage
+  '> 0.5%',
+  // exclude browsers without official support or updates for 24 months
+  'not dead',
+  // exclude all IE versions - we are committed to support Edge
+  'not ie > 0',
+  // include Firefox ESR (Extended Support Release)
+  'firefox esr',
+  // include last 2 versions of browsers we are committed to support
+  'last 2 Chrome versions',
+  'last 2 Firefox versions',
+  'last 2 Edge versions',
+  'last 2 Safari versions'
+]
+
 // common modules required by all entry points
-const commonModules = ['babel-polyfill', 'whatwg-fetch']
+const commonModules = ['babel-polyfill']
 
 // define specific TTF fonts to embed in CSS via data urls
 let ttfFontsToEmbed
@@ -34,10 +52,8 @@ const config = module.exports = {
           options: {
             presets: [
               ['env', {
-                targets: {
-                  browsers: ['last 2 versions', 'not ie < 11', 'firefox esr']
-                },
-                debug: false
+                targets: { browsers: targetBrowsers },
+                debug: isDev
               }],
               'react'
             ],
@@ -111,7 +127,7 @@ const config = module.exports = {
   ]
 }
 
-// common development and production build configuration
+// common build configuration
 if (isDev || isProd) {
   config.entry = {
     'plugin': commonModules.concat(['./src/plugin.js']),
@@ -119,16 +135,16 @@ if (isDev || isProd) {
   }
   config.output = {
     filename: '[name].js',
-    path: `${__dirname}/dist/dashboard-resources`,
+    path: `${__dirname}/dist/ui-extensions-resources`,
 
-    // an absolute path is necessary to properly rewrite css url paths
-    publicPath: '/ovirt-engine/webadmin/plugin/dashboard/'
+    // UI plugin resources are served through Engine
+    publicPath: '/ovirt-engine/webadmin/plugin/ui-extensions/'
   }
 
   config.plugins.push(
     new CleanWebpackPlugin(['dist', 'extra']),
     new CopyWebpackPlugin([
-      { from: 'static/dashboard.json', to: '../' }
+      { from: 'static/ui-extensions.json', to: '../' }
     ]),
     new InlineManifestWebpackPlugin({
       name: 'webpackManifest'

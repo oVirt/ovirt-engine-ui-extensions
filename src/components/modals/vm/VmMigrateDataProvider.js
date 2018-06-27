@@ -69,14 +69,13 @@ async function fetchTargetHosts (vms) {
     throw new Error('VmMigrateDataProvider: Failed to fetch target hosts')
   }
 
-  // TODO(vs) we need to clarify this filter logic
-  if (currentHostIds.length === 1) {
-    // filter out the current host
-    return targetHosts.filter(host => !currentHostIds.includes(host.id))
-  } else {
-    // multiple source hosts, don't filter
-    return targetHosts
-  }
+  // If all VMs are currently running on the same host (currentHostIds.length === 1),
+  // this particular host cannot be used as a migration target to any of the selected
+  // VMs (since those VMs are already running on it). Otherwise, don't filter target
+  // hosts, since each of them is a potential migration target to each of the VMs.
+  return (currentHostIds.length === 1)
+    ? targetHosts.filter(host => !currentHostIds.includes(host.id))
+    : targetHosts
 }
 
 /**

@@ -4,8 +4,7 @@ import { getWebAdminDocumentBody } from './webadmin-dom'
 /**
  * Render patternfly-react `Modal` based component into WebAdmin document body.
  *
- * Example:
- *
+ * @example
  * ```
  * showModal(({ container, destroyModal }) => (
  *   <MyModal show container={container} onExited={destroyModal} />

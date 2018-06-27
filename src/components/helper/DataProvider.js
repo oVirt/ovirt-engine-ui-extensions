@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { bindMethods } from 'patternfly-react'
 
 class DataProvider extends React.Component {
   constructor (props) {
@@ -11,7 +10,6 @@ class DataProvider extends React.Component {
       fetchInProgress: false,
       lastUpdated: null
     }
-    bindMethods(this, ['fetchAndUpdateData'])
   }
 
   componentDidMount () {
@@ -23,7 +21,7 @@ class DataProvider extends React.Component {
   render () {
     return this.props.children({
       ...this.state,
-      fetchAndUpdateData: this.fetchAndUpdateData
+      fetchAndUpdateData: () => { this.fetchAndUpdateData() }
     })
   }
 
@@ -41,7 +39,6 @@ class DataProvider extends React.Component {
 
   onFetchStart () {
     this.setState({
-      data: null,
       fetchError: null,
       fetchInProgress: true
     })

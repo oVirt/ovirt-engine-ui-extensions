@@ -93,14 +93,14 @@ function transformData (data) {
 const DashboardDataProvider = ({ children, loading, error }) => (
   <DataProvider fetchData={fetchData}>
 
-    {({ data, fetchError, fetchInProgress, lastUpdated, fetchAndUpdateData }) => {
+    {({ data, fetchError, lastUpdated, fetchAndUpdateData }) => {
       // expecting single child component
       const child = React.Children.only(children)
 
       // handle data loading and error scenarios
       if (fetchError) {
         return error
-      } else if (fetchInProgress || !data) {
+      } else if (!data) {
         return loading
       }
 

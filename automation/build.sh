@@ -26,7 +26,7 @@ if [ ! -z ${tag} ]; then
 fi
 
 # Build the tar file:
-tar_name="ovirt-engine-dashboard"
+tar_name="ovirt-engine-ui-extensions"
 tar_prefix="${tar_name}-${version}/"
 tar_file="${tar_name}-${version}${snapshot}.tar.gz"
 git archive --prefix="${tar_prefix}" --output="${tar_file}" HEAD

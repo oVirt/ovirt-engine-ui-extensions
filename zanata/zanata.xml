@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
     <url>https://translate.zanata.org/</url>
-    <project>ovirt-engine-dashboard</project>
-    <project-version>ovirt-dashboard-1.2</project-version>
+    <project>ovirt-engine-ui-extensions</project>
+    <project-version>1.0</project-version>
     <project-type>gettext</project-type>
 
     <src-dir>../extra/messages</src-dir>

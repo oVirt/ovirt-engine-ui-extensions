@@ -23,9 +23,9 @@ import '../static/css/dashboard.css'
 // automatically through webpack ProvidePlugin, no explicit import needed here.)
 import 'bootstrap'
 
-// Note: Bootstrap 3.3.7 Tooltip.getPosition() function has a bug, this override
-// fixes the problem.
-import '../static/js/bootstrap-tooltip-override'
+// Bootstrap 3.3.7 Tooltip.getPosition() function has a bug, this override fixes
+// the problem.
+import './bootstrap-overrides/tooltip-fix'
 
 const appRoot = document.getElementById('app')
 

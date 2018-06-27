@@ -1,5 +1,4 @@
-// TODO(vs) change this to e.g. 'ovirt-engine-ui-extensions'
-export const pluginName = 'dashboard'
+export const pluginName = 'ui-extensions'
 
 export const pluginBasePath = `plugin/${pluginName}`
 

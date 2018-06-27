@@ -12,19 +12,23 @@ export class VmList extends React.Component {
   render () {
     const { vmNames, showAllThreshold, showAllLabel, showLessLabel } = this.props
     const { showAll } = this.state
+
     const vmNamesToShow = showAll ? vmNames : vmNames.slice(0, showAllThreshold)
+    const showLink = vmNames.length > showAllThreshold
 
     return (
       <div>
         {vmNamesToShow.map(name => (
           <div key={name}>{name}</div>
         ))}
-        <a href='#' onClick={event => {
-          event.preventDefault()
-          this.setState({ showAll: !showAll })
-        }}>
-          {showAll ? showLessLabel : showAllLabel}
-        </a>
+        {showLink && (
+          <a href='#' onClick={event => {
+            event.preventDefault()
+            this.setState({ showAll: !showAll })
+          }}>
+            {showAll ? showLessLabel : showAllLabel}
+          </a>
+        )}
       </div>
     )
   }

@@ -13,7 +13,7 @@ yarn-error.log
 # IDE files
 .idea/
 .vscode/
-ovirt-engine-dashboard.iml
+*.iml
 
 # Zanata temporary files
 .zanata-cache/
