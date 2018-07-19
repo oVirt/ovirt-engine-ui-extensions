@@ -15,7 +15,7 @@ export function convertValue (unitTable = [], unit, value, minThreshold = 0.1, m
 
     // scale all values down (coarse to fine), but only if they can all scale with the minThreshold
     unitTable.forEach((obj, index) => {
-      const leMinThreshold = newValue.reduce((res, val) => res && val <= minThreshold, true)
+      const leMinThreshold = newValue.reduce((res, val) => res && (val === 0 || val <= minThreshold), true)
       if (newUnit === obj.unit && leMinThreshold && index + 1 < unitTable.length) {
         const nextObj = unitTable[index + 1]
         newUnit = nextObj.unit
@@ -25,7 +25,7 @@ export function convertValue (unitTable = [], unit, value, minThreshold = 0.1, m
 
     // scale each value up (fine to coarse), but only if they can all scale with the maxThreshold
     reversedUnitTable.forEach((obj, index) => {
-      const geMaxThreshold = newValue.reduce((res, val) => res && val >= maxThreshold, true)
+      const geMaxThreshold = newValue.reduce((res, val) => res && (val === 0 || val >= maxThreshold), true)
       if (newUnit === obj.unit && geMaxThreshold && index + 1 < reversedUnitTable.length) {
         const nextObj = reversedUnitTable[index + 1]
         newUnit = nextObj.unit

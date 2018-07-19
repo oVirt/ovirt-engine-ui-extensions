@@ -75,7 +75,9 @@ export const heatMapLegendLabels = ['< 65%', '65-75%', '75-90%', '> 90%']
 export const storageUnitTable = [
   { unit: 'TiB' },
   { unit: 'GiB', factor: 1024 },
-  { unit: 'MiB', factor: 1024 }
+  { unit: 'MiB', factor: 1024 },
+  { unit: 'KiB', factor: 1024 },
+  { unit: 'B', factor: 1024 }
 ]
 
 // number of characters before giving more space to bar chart labels

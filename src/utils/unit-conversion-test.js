@@ -8,7 +8,7 @@ describe('convertValue', function () {
       unit: 'GiB', value: 0.001 * 1024
     })
     expect(convertValue(storageUnitTable, 'TiB', 0.000001)).to.deep.equal({
-      unit: 'MiB', value: 0.000001 * Math.pow(1024, 2)
+      unit: 'MiB', value: 0.000001 * (1024 ** 2)
     })
     expect(convertValue(storageUnitTable, 'GiB', 0.001)).to.deep.equal({
       unit: 'MiB', value: 0.001 * 1024
@@ -29,7 +29,7 @@ describe('convertValue', function () {
       unit: 'GiB', value: 10000 / 1024
     })
     expect(convertValue(storageUnitTable, 'MiB', 10000000)).to.deep.equal({
-      unit: 'TiB', value: 10000000 / Math.pow(1024, 2)
+      unit: 'TiB', value: 10000000 / (1024 ** 2)
     })
     expect(convertValue(storageUnitTable, 'GiB', 10000)).to.deep.equal({
       unit: 'TiB', value: 10000 / 1024
@@ -49,8 +49,15 @@ describe('convertValue', function () {
     })
   })
 
+  it('scale all values, ignoring 0 values', function () {
+    expect(convertValue(storageUnitTable, 'MiB', [ 0, 5 * 1024 ** 2, 6 * 1024 ** 2 ])).to.deep.equal({
+      unit: 'TiB',
+      value: [ 0, 5, 6 ]
+    })
+  })
+
   it('scale all values up 2 units', function () {
-    expect(convertValue(storageUnitTable, 'MiB', [ (1 * 1024 * 1024), (2 * 1024 * 1024) ])).to.deep.equal({
+    expect(convertValue(storageUnitTable, 'MiB', [ (1 * 1024 ** 2), (2 * 1024 ** 2) ])).to.deep.equal({
       unit: 'TiB',
       value: [ 1, 2 ]
     })
