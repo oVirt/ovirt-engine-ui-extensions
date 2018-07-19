@@ -12,6 +12,9 @@ BuildArch: noarch
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 
+Obsoletes: ovirt-engine-dashboard <= 1.2
+Provides: ovirt-engine-dashboard
+
 %description
 UI plugin that provides various extensions to oVirt administration UI.
 
