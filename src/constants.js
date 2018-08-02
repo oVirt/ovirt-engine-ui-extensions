@@ -54,6 +54,7 @@ export const webadminPlaces = {
   dc: 'dataCenters',
   cluster: 'clusters',
   host: 'hosts',
+  hostVm: 'hosts-virtual_machines',
   storage: 'storage',
   vm: 'vms',
   event: 'events',
@@ -84,6 +85,7 @@ export const storageUnitTable = [
 export const utilizationListGridNameThreshold = 30
 
 export const entityTypes = {
+  host: 'Host',
   vm: 'VirtualMachine'
 }
 
