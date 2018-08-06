@@ -11,14 +11,6 @@ getPluginApi().register({
   UiInit () {
     addPlaces()
     addButtons()
-  },
-
-  VirtualMachineSelectionChange: function () {
-    addButtons.VirtualMachineSelectionChange.apply(this, arguments)
-  },
-
-  DetailItemSelectionChange: function () {
-    addButtons.DetailItemSelectionChange.apply(this, arguments)
   }
 
 })

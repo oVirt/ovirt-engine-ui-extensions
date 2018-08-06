@@ -54,7 +54,6 @@ export const webadminPlaces = {
   dc: 'dataCenters',
   cluster: 'clusters',
   host: 'hosts',
-  hostVm: 'hosts-virtual_machines',
   storage: 'storage',
   vm: 'vms',
   event: 'events',
