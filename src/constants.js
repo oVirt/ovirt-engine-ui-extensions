@@ -80,6 +80,7 @@ export const storageUnitTable = [
 export const utilizationListGridNameThreshold = 30
 
 export const entityTypes = {
+  cluster: 'Cluster',
   host: 'Host',
   vm: 'VirtualMachine'
 }

@@ -15,3 +15,25 @@ export function cloneElementWithCustomRef (reactElement, customRef, props = {}) 
     }
   }))
 }
+
+export function propNamesToType (names, propType) {
+  const nameList = Array.isArray(names) ? names : Object.keys(names)
+  return nameList.reduce(
+    (acc, name) => { acc[name] = propType; return acc },
+    {}
+  )
+}
+
+export function selectProps (props, keys) {
+  const keyList = Array.isArray(keys) ? keys : Object.keys(keys)
+  const selected = keyList.reduce(
+    (acc, key) => {
+      if (props[key]) {
+        acc[key] = props[key]
+      }
+      return acc
+    },
+    {}
+  )
+  return selected
+}

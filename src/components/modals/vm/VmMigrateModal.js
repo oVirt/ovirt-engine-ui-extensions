@@ -38,7 +38,10 @@ class VmMigrateModal extends StatefulModalPattern {
     } = this.props
 
     const onMigrateButtonClick = () => {
-      const hostId = this._hostId || (hostAutoSelectItem && hostAutoSelectItem.value)
+      const hostId = this._hostId ||
+        (hostAutoSelectItem && hostAutoSelectItem.value) ||
+        (hostSelectItems.length > 0 && hostSelectItems[0].value)
+
       migrateToHost(hostId)
       this.close()
     }

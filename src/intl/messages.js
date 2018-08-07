@@ -392,6 +392,250 @@ const messageDescriptors = {
     id: 'migrate.vm.autoSelectHost',
     defaultMessage: 'Automatically Choose Host',
     description: 'label for the default migration target host dropdown option'
+  },
+
+  clusterUpgradeButton: {
+    id: 'cluster.upgrade.button',
+    defaultMessage: 'Upgrade',
+    description: 'label for the cluster upgrade button on webadmin'
+  },
+
+  clusterUpgradeTitle: {
+    id: 'cluster.upgrade.Title',
+    defaultMessage: 'Upgrade Cluster {clusterName}',
+    description: 'cluster upgrade Modal Wizard title text'
+  },
+
+  clusterUpgradeLoadingTitle: {
+    id: 'cluster.upgrade.LoadingTitle',
+    defaultMessage: 'Loading Cluster Data...',
+    description: 'cluster upgrade Wizard title displayed while initial data is being loaded'
+  },
+
+  clusterUpgradeLoadingMessage: {
+    id: 'cluster.upgrade.LoadingMessage',
+    defaultMessage: 'This may take a few moments.',
+    description: 'cluster upgrade Wizard message displayed while initial data is being loaded'
+  },
+
+  clusterUpgradeCancelButtonText: {
+    id: 'cluster.upgrade.CancelButtonText',
+    defaultMessage: 'Cancel',
+    description: 'cluster upgrade Wizard Cancel button text'
+  },
+
+  clusterUpgradeBackButtonText: {
+    id: 'cluster.upgrade.BackButtonText',
+    defaultMessage: 'Back',
+    description: 'cluster upgrade Wizard Back/Previous step button text'
+  },
+
+  clusterUpgradeNextButtonText: {
+    id: 'cluster.upgrade.NextButtonText',
+    defaultMessage: 'Next',
+    description: 'cluster upgrade Wizard Next step button text'
+  },
+
+  clusterUpgradeUpgradeButtonText: {
+    id: 'cluster.upgrade.UpgradeButtonText',
+    defaultMessage: 'Upgrade',
+    description: 'cluster upgrade Wizard final step/Upgrade button text'
+  },
+
+  clusterUpgradeStepSelectHostsLabel: {
+    id: 'cluster.upgrade.StepSelectHostsLabel',
+    defaultMessage: 'Select Hosts',
+    description: 'cluster upgrade Wizard Step 1 title - Select Hosts'
+  },
+
+  clusterUpgradeStepUpgradeOptionsLabel: {
+    id: 'cluster.upgrade.StepUpgradeOptionsLabel',
+    defaultMessage: 'Upgrade Options',
+    description: 'cluster upgrade Wizard Step 2 title - Upgrade Options'
+  },
+
+  clusterUpgradeStepReviewLabel: {
+    id: 'cluster.upgrade.StepReviewLabel',
+    defaultMessage: 'Cluster Upgrade Review',
+    description: 'cluster upgrade Wizard Step 3 title - Upgrade Review'
+  },
+
+  clusterUpgradeNoHostsMessage: {
+    id: 'cluster.upgrade.NoHostsMessage',
+    defaultMessage: 'There are no hosts in this cluster.  A cluster without hosts cannot be upgraded.',
+    description: 'cluster upgrade Wizard error message when a cluster has no hosts to upgrade'
+  },
+
+  clusterUpgradeSelectHostsMessage: {
+    id: 'cluster.upgrade.SelectHostsMessage',
+    defaultMessage: 'If a host has a down status, it can cause the cluster upgrade to fail.',
+    description: 'cluster upgrade Wizard Step 1 - info message above the host selection table'
+  },
+
+  clusterUpgradeHostTableHeaderStatus: {
+    id: 'cluster.upgrade.HostTableHeaderStatus',
+    defaultMessage: 'Status',
+    description: 'cluster upgrade Wizard Step 1 - Host Selection Table, Status column header'
+  },
+
+  clusterUpgradeHostTableHeaderName: {
+    id: 'cluster.upgrade.HostTableHeaderName',
+    defaultMessage: 'Name',
+    description: 'cluster upgrade Wizard Step 1 - Host Selection Table, Name column header'
+  },
+
+  clusterUpgradeHostTableHeaderHostname: {
+    id: 'cluster.upgrade.HostTableHeaderHostname',
+    defaultMessage: 'Hostname/IP Address',
+    description: 'cluster upgrade Wizard Step 1 - Host Selection Table, Hostname column header'
+  },
+
+  clusterUpgradeHostTableHeaderVMs: {
+    id: 'cluster.upgrade.HostTableHeaderVMs',
+    defaultMessage: 'Virtual Machines',
+    description: 'cluster upgrade Wizard Step 1 - Host Selection Table, VM count column header'
+  },
+
+  clusterUpgradeStopPinnedLabel: {
+    id: 'cluster.upgrade.StopPinnedLabel',
+    defaultMessage: 'Stop Pinned VMs',
+    description: 'cluster upgrade Wizard Step 2 - stop pinned vms field label'
+  },
+
+  clusterUpgradeStopPinnedFieldHelp: {
+    id: 'cluster.upgrade.StopPinnedFieldHelp',
+    defaultMessage:
+      'Specify whether to stop virtual machines pinned to the host being' +
+      ' upgraded. If checked, the pinned non-migratable virtual machines will' +
+      ' be stopped and host will be upgraded, otherwise the host will be skipped.',
+    description: 'cluster upgrade Wizard Step 2 - stop pinned vms field help'
+  },
+
+  clusterUpgradeStopPinnedDescription: {
+    id: 'cluster.upgrade.StopPinnedDescription',
+    defaultMessage: 'Stop Virtual Machines pinned to Hosts',
+    description: 'cluster upgrade Wizard Step 2 - stop pinned vms field checkbox description'
+  },
+
+  clusterUpgradeUpgradeTimeoutLabel: {
+    id: 'cluster.upgrade.UpgradeTimeoutLabel',
+    defaultMessage: 'Upgrade Timeout (Minutes)',
+    description: 'cluster upgrade Wizard Step 2 - upgrade timeout field label'
+  },
+
+  clusterUpgradeUpgradeTimeoutFieldHelp: {
+    id: 'cluster.upgrade.UpgradeTimeoutFieldHelp',
+    defaultMessage:
+      'Timeout in minutes to wait for an individual host to be upgraded.' +
+      ' The default is 60 minutes (1 hour).',
+    description: 'cluster upgrade Wizard Step 2 - upgrade timeout field help'
+  },
+
+  clusterUpgradeCheckUpgradeLabel: {
+    id: 'cluster.upgrade.CheckUpgradeLabel',
+    defaultMessage: 'Check Upgrade',
+    description: 'cluster upgrade Wizard Step 2 - check upgrade field label'
+  },
+
+  clusterUpgradeCheckUpgradeFieldHelp: {
+    id: 'cluster.upgrade.CheckUpgradeFieldHelp',
+    defaultMessage:
+      'If checked, run check_for_upgrade action on all hosts before executing' +
+      ' upgrade on them. If unchecked, run upgrade only for hosts with available' +
+      ' upgrades and ignore all other hosts.',
+    description: 'cluster upgrade Wizard Step 2 - check upgrade field help'
+  },
+
+  clusterUpgradeCheckUpgradeDescription: {
+    id: 'cluster.upgrade.CheckUpgradeDescription',
+    defaultMessage: 'Check for upgrades on all Hosts (If not, only upgrade Hosts with known upgrades)',
+    description: 'cluster upgrade Wizard Step 2 - check upgrade field checkbox description'
+  },
+
+  clusterUpgradeRebootAfterLabel: {
+    id: 'cluster.upgrade.RebootAfterLabel',
+    defaultMessage: 'Reboot After Upgrade',
+    description: 'cluster upgrade Wizard Step 2 - reboot host after upgrade field label'
+  },
+
+  clusterUpgradeRebootAfterFieldHelp: {
+    id: 'cluster.upgrade.RebootAfterFieldHelp',
+    defaultMessage: 'If checked reboot hosts after successful upgrade.',
+    description: 'cluster upgrade Wizard Step 2 - reboot host after upgrade field help'
+  },
+
+  clusterUpgradeRebootAfterDescription: {
+    id: 'cluster.upgrade.RebootAfterDescription',
+    defaultMessage: 'Reboot Hosts after upgrade',
+    description: 'cluster upgrade Wizard Step 2 - reboot host after upgrade field checkbox description'
+  },
+
+  clusterUpgradeUseMaintenancePolicyLabel: {
+    id: 'cluster.upgrade.UseMaintenancePolicyLabel',
+    defaultMessage: 'Use Maintenance Policy',
+    description: 'cluster upgrade Wizard Step 2 - use maintenance policy field label'
+  },
+
+  clusterUpgradeUseMaintenancePolicyFieldHelp: {
+    id: 'cluster.upgrade.UseMaintenancePolicyFieldHelp',
+    defaultMessage:
+      'If checked the cluster\'s policy will be switched to "maintenance" during' +
+      ' the upgrade. If not checked the policy will be unchanged.',
+    description: 'cluster upgrade Wizard Step 2 - use maintenance policy field help'
+  },
+
+  clusterUpgradeUseMaintenancePolicyDescription: {
+    id: 'cluster.upgrade.UseMaintenancePolicyDescription',
+    defaultMessage: 'Switch Cluster policy to Cluster Maintenance during upgrade',
+    description: 'cluster upgrade Wizard Step 2 - use maintenance policy field checkbox description'
+  },
+
+  clusterUpgradeHostsLabel: {
+    id: 'cluster.upgrade.HostsLabel',
+    defaultMessage: '{count,number} {count, plural, one {Host} other {Hosts}}',
+    description: 'cluster upgrade Wizard Step 3 - host count title (ICU formatted message)'
+  },
+
+  clusterUpgradeHostsDescription: {
+    id: 'cluster.upgrade.HostsDescription',
+    defaultMessage: 'Will be upgraded one at a time during Cluster upgrade',
+    description: 'cluster upgrade Wizard Step 3 - host count description'
+  },
+
+  clusterUpgradeNonMigratableLabel: {
+    id: 'cluster.upgrade.NonMigratableLabel',
+    defaultMessage: '{count,number} Pinned VMs',
+    description: 'cluster upgrade Wizard Step 3 - pinned VM (non-migratable VM) count title (ICU formatted message)'
+  },
+
+  clusterUpgradeNonMigratableDescription: {
+    id: 'cluster.upgrade.NonMigratableDescription',
+    defaultMessage: 'Will be stopped before Cluster upgrade',
+    description: 'cluster upgrade Wizard Step 3 - pinned VM (non-migratable VM) count description'
+  },
+
+  clusterUpgradeMigrateLabel: {
+    id: 'cluster.upgrade.MigrateLabel',
+    defaultMessage: '{count,number} VMs',
+    description: 'cluster upgrade Wizard Step 3 - count of VMs to be migrated during upgrade title (ICU formatted message)'
+  },
+
+  clusterUpgradeMigrateDescription: {
+    id: 'cluster.upgrade.MigrateDescription',
+    defaultMessage: 'Will be migrated to a new Host before Cluster upgrade',
+    description: 'cluster upgrade Wizard Step 3 - count of VMs to be migrated during upgrade description'
+  },
+
+  clusterUpgradeOperationStarted: {
+    id: 'cluster.upgrade.OperationStarted',
+    defaultMessage: 'Upgrade has started for {clusterName}.',
+    description: 'cluster upgrade operation started toast notification text'
+  },
+
+  clusterUpgradeOperationFailed: {
+    id: 'cluster.upgrade.OperationFailed',
+    defaultMessage: 'Failed to start the upgrade for {clusterName}.',
+    description: 'cluster upgrade operation failed toast notification text'
   }
 
 }

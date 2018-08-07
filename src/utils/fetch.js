@@ -56,3 +56,34 @@ export async function enginePost (relativePath, body, extraHeaders) {
   })
   return response.json()
 }
+
+/**
+ * Initiate Engine HTTP `POST` to the async ansible playbook execution service.
+ *
+ * @example
+ * ```
+ * ```
+ *
+ * @param {string} playbook The name of the ovirt playbook to execute
+ * @param {string} variables Set of variables passed to the playbook
+ */
+export async function ansiblePlaybookPost (playbook, variables = '') {
+  if (typeof playbook !== 'string' || !/[a-z]((-[a-z])*[a-z])?/.test(playbook)) {
+    throw new Error(`Invalid playbook name: ${playbook}`)
+  }
+
+  const response = await fetch(engineUrl(`services/ansible?playbook=${playbook}`), {
+    method: 'POST',
+    headers: engineRequestHeaders({
+      'Content-Type': 'text/plain'
+    }),
+    credentials: 'same-origin',
+    variables
+  })
+
+  if (response.status !== 200) {
+    return Promise.reject(new Error(`Problem running ansible playbook "${playbook}". Error: ${response.status}`))
+  }
+
+  return response.text()
+}

@@ -11,6 +11,8 @@ const BaseFormGroup = ({
   fieldHelp,
   fieldHelpPlacement,
   validationState,
+  labelCols,
+  fieldCols,
   children
 }) => {
   // react-bootstrap Overlay content's offset calculation gets messed up when
@@ -24,7 +26,7 @@ const BaseFormGroup = ({
       validationState={validationState}
       ref={componentRef}
     >
-      <Grid.Col sm={3} componentClass={Form.ControlLabel}>
+      <Grid.Col sm={labelCols} componentClass={Form.ControlLabel}>
         <strong>{label}</strong>
         {fieldHelp &&
           <FieldLevelHelp
@@ -34,7 +36,7 @@ const BaseFormGroup = ({
           />
         }
       </Grid.Col>
-      <Grid.Col sm={9}>
+      <Grid.Col sm={fieldCols}>
         {children}
         {help && <Form.HelpBlock>{help}</Form.HelpBlock>}
       </Grid.Col>
@@ -49,7 +51,14 @@ BaseFormGroup.propTypes = {
   fieldHelp: FieldLevelHelp.propTypes.content,
   fieldHelpPlacement: PropTypes.string,
   validationState: BsFormGroup.propTypes.validationState,
+  labelCols: PropTypes.number,
+  fieldCols: PropTypes.number,
   children: PropTypes.node.isRequired
+}
+
+BaseFormGroup.defaultProps = {
+  labelCols: 3,
+  fieldCols: 9
 }
 
 export default BaseFormGroup
