@@ -1,0 +1,9 @@
+stage:
+  - build-artifacts
+  - check-merged
+  - check-patch
+distros:
+  - fc28
+  - el7
+release_branches:
+  master: [ "master" ]
