@@ -13,7 +13,7 @@ function messageDescriptorsToFormatFunctions (descriptors) {
     }
   })
 
-  return result
+  return Object.freeze(result)
 }
 
 export const msg = messageDescriptorsToFormatFunctions(messageDescriptors)
