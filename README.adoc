@@ -3,7 +3,7 @@
 == Introduction
 
 This project contains
-http://www.ovirt.org/develop/release-management/features/ux/uiplugins/[UI plugin]
+http://www.ovirt.org/develop/release-management/features/ux/uiplugins43/[UI plugin]
 that provides various extensions to http://www.ovirt.org/[oVirt] administration UI.
 
 This plugin is installed during oVirt Engine installation and upgraded via `engine-setup`.
