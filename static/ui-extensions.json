@@ -2,5 +2,9 @@
   "name": "ui-extensions",
   "url": "plugin/ui-extensions/plugin.html",
   "resourcePath": "ui-extensions-resources",
-  "lazyLoad": false
+  "lazyLoad": false,
+
+  "config": {
+    "useFakeData": "__FAKE_DATA__"
+  }
 }

@@ -14,6 +14,8 @@ const isProd = env === 'production'
 const isDev = env === 'development'
 const isTest = env === 'test'
 
+const useFakeData = process.env.FAKE_DATA === 'true'
+
 // browserslist query used by babel-preset-env
 // https://github.com/browserslist/browserslist#queries
 const targetBrowsers = [
@@ -144,7 +146,13 @@ if (isDev || isProd) {
   config.plugins.push(
     new CleanWebpackPlugin(['dist', 'extra']),
     new CopyWebpackPlugin([
-      { from: 'static/ui-extensions.json', to: '../' }
+      {
+        from: 'static/ui-extensions.json',
+        to: '../',
+        transform (content) {
+          return content.toString().replace('"__FAKE_DATA__"', useFakeData)
+        }
+      }
     ]),
     new InlineManifestWebpackPlugin({
       name: 'webpackManifest'

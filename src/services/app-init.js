@@ -1,5 +1,6 @@
 import { supportedLocales, supportedTimeZones, defaultTimeZone } from '../constants'
 import getPluginApi from '../plugin-api'
+import { updateConfig } from '../plugin-config'
 import { initLocale, initTimeZone } from '../utils/intl'
 
 // polyfill Intl API (ECMA-402) if not natively supported
@@ -42,12 +43,30 @@ const initApplicationLocaleFn = (resolve, reject) => {
   }
 }
 
+// update the app configuration based on the plugin config
+const updateFromPluginConfig = (resolve, reject) => {
+  const { useFakeData } = getPluginApi().configObject() || {}
+
+  try {
+    updateConfig({
+      useFakeData: typeof useFakeData === 'string'
+        ? /^(true|t|yes|y)$/i.test(useFakeData)
+        : Boolean(useFakeData)
+    })
+  } catch (e) {
+    reject('Failed to access or interpret [useFakeData] from PluginAPI config')
+  }
+
+  resolve()
+}
+
 export default {
   run () {
     return new Promise((resolve, reject) => {
       Promise.all([
         new Promise(initApplicationLocaleFn),
-        new Promise(polyfillIntlFn)
+        new Promise(polyfillIntlFn),
+        new Promise(updateFromPluginConfig)
       ])
         .then(() => { resolve() })
         .catch(error => {

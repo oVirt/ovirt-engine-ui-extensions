@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import DataProvider from './helper/DataProvider'
-import { useFakeData } from '../constants'
+import config from '../plugin-config'
 import { engineGet } from '../utils/fetch'
 
 /**
@@ -11,7 +11,7 @@ async function fetchData () {
   // Engine dashboard data endpoint supports following headers:
   // 'Prefer': 'fake_data' // returns randomly generated data
   // 'Prefer': 'error'     // triggers HTTP error response
-  const extraHeaders = useFakeData ? { 'Prefer': 'fake_data' } : {}
+  const extraHeaders = config.useFakeData ? { 'Prefer': 'fake_data' } : {}
   const data = await engineGet('webadmin/dashboard_data', extraHeaders)
   return transformData(data)
 }

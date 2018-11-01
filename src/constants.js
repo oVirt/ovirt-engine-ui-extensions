@@ -2,10 +2,6 @@ export const pluginName = 'ui-extensions'
 
 export const pluginBasePath = `plugin/${pluginName}`
 
-// This flag is a hint to components that normally work with remote data. If set to true,
-// such components should use fake data instead of communicating with remote endpoint(s).
-export const useFakeData = false
-
 export const defaultLocale = 'en-US'
 
 export const supportedLocales = [

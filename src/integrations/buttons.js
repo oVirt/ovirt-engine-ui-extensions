@@ -1,6 +1,7 @@
 import React from 'react'
-import { useFakeData, entityTypes, vmUpStates } from '../constants'
+import { entityTypes, vmUpStates } from '../constants'
 import getPluginApi from '../plugin-api'
+import config from '../plugin-config'
 import { msg } from '../intl-messages'
 import { showModal } from '../utils/react-modals'
 import VmMigrateModal from '../components/modals/vm/VmMigrateModal'
@@ -20,7 +21,7 @@ function showVmMigrateModal (upVms) {
       <VmMigrateModal
         title={msg.migrateVmDialogTitle()}
         vmInfoLabel={msg.migrateVmInfoLabel({
-          value: useFakeData ? 1337 : upVms.length
+          value: config.useFakeData ? 1337 : upVms.length
         })}
         vmListLabel={msg.migrateVmListLabel()}
         vmListShowAllLabel={msg.migrateVmListShowAllLabel()}
@@ -50,7 +51,7 @@ function addVmMigrateButton () {
 
     isEnabled: function () {
       lastSelectedMainVms = Array.from(arguments)
-      return lastSelectedMainVms.filter(isVmUp).length > 0 || useFakeData
+      return lastSelectedMainVms.filter(isVmUp).length > 0 || config.useFakeData
     },
 
     index: 8
@@ -67,7 +68,7 @@ function addHostVmMigrateButton () {
 
     isEnabled: function () {
       lastSelectedHostVms = Array.from(arguments)
-      return lastSelectedHostVms.filter(isVmUp).length > 0 || useFakeData
+      return lastSelectedHostVms.filter(isVmUp).length > 0 || config.useFakeData
     },
 
     index: 5

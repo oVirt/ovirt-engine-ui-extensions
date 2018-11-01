@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import getPluginApi from '../../../plugin-api'
 import { hostAutoSelectItemValue } from './VmMigrateModalBody'
 import DataProvider from '../../helper/DataProvider'
-import { useFakeData, webadminToastTypes } from '../../../constants'
+import { webadminToastTypes } from '../../../constants'
+import config from '../../../plugin-config'
 import { engineGet, enginePost } from '../../../utils/fetch'
 import { randomId } from '../../../utils/random'
 import { msg } from '../../../intl-messages'
@@ -39,7 +40,7 @@ const fetchTargetHostsFakeData = {
  * Fetch Engine VMs based on their IDs.
  */
 async function fetchVms (vmIds) {
-  const json = (useFakeData && fetchVmsFakeData) ||
+  const json = (config.useFakeData && fetchVmsFakeData) ||
     await engineGet(`api/vms/?search=id=${vmIds.join(' OR id=')}`)
   const vms = json.vm
 
@@ -61,7 +62,7 @@ async function fetchTargetHosts (vms) {
   // remove duplicate values
   currentHostIds = [...new Set(currentHostIds)]
 
-  const json = (useFakeData && fetchTargetHostsFakeData) ||
+  const json = (config.useFakeData && fetchTargetHostsFakeData) ||
     await engineGet(`api/hosts?migration_target_of=${vms.map(vm => vm.id).join(',')}`)
   const targetHosts = json.host
 
@@ -85,8 +86,8 @@ async function fetchTargetHosts (vms) {
  * (no further interaction available) once the "Migrate" button is clicked.
  */
 function migrateToHost (targetHostId, vms) {
-  if (!targetHostId || useFakeData) {
-    if (useFakeData) {
+  if (!targetHostId || config.useFakeData) {
+    if (config.useFakeData) {
       getPluginApi().showToast(webadminToastTypes.info, 'Using fake data, nothing to migrate.')
     }
     return

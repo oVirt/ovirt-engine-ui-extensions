@@ -21,6 +21,7 @@ beforeEach(function setupFakeEnv (done) {
   ;[
     'register',
     'ready',
+    'configObject',
     'addPrimaryMenuPlace',
     'setPlaceUnloadHandler',
     'revealPlace',
