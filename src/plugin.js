@@ -8,7 +8,7 @@ import 'patternfly-react/dist/css/patternfly-react.css'
 // register event handlers
 getPluginApi().register({
 
-  UiInit () {
+  UiInit: () => {
     addPlaces()
     addButtons()
   }

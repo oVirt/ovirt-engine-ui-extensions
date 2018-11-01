@@ -3,7 +3,7 @@ import { getWebAdminWindow } from './utils/webadmin-dom'
 
 let api
 
-const getPluginApi = () => {
+function getPluginApi () {
   api = api || getWebAdminWindow().pluginApi(pluginName)
   return api
 }
