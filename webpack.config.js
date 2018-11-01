@@ -217,6 +217,16 @@ if (isProd) {
   )
 }
 
+// add resonable source maps for dev builds
+if (isDev) {
+  config.devtool = 'eval-source-map'
+  config.plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true
+    })
+  )
+}
+
 // test specific build configuration (via karma)
 if (isTest) {
   // inline source map into generated JavaScript
