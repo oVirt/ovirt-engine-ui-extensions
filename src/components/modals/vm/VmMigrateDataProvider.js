@@ -93,8 +93,8 @@ function migrateToHost (targetHostId, vms) {
   }
 
   const targetHost = targetHostId === hostAutoSelectItemValue
-    ? {} // let the server select host automatically
-    : { host: { id: targetHostId } }
+    ? { force: true } // let the server select host automatically
+    : { force: true, host: { id: targetHostId } }
   const targetHostBody = JSON.stringify(targetHost)
 
   vms.forEach(vm => {
