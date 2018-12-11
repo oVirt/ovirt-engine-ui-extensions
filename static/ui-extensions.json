@@ -5,6 +5,7 @@
   "lazyLoad": false,
 
   "config": {
-    "useFakeData": "__FAKE_DATA__"
+    "useFakeData": "__FAKE_DATA__",
+    "clusterUpgradePlaybook": "ovirt-cluster-upgrade"
   }
 }
