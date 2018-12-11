@@ -21,12 +21,27 @@ const fakeHost = (clusterId, hostName, status, updateAvailable, active) => ({
   update_available: updateAvailable
 })
 
+const randomHosts = (clusterId, count) => {
+  const hosts = []
+  for (let i = 0; i < count; i++) {
+    hosts[i] = fakeHost(
+      clusterId,
+      `hostR${i}`,
+      Math.round(Math.random() * 10 % 1) ? 'up' : 'down',
+      Math.round(Math.random() * 10 % 1) ? 'true' : 'false',
+      Math.round(Math.random() * 100 % 25)
+    )
+  }
+  return hosts
+}
+
 const fakeHosts = (clusterId) => Promise.resolve([
   fakeHost(clusterId, 'host1', 'up', 'true', '4'),
   fakeHost(clusterId, 'host2', 'up', 'true', '12'),
   fakeHost(clusterId, 'host3', 'down', 'true', '0'),
   fakeHost(clusterId, 'host4', 'up', 'true', '7'),
-  fakeHost(clusterId, 'host5', 'down', 'false', '0')
+  fakeHost(clusterId, 'host5', 'down', 'false', '0'),
+  ...randomHosts(clusterId, 2 + (Math.random() * 100 % 20))
 ])
 //
 //
@@ -95,7 +110,7 @@ async function upgradeCluster ({ clusterName, ...rest }) {
     reboot_after_upgrade: ansiblePayload.rebootAfterUpgrade,
     use_maintenace_policy: ansiblePayload.useMaintenanceClusterPolicy
   })
-  const playbookName = 'ovirt-cluster-upgrade'
+  const playbookName = config.clusterUpgradePlaybook
 
   if (config.useFakeData) {
     getPluginApi().showToast(

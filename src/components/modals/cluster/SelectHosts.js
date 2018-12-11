@@ -151,7 +151,6 @@ class SelectHosts extends React.Component {
       </div>
     }
 
-    // TODO: Check how the table looks where there are lots of hosts (scrolling)
     return <div className='clusterUpgradeWizard-SelectHosts'>
       <Alert type='info' style={{ margin: '0' }}>
         {this.props.selectHostsMessage}
