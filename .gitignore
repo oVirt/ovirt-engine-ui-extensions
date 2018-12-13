@@ -17,3 +17,10 @@ yarn-error.log
 
 # Zanata temporary files
 .zanata-cache/
+
+# mock_runner
+.bash_history
+.node-gyp/
+exported-artifacts/
+rpmbuild/
+mocker-*.cfg
