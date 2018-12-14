@@ -78,7 +78,7 @@ export async function ansiblePlaybookPost (playbook, variables = '') {
       'Content-Type': 'text/plain'
     }),
     credentials: 'same-origin',
-    variables
+    body: variables
   })
 
   if (response.status !== 200) {

@@ -11,12 +11,18 @@ BuildArch: noarch
 @BUILD_REQUIRES@
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
+Requires: ovirt-ansible-cluster-upgrade >= 1.1.10
 
 Obsoletes: ovirt-engine-dashboard <= 1.2
 Provides: ovirt-engine-dashboard
 
 %description
 UI plugin that provides various extensions to oVirt administration UI.
+
+Extensions include:
+  - dashboard
+  - VM migrate dialog
+  - Cluster upgrade wizard
 
 %prep
 
@@ -34,6 +40,7 @@ yarn build
 # Install the files:
 mkdir -p %{buildroot}%{_datadir}/%{name}
 cp -r dist/* %{buildroot}%{_datadir}/%{name}
+cp -r ansible-playbooks %{buildroot}%{_datadir}/%{name}
 
 # Ensure that Engine ui-plugins directory exists:
 mkdir -p %{buildroot}%{_datadir}/ovirt-engine/ui-plugins
@@ -42,13 +49,23 @@ mkdir -p %{buildroot}%{_datadir}/ovirt-engine/ui-plugins
 ln -s "%{_datadir}/%{name}/ui-extensions.json" "%{buildroot}%{_datadir}/ovirt-engine/ui-plugins"
 ln -s "%{_datadir}/%{name}/ui-extensions-resources" "%{buildroot}%{_datadir}/ovirt-engine/ui-plugins"
 
+# Ensure the Engine playbooks directory exists:
+mkdir -p %{buildroot}%{_datadir}/ovirt-engine/playbooks
+
+# Link plugin playbooks to Engine playbooks directory:
+ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{buildroot}%{_datadir}/ovirt-engine/playbooks"
+
 %files
 %{_datadir}/%{name}
 %{_datadir}/ovirt-engine/ui-plugins/ui-extensions.json
 %{_datadir}/ovirt-engine/ui-plugins/ui-extensions-resources
+%{_datadir}/ovirt-engine/playbooks/ovirt-cluster-upgrade.yml
 %doc README.adoc
 %license LICENSE
 
 %changelog
+* Fri Dec 14 2018 Scott J Dickerson <sdickers@redhat.com> - 1.0.1-1
+- added handling for the cluster upgrade wizard ansible playbook
+
 * Thu Jun 28 2018 Vojtech Szocs <vszocs@redhat.com> - 1.0.0-1
 - created project based on ovirt-engine-dashboard master
