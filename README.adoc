@@ -186,4 +186,4 @@ To build RPM from an open patch, just post `ci please build` comment on Gerrit. 
 https://www.ovirt.org/blog/2016/12/ci-please-build/[this blog post] for details on this CI feature.
 
 Alternatively, RPM can be built locally using
-http://ovirt-infra-docs.readthedocs.io/en/latest/CI/Build_and_test_standards.html#testing-the-scripts-locally[mock_runner].
+https://ovirt-infra-docs.readthedocs.io/en/latest/CI/Using_mock_runner/index.html[mock_runner].
