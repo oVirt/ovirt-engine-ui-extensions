@@ -1,6 +1,6 @@
 {
   "name": "ovirt-engine-ui-extensions",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "oVirt UI plugin that gives overview of the virtualized environment and its specific objects.",
   "license": "Apache-2.0",
   "repository": {

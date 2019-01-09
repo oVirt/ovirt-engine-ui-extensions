@@ -64,6 +64,9 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Wed Jan 9 2019 Greg Sheremeta <gshereme@redhat.com> - 1.0.2-1
+- cluster upgrade wizard enhancements
+
 * Fri Dec 14 2018 Scott J Dickerson <sdickers@redhat.com> - 1.0.1-1
 - added handling for the cluster upgrade wizard ansible playbook
 
