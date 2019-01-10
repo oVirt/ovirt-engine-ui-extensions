@@ -3,11 +3,12 @@
 == Introduction
 
 This project contains
-http://www.ovirt.org/develop/release-management/features/ux/uiplugins/[UI plugin]
+http://www.ovirt.org/develop/release-management/features/ux/uiplugins43.html[UI plugins]
 that provides various extensions to http://www.ovirt.org/[oVirt] administration UI.
 
-This plugin is installed during oVirt Engine installation and upgraded via `engine-setup`.
-This means no manual steps are required in order to install this plugin in production env.
+This extension is installed during oVirt Engine installation and upgraded via `engine-setup`.
+This means no manual steps are required in order to install this extension in an production
+environment.
 
 == Setting up development environment
 
@@ -21,7 +22,9 @@ Install https://yarnpkg.com/[Yarn] package manager.
 Build and configure oVirt Engine according to its
 https://gerrit.ovirt.org/gitweb?p=ovirt-engine.git;a=blob_plain;f=README.adoc;hb=master[developer instructions].
 
-=== Setting up plugin
+Checkout the source from https://gerrit.ovirt.org/#/admin/projects/ovirt-engine-ui-extensions[gerrit].
+
+=== Setting up the extension
 
 * `yarn install` to install dependencies
 * `yarn lint` to lint the source code
@@ -33,17 +36,29 @@ https://gerrit.ovirt.org/gitweb?p=ovirt-engine.git;a=blob_plain;f=README.adoc;hb
 
 === Setting up Engine
 
-Symlink plugin resources to `ui-plugins` directory as following:
+Build the extension with `yarn dev` or `yarn build` to generate `${PLUGIN_REPO}/dist`.
+
+Symlink the extension's plugin resources to `ui-plugins` directory of your developer
+engine as follows:
 
  % cd ${PREFIX}/share/ovirt-engine/ui-plugins/
- % ln -s ${PLUGIN_HOME}/dist/ui-extensions.json ui-extensions.json
- % ln -s ${PLUGIN_HOME}/dist/ui-extensions-resources ui-extensions-resources
+ % ln -s ${PLUGIN_REPO}/dist/ui-extensions.json ui-extensions.json
+ % ln -s ${PLUGIN_REPO}/dist/ui-extensions-resources ui-extensions-resources
+
+Symlink the extensions's ansible resources to `playbooks` directory of your developer
+engine as follows:
+
+ % cd ${PREFIX}/share/ovirt-engine/playbooks/
+ % ln -s ${PLUGIN_REPO}/ansible-playbooks/*
+
+NOTE: If you add additional playbook yml files after the initial symlink, the
+      process will need to be repeated.
 
 === Accessing plugin
 
 Open WebAdmin in your browser, you should land on *Dashboard* place automatically:
 
-  https://engine.example:8443/ovirt-engine/webadmin/WebAdmin.html
+  https://engine.example:8443/ovirt-engine/webadmin/
 
 == Internationalization and Localization
 
