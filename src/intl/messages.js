@@ -400,6 +400,28 @@ const messageDescriptors = {
     description: 'label for the cluster upgrade button on webadmin'
   },
 
+  clusterUpgradeClusterInMaintenaceTitle: {
+    id: 'cluster.upgrade.ClusterInMaintenaceTitle',
+    defaultMessage: 'The cluster is currently in maintenance mode!',
+    description: 'cluster upgrade, warn user Cluster is in maintenance mode Confirm Dialog title'
+  },
+
+  clusterUpgradeClusterInMaintenaceMessage: {
+    id: 'cluster.upgrade.ClusterInMaintenaceMessage',
+    defaultMessage:
+      'The scheduling policy for cluster {clusterName} is currently set to' +
+      ' "cluster_maintenance".  This typically indicates maintenance is currently' +
+      ' in progress.  It is not recommeneded to run the cluster upgrade operation' +
+      ' in this situation.',
+    description: 'cluster upgrade, warn user Cluster is in maintenance mode Confirm Dialog descriptive message'
+  },
+
+  clusterUpgradeClusterInMaintenaceContinue: {
+    id: 'cluster.upgrade.ClusterInMaintenaceContinue',
+    defaultMessage: 'Continue',
+    description: 'cluster upgrade, warn user Cluster is in maintenance mode Confirm Dialog button'
+  },
+
   clusterUpgradeTitle: {
     id: 'cluster.upgrade.Title',
     defaultMessage: 'Upgrade Cluster {clusterName}',

@@ -5,13 +5,16 @@ import { selectProps, propNamesToType } from '../../../utils/react'
 import {
   selectKeys,
   propOrState,
-  noop
+  noop,
+  Icon
 } from 'patternfly-react'
 
+import MessageDialog from '../../patternfly/MessageDialog'
 import WizardPattern from '../../patternfly-react-overrides/WizardPattern'
 import SelectHosts from './SelectHosts'
 import UpgradeOptions from './UpgradeOptions'
 import UpgradeReview from './UpgradeReview'
+import SpinnerDialog from './SpinnerDialog'
 
 import './shim-styles.css' // TODO: Replace with proper sass namespace imports at the plugin level
 import './styles.css' // no module for CSS so import onces for all of the Wizard's components
@@ -42,6 +45,7 @@ class ClusterUpgradeWizard extends React.Component {
     super(props)
     this.state = {
       show: props.show,
+      confirmedClusterPolicy: false,
       activeStepIndex: 0,
 
       mapIdToHost: {}, // hostListToMapById(props.clusterHosts),
@@ -193,6 +197,7 @@ class ClusterUpgradeWizard extends React.Component {
 
   render () {
     const {
+      cluster,
       container,
       isLoading,
       onExited,
@@ -200,6 +205,9 @@ class ClusterUpgradeWizard extends React.Component {
       title,
       loadingTitle,
       loadingMessage,
+      clusterInMaintenaceTitle,
+      clusterInMaintenaceMessage,
+      clusterInMaintenaceContinue,
       cancelButtonText,
       backButtonText,
       nextButtonText,
@@ -207,10 +215,62 @@ class ClusterUpgradeWizard extends React.Component {
     } = this.props
     const {
       activeStepIndex,
-      show
+      show,
+      confirmedClusterPolicy
     } = this.state
 
     const currentStep = this.wizardSteps[activeStepIndex]
+
+    /*
+      If we're loading data still, just show a normal spinner instead of relying
+      on the Wizard's spinner. We need to check the cluster's scheduling_policy
+      before deciding if the Wizard should be displayed.
+    */
+    if (isLoading) {
+      return (
+        <SpinnerDialog
+          show
+          container={container}
+          title={loadingTitle}
+          message={loadingMessage}
+          onHide={noop} // Future enhancement: Closing the spinner could cancel the fetch from data provider
+        />
+      )
+    }
+
+    /*
+      Look at the Cluster, and check its policy status.  If the policy is set to
+      maintenance the user needs to be warned before showing the cluster upgrade
+      wizard.  If the user assumes all risk they may continue.
+    */
+    const isClusterInMaintenace =
+      cluster &&
+      cluster.scheduling_policy &&
+      cluster.scheduling_policy.name &&
+      cluster.scheduling_policy.name === 'cluster_maintenance'
+
+    if (isClusterInMaintenace && !confirmedClusterPolicy) {
+      return (
+        <MessageDialog
+          show={show}
+          container={container}
+          onHide={this.close}
+          primaryAction={() => { this.setState({ confirmedClusterPolicy: true }) }}
+          secondaryAction={this.close}
+
+          icon={<Icon type='pf' name='warning-triangle-o' />}
+          title={title}
+          primaryContent={<p className='lead'>{clusterInMaintenaceTitle}</p>}
+          secondaryContent={<p>{clusterInMaintenaceMessage}</p>}
+
+          primaryActionButtonContent={clusterInMaintenaceContinue}
+          secondaryActionButtonContent={cancelButtonText}
+
+          accessibleName='warningDialog'
+          accessibleDescription='warningDialogContent'
+        />
+      )
+    }
 
     return (
       <WizardPattern
@@ -246,6 +306,14 @@ ClusterUpgradeWizard.i18nProps = {
   title: 'Upgrade Cluster',
   loadingTitle: 'Loading Cluster Data...',
   loadingMessage: 'This may take a few moments.',
+
+  clusterInMaintenaceTitle: 'The cluster is currently in maintenance mode!',
+  clusterInMaintenaceMessage: `
+    The scheduling policy for the cluster is currently set to "cluster_maintenance".
+    This typically indicates maintenance is currently in progress.  It is not
+    recommeneded to run the cluster upgrade operation in this situation.
+  `,
+  clusterInMaintenaceContinue: 'Continue',
 
   cancelButtonText: 'Cancel',
   backButtonText: 'Back',

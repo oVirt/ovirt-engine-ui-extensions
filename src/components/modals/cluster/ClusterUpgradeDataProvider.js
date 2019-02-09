@@ -50,7 +50,7 @@ const fakeHosts = (clusterId) => Promise.resolve([
  * Fetch the selected Engine clusters.
  */
 async function fetchCluster (id) {
-  const json = await engineGet(`api/clusters/${id}`)
+  const json = await engineGet(`api/clusters/${id}?follow=scheduling_policy`)
 
   if (json.error || !json.id || json.id !== id) {
     throw new Error(`ClusterUpgradeDataProvider: Failed to fetch cluster ${id}`)
@@ -77,6 +77,14 @@ async function fetchClusterHosts (clusterId, clusterName) {
   return json.host
 }
 
+const sleep = (ms) => {
+  console.log(`sleeping for ${ms}ms`)
+  return new Promise(resolve => setTimeout(() => {
+    console.log(`sleeping complete!`)
+    resolve()
+  }, ms))
+}
+
 /**
  * Fetch all data needed by `ClusterUpgradeModal`.
  */
@@ -86,7 +94,8 @@ async function fetchData ({ id: clusterId, name: clusterName }) {
     hosts
   ] = await Promise.all([
     fetchCluster(clusterId),
-    config.useFakeData ? fakeHosts(clusterId) : fetchClusterHosts(clusterId, clusterName)
+    config.useFakeData ? fakeHosts(clusterId) : fetchClusterHosts(clusterId, clusterName),
+    config.useFakeData ? sleep(5000) : true
   ])
 
   return { cluster, hosts }
