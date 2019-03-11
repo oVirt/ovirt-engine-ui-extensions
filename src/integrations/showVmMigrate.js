@@ -1,0 +1,39 @@
+import React from 'react'
+import { msg } from '_/intl-messages'
+import config from '_/plugin-config'
+import { showModal } from '_/utils/react-modals'
+
+import VmMigrateDataProvider from '_/components/modals/vm/VmMigrateDataProvider'
+import VmMigrateModal from '_/components/modals/vm/VmMigrateModal'
+import { hostAutoSelectItemValue } from '_/components/modals/vm/VmMigrateModalBody'
+
+function showVmMigrateModal (upVms) {
+  showModal(({ container, destroyModal }) => (
+    <VmMigrateDataProvider vmIds={upVms.map(vm => vm.id)}>
+      <VmMigrateModal
+        title={msg.migrateVmDialogTitle()}
+        vmInfoLabel={msg.migrateVmInfoLabel({
+          value: config.useFakeData ? 1337 : upVms.length
+        })}
+        vmListLabel={msg.migrateVmListLabel()}
+        vmListShowAllLabel={msg.migrateVmListShowAllLabel()}
+        vmListShowLessLabel={msg.migrateVmListShowLessLabel()}
+        hostSelectLabel={msg.migrateVmSelectHostLabel()}
+        hostSelectFieldHelp={msg.migrateVmSelectHostFieldHelp()}
+        hostAutoSelectItem={{
+          value: hostAutoSelectItemValue,
+          text: msg.migrateVmAutoSelectHost()
+        }}
+        migrateButtonLabel={msg.migrateVmButton()}
+        cancelButtonLabel={msg.cancelButton()}
+        show
+        container={container}
+        onExited={destroyModal}
+      />
+    </VmMigrateDataProvider>
+  ))
+}
+
+export {
+  showVmMigrateModal
+}

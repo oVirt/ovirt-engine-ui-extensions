@@ -110,7 +110,8 @@ const config = module.exports = {
   resolve: {
     alias: {
       // prevent multiple reacts loaded from various dependencies
-      'react': path.join(__dirname, 'node_modules', 'react')
+      'react': path.join(__dirname, 'node_modules', 'react'),
+      '_': path.join(__dirname, 'src')
     },
     extensions: ['.js', '.jsx', '.json', '*']
   },
