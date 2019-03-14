@@ -73,7 +73,7 @@ function transformData (data) {
   })
 
   // transform data.heatMapData
-  ;['cpu', 'memory', 'storage'].forEach(category => {
+  ;['cpu', 'memory', 'storage', 'vdoSavings'].forEach(category => {
     const heatMapData = data.heatMapData[category]
 
     // heat map component expects values in range <0, 1>

@@ -35,7 +35,8 @@ export const searchPrefixes = {
   storage: 'Storage',
   vm: 'Vms',
   event: 'Events',
-  volume: 'Volumes'
+  volume: 'Volumes',
+  vdoSavings: 'Storage Savings'
 }
 
 export const searchFields = {
@@ -53,7 +54,8 @@ export const webadminPlaces = {
   storage: 'storage',
   vm: 'vms',
   event: 'events',
-  volume: 'volumes'
+  volume: 'volumes',
+  vdoSavings: 'vdoSavings'
 }
 
 export const webadminToastTypes = {
@@ -66,7 +68,16 @@ export const heatMapThresholds = {
   colors: ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000']
 }
 
+export const heatMapVDOThresholds = {
+  domain: [0.30, 0.60, 0.80],
+  colors: ['#005C66', '#007BBA', '#00B9E4', '#6EC664']
+}
+
 export const heatMapLegendLabels = ['< 65%', '65-75%', '75-90%', '> 90%']
+
+export const heatMapVDOLegendLabels = ['> 80%', '80-60%', '60-30%', '0-30%']
+
+export const heatMapVDOLegendColors = ['#6EC664', '#00B9E4', '#007BBA', '#005C66']
 
 export const storageUnitTable = [
   { unit: 'TiB' },

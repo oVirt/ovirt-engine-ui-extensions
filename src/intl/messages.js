@@ -68,6 +68,12 @@ const messageDescriptors = {
     description: 'title `Storage` used in various components'
   },
 
+  vdoSavingsTitle: {
+    id: 'common.vdoSavingsTitle',
+    defaultMessage: 'Storage Savings',
+    description: 'title `VDO Savings` used in various components'
+  },
+
   used: {
     id: 'common.used',
     defaultMessage: 'Used',
@@ -167,7 +173,11 @@ const messageDescriptors = {
     defaultMessage: 'Storage Utilization',
     description: 'heading of `Storage Utilization` section'
   },
-
+  dashboardVdoSavingsHeading: {
+    id: 'dashboard.vdoSavingsHeading',
+    defaultMessage: 'Storage Savings',
+    description: 'heading of `VDO Savings` section'
+  },
   dashboardStatusCardDataCenterTitle: {
     id: 'dashboard.statusCardDataCenterTitle',
     defaultMessage: 'Data Centers',

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { noop } from 'patternfly-react'
-import { searchPrefixes, searchFields, heatMapThresholds, heatMapLegendLabels, storageUnitTable, webadminPlaces } from '../constants'
+import { searchPrefixes, searchFields, heatMapThresholds, heatMapLegendLabels, heatMapVDOThresholds, heatMapVDOLegendLabels, heatMapVDOLegendColors, storageUnitTable, webadminPlaces } from '../constants'
 import { msg } from '../intl-messages'
 import { formatNumber1D } from '../utils/intl'
 import { convertValue } from '../utils/unit-conversion'
@@ -35,6 +35,10 @@ const GlobalDashboard = ({ data, lastUpdated, onRefreshData }) => {
   const statusCardClass = classNames('col-xs-4', 'col-sm-4', {
     'col-md-1': showGlusterCard,
     'col-md-2': !showGlusterCard
+  })
+  const clusterUtilizationClass = classNames({
+    'col-md-4': showGlusterCard,
+    'col-md-8': !showGlusterCard
   })
 
   return (
@@ -236,7 +240,7 @@ const GlobalDashboard = ({ data, lastUpdated, onRefreshData }) => {
 
       {/* heat maps */}
       <div className='row row-tile-pf row-tile-pf-last'>
-        <div className='col-md-8'>
+        <div className={clusterUtilizationClass}>
           <div className='heatmap-card'>
             <div className='card-pf'>
               <div className='card-pf-heading'>
@@ -318,6 +322,41 @@ const GlobalDashboard = ({ data, lastUpdated, onRefreshData }) => {
             </div>
           </div>
         </div>
+        {showGlusterCard &&
+          <div className='col-md-4'>
+            <div className='heatmap-card'>
+              <div className='card-pf'>
+                <div className='card-pf-heading'>
+                  <h2 className='card-pf-title'>{msg.dashboardVdoSavingsHeading()}</h2>
+                </div>
+                <div className='card-pf-body'>
+                  <div className='row'>
+                    <div className='col-xs-12 col-sm-12 col-md-12 card-heatmap-body'>
+
+                      <div className='col-xs-12 col-sm-12 col-md-12 container-heatmap-tile'>
+                        <h3 className='heatmap-chart-title'>{msg.vdoSavingsTitle()}</h3>
+                        <HeatMap
+                          data={heatMapData.vdoSavings}
+                          thresholds={heatMapVDOThresholds}
+                          onBlockClick={dataItem => {
+                            applySearch(webadminPlaces.vdoSavings, searchPrefixes.vdoSavings, [{
+                              name: searchFields.name,
+                              values: [dataItem.name]
+                            }])
+                          }}
+                        />
+                      </div>
+
+                      <div className='col-xs-12 col-sm-12 col-md-12'>
+                        <HeatMapLegend labels={heatMapVDOLegendLabels} colors={heatMapVDOLegendColors} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
       </div>
 
     </div>
@@ -342,7 +381,8 @@ const dataShape = {
   heatMapData: PropTypes.shape({
     cpu: HeatMap.propTypes.data,
     memory: HeatMap.propTypes.data,
-    storage: HeatMap.propTypes.data
+    storage: HeatMap.propTypes.data,
+    vdoSavings: HeatMap.propTypes.data
   })
 }
 
