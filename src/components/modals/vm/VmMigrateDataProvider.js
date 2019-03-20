@@ -64,10 +64,10 @@ async function fetchTargetHosts (vms) {
 
   const json = (config.useFakeData && fetchTargetHostsFakeData) ||
     await engineGet(`api/hosts?migration_target_of=${vms.map(vm => vm.id).join(',')}`)
-  const targetHosts = json.host
+  let targetHosts = json.host
 
   if (!Array.isArray(targetHosts)) {
-    throw new Error('VmMigrateDataProvider: Failed to fetch target hosts')
+    targetHosts = []
   }
 
   // If all VMs are currently running on the same host (currentHostIds.length === 1),
