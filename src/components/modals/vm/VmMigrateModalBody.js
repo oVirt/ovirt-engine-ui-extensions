@@ -1,9 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { noop, Form, Grid } from 'patternfly-react'
+import { noop, Form, Grid, Checkbox } from 'patternfly-react'
 import { randomId } from '../../../utils/random'
+import BaseFormGroup from '../../forms/BaseFormGroup'
 import SelectFormGroup, { selectItemShape } from '../../forms/SelectFormGroup'
 import VmListFormGroup, { VmList } from '../../forms/VmListFormGroup'
+import { msg } from '../../../intl-messages'
+
+const NO_HOST_AVAILABLE_HOST_ITEMS = [{
+  text: msg.migrateVmNoAvailableHost(),
+  value: '__NO_HOST__'
+}]
 
 const VmMigrateModalBody = ({
   vmInfoLabel,
@@ -15,11 +22,16 @@ const VmMigrateModalBody = ({
   hostSelectFieldHelp,
   hostSelectItems,
   hostAutoSelectItem,
-  onHostSelectionChange
+  affinityText,
+  migrateVmsInAffinity,
+  onHostSelectionChange,
+  onMigrateVmsInAffinityChange
 }) => {
   const items = hostAutoSelectItem
     ? [hostAutoSelectItem].concat(hostSelectItems)
     : hostSelectItems
+
+  const migrationDisabled = hostSelectItems.length === 0
 
   return (
     <Grid fluid>
@@ -38,11 +50,28 @@ const VmMigrateModalBody = ({
               label={hostSelectLabel}
               fieldHelp={hostSelectFieldHelp}
               fieldHelpPlacement={'right'}
-              items={items}
+              items={migrationDisabled ? NO_HOST_AVAILABLE_HOST_ITEMS : items}
               defaultValue={hostAutoSelectItem && hostAutoSelectItem.value}
+              disabled={migrationDisabled}
               usePlaceholder={false}
               onChange={event => { onHostSelectionChange(event.target.value) }}
             />
+
+            <BaseFormGroup
+              id={randomId()}
+              label={affinityText.label}
+              fieldHelpPlacement='right'
+              fieldHelp={affinityText.labelHelp}
+            >
+              <Checkbox
+                id={randomId()}
+                checked={migrateVmsInAffinity}
+                onChange={event => { onMigrateVmsInAffinityChange(event.target.checked) }}
+              >
+                {affinityText.checkbox}
+              </Checkbox>
+            </BaseFormGroup>
+
             <VmListFormGroup
               id={randomId()}
               label={vmListLabel}
@@ -70,7 +99,14 @@ VmMigrateModalBody.propTypes = {
   hostSelectFieldHelp: PropTypes.string,
   hostSelectItems: PropTypes.arrayOf(PropTypes.shape(selectItemShape)),
   hostAutoSelectItem: PropTypes.shape(selectItemShape),
-  onHostSelectionChange: PropTypes.func
+  affinityText: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    labelHelp: PropTypes.string.isRequired,
+    checkbox: PropTypes.string.isRequired
+  }),
+  migrateVmsInAffinity: PropTypes.bool,
+  onHostSelectionChange: PropTypes.func,
+  onMigrateVmsInAffinityChange: PropTypes.func
 }
 
 VmMigrateModalBody.defaultProps = {
@@ -86,7 +122,14 @@ VmMigrateModalBody.defaultProps = {
     value: hostAutoSelectItemValue,
     text: 'Automatically Choose Host'
   },
-  onHostSelectionChange: noop
+  affinityText: {
+    label: 'Migrate VMs in affinity',
+    labelHelp: 'This will migrate also VMs that are not shown in the list below. If the selected VMs are in an affinity together, there may be errors in the log, because it will try to initiate a migration multiple times.',
+    checkbox: 'Migrate all VMs in positive enforcing affinity with selected VMs.'
+  },
+  migrateVmsInAffinity: false,
+  onHostSelectionChange: noop,
+  onMigrateVmsInAffinityChange: noop
 }
 
 export default VmMigrateModalBody

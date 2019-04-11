@@ -54,7 +54,7 @@ async function fetchVms (vmIds) {
 /**
  * Resolve migration target hosts for the given VMs.
  */
-async function fetchTargetHosts (vms) {
+async function fetchTargetHosts (vms, checkVmAffinity) {
   let currentHostIds = vms
     .filter(vm => vm.host && vm.host.id)
     .map(vm => vm.host.id)
@@ -63,7 +63,7 @@ async function fetchTargetHosts (vms) {
   currentHostIds = [...new Set(currentHostIds)]
 
   const json = (config.useFakeData && fetchTargetHostsFakeData) ||
-    await engineGet(`api/hosts?migration_target_of=${vms.map(vm => vm.id).join(',')}`)
+    await engineGet(`api/hosts?check_vms_in_affinity_closure=${!!checkVmAffinity}&migration_target_of=${vms.map(vm => vm.id).join(',')}`)
   let targetHosts = json.host
 
   if (!Array.isArray(targetHosts)) {
@@ -85,7 +85,7 @@ async function fetchTargetHosts (vms) {
  * This function doesn't need to be async, since `VmMigrateModal` is closed
  * (no further interaction available) once the "Migrate" button is clicked.
  */
-function migrateToHost (targetHostId, vms) {
+function migrateToHost (targetHostId, migrateVmsInAffinity, vms) {
   if (!targetHostId || config.useFakeData) {
     if (config.useFakeData) {
       getPluginApi().showToast(webadminToastTypes.info, 'Using fake data, nothing to migrate.')
@@ -93,63 +93,69 @@ function migrateToHost (targetHostId, vms) {
     return
   }
 
-  const targetHost = targetHostId === hostAutoSelectItemValue
-    ? { force: true } // let the server select host automatically
-    : { force: true, host: { id: targetHostId } }
-  const targetHostBody = JSON.stringify(targetHost)
+  const requestBody = { force: true }
+  if (migrateVmsInAffinity) {
+    requestBody['migrate_vms_in_affinity_closure'] = true
+  }
+  if (targetHostId !== hostAutoSelectItemValue) {
+    requestBody['host'] = {id: targetHostId}
+  }
 
   vms.forEach(vm => {
     if (!vm.host || vm.host.id !== targetHostId) {
       // request VM migration but don't wait for response
-      enginePost(`api/vms/${vm.id}/migrate`, targetHostBody)
+      enginePost(`api/vms/${vm.id}/migrate`, JSON.stringify(requestBody))
     }
   })
 }
 
-const VmMigrateDataProvider = ({ children, vmIds }) => {
-  async function fetchData () {
-    const vms = await fetchVms(vmIds)
-    const targetHosts = await fetchTargetHosts(vms)
+class VmMigrateDataProvider extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { checkVmAffinity: false }
+    this.fetchData = this.fetchData.bind(this)
+  }
+
+  async fetchData () {
+    const vms = await fetchVms(this.props.vmIds)
+    const targetHosts = await fetchTargetHosts(vms, this.state.checkVmAffinity)
     return { vms, targetHosts }
   }
 
-  return (
-    <DataProvider fetchData={fetchData}>
+  render () {
+    return (
+      <DataProvider fetchData={this.fetchData}>
 
-      {({ data, fetchError, fetchInProgress }) => {
-        // expecting single child component
-        const child = React.Children.only(children)
+        {({ data, fetchError, fetchInProgress, fetchAndUpdateData }) => {
+          // expecting single child component
+          const child = React.Children.only(this.props.children)
 
-        // handle data loading and error scenarios
-        if (fetchError) {
-          getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmDataError())
-          return React.cloneElement(child, { show: false })
-        } else if (fetchInProgress || !data) {
-          return React.cloneElement(child, { isLoading: true })
-        }
+          // handle data loading and error scenarios
+          if (fetchError) {
+            getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmDataError())
+            return React.cloneElement(child, { show: false })
+          } else if (fetchInProgress || !data) {
+            return React.cloneElement(child, { isLoading: true })
+          }
 
-        // unwrap data
-        const { vms, targetHosts } = data
+          // unwrap data
+          const { vms, targetHosts } = data
 
-        // check if there are any target hosts available
-        if (targetHosts.length === 0) {
-          getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmNoAvailableHost())
-          return React.cloneElement(child, { show: false })
-        }
+          // pass relevant data and operations to child component
+          return React.cloneElement(child, {
+            vmNames: vms.map(vm => vm.name),
+            hostSelectItems: targetHosts.map(host => ({
+              value: host.id,
+              text: host.name
+            })),
+            refreshHosts: (checkVmAffinity) => this.setState({ checkVmAffinity: checkVmAffinity }, fetchAndUpdateData),
+            migrateToHost: (hostId, migrateVmsInAffinity) => migrateToHost(hostId, migrateVmsInAffinity, vms)
+          })
+        }}
 
-        // pass relevant data and operations to child component
-        return React.cloneElement(child, {
-          vmNames: vms.map(vm => vm.name),
-          hostSelectItems: targetHosts.map(host => ({
-            value: host.id,
-            text: host.name
-          })),
-          migrateToHost: (hostId) => migrateToHost(hostId, vms)
-        })
-      }}
-
-    </DataProvider>
-  )
+      </DataProvider>
+    )
+  }
 }
 
 VmMigrateDataProvider.propTypes = {

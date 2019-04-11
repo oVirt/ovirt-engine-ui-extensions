@@ -7,11 +7,20 @@ import StatefulModalPattern from '../StatefulModalPattern'
 class VmMigrateModal extends StatefulModalPattern {
   constructor (props) {
     super(props)
-    bindMethods(this, ['onHostSelectionChange'])
+    bindMethods(this, ['onHostSelectionChange', 'onMigrateVmsInAffinityChange'])
+    this.state = {
+      ...this.state,
+      migrateVmsInAffinity: false
+    }
   }
 
   onHostSelectionChange (newHostId) {
     this._hostId = newHostId
+  }
+
+  onMigrateVmsInAffinityChange (migrateVmsInAffinity) {
+    this.setState({ migrateVmsInAffinity: migrateVmsInAffinity })
+    this.props.refreshHosts(migrateVmsInAffinity)
   }
 
   getModalPatternProps () {
@@ -31,6 +40,7 @@ class VmMigrateModal extends StatefulModalPattern {
       hostSelectFieldHelp,
       hostSelectItems,
       hostAutoSelectItem,
+      affinityText,
       migrateToHost,
       isLoading,
       migrateButtonLabel,
@@ -42,7 +52,7 @@ class VmMigrateModal extends StatefulModalPattern {
         (hostAutoSelectItem && hostAutoSelectItem.value) ||
         (hostSelectItems.length > 0 && hostSelectItems[0].value)
 
-      migrateToHost(hostId)
+      migrateToHost(hostId, this.state.migrateVmsInAffinity)
       this.close()
     }
 
@@ -58,7 +68,10 @@ class VmMigrateModal extends StatefulModalPattern {
           hostSelectFieldHelp={hostSelectFieldHelp}
           hostSelectItems={hostSelectItems}
           hostAutoSelectItem={hostAutoSelectItem}
+          affinityText={affinityText}
+          migrateVmsInAffinity={this.state.migrateVmsInAffinity}
           onHostSelectionChange={this.onHostSelectionChange}
+          onMigrateVmsInAffinityChange={this.onMigrateVmsInAffinityChange}
         />
       </Spinner>
     )
@@ -68,7 +81,11 @@ class VmMigrateModal extends StatefulModalPattern {
         <Button onClick={this.close}>
           {cancelButtonLabel}
         </Button>
-        <Button bsStyle='primary' onClick={onMigrateButtonClick}>
+        <Button
+          bsStyle='primary'
+          onClick={onMigrateButtonClick}
+          disabled={hostSelectItems.length === 0}
+        >
           {migrateButtonLabel}
         </Button>
       </React.Fragment>

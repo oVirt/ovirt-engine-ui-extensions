@@ -364,7 +364,7 @@ const messageDescriptors = {
 
   migrateVmInfoLabel: {
     id: 'migrate.vm.vmInfoLabel',
-    defaultMessage: 'Migrate {value, number} Virtual Machines to the selected Host.',
+    defaultMessage: 'Select a host to migrate {value, number} virtual machine(s) to:',
     description: 'label shown above the target host dropdown, informing the user about VMs that are about to be migrated'
   },
 
@@ -402,6 +402,24 @@ const messageDescriptors = {
     id: 'migrate.vm.autoSelectHost',
     defaultMessage: 'Automatically Choose Host',
     description: 'label for the default migration target host dropdown option'
+  },
+
+  migrateVmAffinityLabel: {
+    id: 'migrate.vm.affinityLabel',
+    defaultMessage: 'Migrate VMs in Affinity',
+    description: 'label for the checkbox used to indicate that all VMs in affinity will be migrated'
+  },
+
+  migrateVmAffinityLabelHelp: {
+    id: 'migrate.vm.affinityLabelHelp',
+    defaultMessage: 'This will migrate also VMs that are not shown in the list below. If the selected VMs are in an affinity together, there may be errors in the log, because it will try to initiate a migration multiple times.',
+    description: 'help for the checkbox used to indicate that all VMs in affinity will be migrated'
+  },
+
+  migrateVmAffinityCheckbox: {
+    id: 'migrate.vm.affinityCheckbox',
+    defaultMessage: 'Migrate all VMs in positive enforcing affinity with selected VMs.',
+    description: 'checkbox used to indicate that all VMs in affinity will be migrated'
   },
 
   clusterUpgradeButton: {

@@ -24,6 +24,11 @@ function showVmMigrateModal (upVms) {
           value: hostAutoSelectItemValue,
           text: msg.migrateVmAutoSelectHost()
         }}
+        affinityText={{
+          label: msg.migrateVmAffinityLabel(),
+          labelHelp: msg.migrateVmAffinityLabelHelp(),
+          checkbox: msg.migrateVmAffinityCheckbox()
+        }}
         migrateButtonLabel={msg.migrateVmButton()}
         cancelButtonLabel={msg.cancelButton()}
         show
