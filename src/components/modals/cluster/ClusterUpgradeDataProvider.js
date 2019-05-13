@@ -102,11 +102,20 @@ async function fetchData ({ id: clusterId, name: clusterName }) {
 }
 
 /**
+ * If an ansbile execution timeout is not provided by the Wizard, default to 1 day.
+ */
+const DEFAULT_EXECUTION_TIMEOUT_IN_MIN = 1440
+
+/**
  * Upgrade the given cluster.
  *
  * Errors in forming or calling the upgrade operation are currently handled here.
  */
-async function upgradeCluster ({ clusterName, ...rest }) {
+async function upgradeCluster ({
+  clusterName,
+  executionTimeoutInMin = DEFAULT_EXECUTION_TIMEOUT_IN_MIN,
+  ...rest
+}) {
   const ansiblePayload = { clusterName, ...rest }
 
   // https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#passing-variables-on-the-command-line
@@ -132,7 +141,7 @@ async function upgradeCluster ({ clusterName, ...rest }) {
   }
 
   try {
-    await ansiblePlaybookPost(playbookName, ansibleVariables)
+    await ansiblePlaybookPost(playbookName, ansibleVariables, executionTimeoutInMin)
     getPluginApi().showToast(
       webadminToastTypes.info,
       msg.clusterUpgradeOperationStarted({ clusterName })

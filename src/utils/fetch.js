@@ -67,12 +67,12 @@ export async function enginePost (relativePath, body, extraHeaders) {
  * @param {string} playbook The name of the ovirt playbook to execute
  * @param {string} variables Set of variables passed to the playbook
  */
-export async function ansiblePlaybookPost (playbook, variables = '') {
+export async function ansiblePlaybookPost (playbook, variables = '', executionTimeoutInMin = 0) {
   if (typeof playbook !== 'string' || !/[a-z]((-[a-z])*[a-z])?/.test(playbook)) {
     throw new Error(`Invalid playbook name: ${playbook}`)
   }
-
-  const response = await fetch(engineUrl(`services/ansible?playbook=${playbook}`), {
+  const executionTimeoutParameter = executionTimeoutInMin > 0 ? `&execution_timeout=${executionTimeoutInMin}` : ''
+  const response = await fetch(engineUrl(`services/ansible?playbook=${playbook}${executionTimeoutParameter}`), {
     method: 'POST',
     headers: engineRequestHeaders({
       'Content-Type': 'text/plain'

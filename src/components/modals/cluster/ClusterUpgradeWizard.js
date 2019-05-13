@@ -179,7 +179,10 @@ class ClusterUpgradeWizard extends React.Component {
       upgradeTimeoutInMin: Number.isNaN(options.upgradeTimeoutInMin) ? 0 : options.upgradeTimeoutInMin,
       checkForUpgradesOnHosts: options.checkForUpgradesOnHosts,
       rebootAfterUpgrade: options.rebootAfterUpgrade,
-      useMaintenanceClusterPolicy: options.useMaintenanceClusterPolicy
+      useMaintenanceClusterPolicy: options.useMaintenanceClusterPolicy,
+      executionTimeoutInMin: Number.isNaN(options.upgradeTimeoutInMin) || options.upgradeTimeoutInMin <= 0
+        ? undefined
+        : (selectedHostsInSortOrder.length + 1) * options.upgradeTimeoutInMin
     }
   }
 
