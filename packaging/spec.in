@@ -64,6 +64,9 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue May 21 2019 Greg Sheremeta <gshereme@redhat.com> - 1.0.5-1
+- Fixed cluster upgrade execution timeout
+
 * Fri Mar 22 2019 Greg Sheremeta <gshereme@redhat.com> - 1.0.4-1
 - require ovirt-ansible-cluster-upgrade >= 1.1.12 to get engine events
 - check and warn if a Cluster is in cluster_maintenance
