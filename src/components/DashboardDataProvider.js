@@ -26,6 +26,12 @@ function transformData (data) {
   ;['dc', 'cluster', 'host', 'storage', 'vm', 'event'].forEach(category => {
     const inventoryData = data.inventory[category]
 
+    // default the inventory category if it is missing
+    if (!inventoryData) {
+      data.inventory[category] = { totalCount: 0, statuses: [] }
+      return
+    }
+
     // sort object statuses
     inventoryData.statuses.sort((a, b) => {
       return inventoryStatusOrder.indexOf(a.type) - inventoryStatusOrder.indexOf(b.type)
@@ -44,6 +50,23 @@ function transformData (data) {
   // transform data.globalUtilization
   ;['cpu', 'memory', 'storage'].forEach(category => {
     const globalUtilizationData = data.globalUtilization[category]
+
+    // default the utilization category if it is missing
+    if (!globalUtilizationData) {
+      data.globalUtilization[category] = {
+        used: 0,
+        total: 0,
+        overcommit: 0,
+        allocated: 0,
+        history: [],
+        utilization: {
+          hosts: [],
+          storage: [],
+          vms: []
+        }
+      }
+      return
+    }
 
     // make sure that used never exceeds total
     if (globalUtilizationData.used > globalUtilizationData.total) {
@@ -75,6 +98,12 @@ function transformData (data) {
   // transform data.heatMapData
   ;['cpu', 'memory', 'storage', 'vdoSavings'].forEach(category => {
     const heatMapData = data.heatMapData[category]
+
+    // default the heat map category if it is missing
+    if (!heatMapData) {
+      data.heatMapData[category] = []
+      return
+    }
 
     // heat map component expects values in range <0, 1>
     heatMapData.forEach(obj => {
