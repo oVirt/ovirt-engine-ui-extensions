@@ -4,5 +4,5 @@
 // fetch() polyfill for making API calls.
 require('whatwg-fetch')
 
-// Babel-polyfills for using Array.prototype.includes, Object.assign and Promise
-require('babel-polyfill')
+// Core-js polyfills for using Array.prototype.includes, Object.assign and Promise
+require('core-js/stable')

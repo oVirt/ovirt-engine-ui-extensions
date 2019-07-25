@@ -1,5 +1,6 @@
-// browserslist query used by babel-preset-env
-// https://github.com/browserslist/browserslist#queries
+require('core-js/stable')
+require('regenerator-runtime/runtime')
+
 const targetBrowsers = [
   // include browsers with at least 0.5% global coverage
   '> 0.5%',
@@ -17,18 +18,16 @@ const targetBrowsers = [
 ]
 
 const env = process.env.NODE_ENV || 'development'
-
+// babel configs
 module.exports = {
   presets: [
-    ['env', {
-      targets: {
-        browsers: targetBrowsers
-      },
-      debug: env === 'development' || env === 'production'
+    ['@babel/preset-env', {
+      targets: { browsers: targetBrowsers, node: 'current' },
+      debug: env === 'development' || env === 'production',
+      useBuiltIns: 'usage',
+      corejs: 3
     }],
-    'react'
+    '@babel/preset-react'
   ],
-  plugins: [
-    'transform-object-rest-spread'
-  ]
+  plugins: ['@babel/plugin-proposal-object-rest-spread']
 }

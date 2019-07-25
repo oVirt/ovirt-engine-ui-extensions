@@ -4,15 +4,14 @@ const fs = require('fs')
 const path = require('path')
 const os = require('os')
 const webpack = require('webpack')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin')
-const TerserPlugin = require('terser-webpack-plugin-legacy')
-
 const appDirectory = fs.realpathSync(process.cwd())
 const appSrc = path.resolve(appDirectory, 'src')
+const TerserPlugin = require('terser-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const packageInfo = require('./package.json')
 const env = process.env.NODE_ENV || 'development'
@@ -23,7 +22,7 @@ const isTest = env === 'test'
 const useFakeData = process.env.FAKE_DATA === 'true'
 
 // common modules required by all entry points
-const commonModules = ['babel-polyfill']
+const commonModules = ['core-js/stable']
 
 // define specific TTF fonts to embed in CSS via data urls
 let ttfFontsToEmbed
@@ -31,23 +30,24 @@ let ttfFontsToEmbed
 // start with common webpack configuration applicable to all environments
 const config = module.exports = {
   bail: true,
-
+  mode: 'development', // default
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         include: [ appSrc ],
         use: {
-          loader: 'babel-loader',
-          options: require('./.babelrc')
+          loader: 'babel-loader'
         }
       },
       {
         test: /\.css$/,
         include: /(node_modules)|(static\/css)/,
-        use: isProd
-          ? ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader?sourceMap' })
-          : ['style-loader', 'css-loader']
+        use: isProd ? [
+          {
+            loader: MiniCssExtractPlugin.loader
+          }, 'css-loader?sourceMap'
+        ] : ['style-loader', 'css-loader']
       },
       {
         test: /\.css$/,
@@ -92,8 +92,10 @@ const config = module.exports = {
       'react': path.join(__dirname, 'node_modules', 'react'),
       '_': path.join(__dirname, 'src')
     },
-    extensions: ['.js', '.jsx', '.json', '*']
+    extensions: ['.js', '.jsx', '*']
   },
+
+  optimization: {},
 
   plugins: [
     new webpack.ProvidePlugin({
@@ -124,8 +126,23 @@ if (isDev || isProd) {
     publicPath: '/ovirt-engine/webadmin/plugin/ui-extensions/'
   }
 
+  config.optimization.splitChunks = {
+    cacheGroups: {
+      vendor: {
+        test: /[\\/]node_modules[\\/]|^.*\.(css|scss)$/,
+        chunks: 'initial',
+        name: 'vendor',
+        enforce: true
+      }
+    }
+  }
+
+  config.optimization.runtimeChunk = {
+    name: 'manifest'
+  }
+
   config.plugins.push(
-    new CleanWebpackPlugin(['dist', 'extra']),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
         from: 'static/ui-extensions.json',
@@ -135,68 +152,49 @@ if (isDev || isProd) {
         }
       }
     ]),
-    new InlineManifestWebpackPlugin({
-      name: 'webpackManifest'
-    }),
     new HtmlWebpackPlugin({
       filename: 'dashboard.html',
       template: 'static/html/dashboard.template.ejs',
       inject: true,
-      chunks: ['vendor', 'dashboard']
+      chunks: ['vendor', 'dashboard', 'manifest']
     }),
     new HtmlWebpackPlugin({
       filename: 'plugin.html',
       template: 'static/html/plugin.template.ejs',
       inject: true,
-      chunks: ['vendor', 'plugin']
+      chunks: ['vendor', 'plugin', 'manifest']
     }),
-
+    new InlineManifestWebpackPlugin({
+      name: 'manifest'
+    }),
     // This pulls all of the depends on modules out of the entry chunks and puts them
     // together here.  Every entry then shares this chunk and it can be cached between
     // them.  The HtmlWebpackPlugins just need to reference it so the script tag is
     // written correctly.  HashedModuleIdsPlugin keeps the chunk id stable as long
     // as the contents of the chunk stay the same (i.e. no new modules are used).
-    new webpack.HashedModuleIdsPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: function (module) {
-        // This test keeps stylesheet resources (.css or .scss) the app imports from a
-        // modules in the app's CSS chunk.  Otherwise they'd be moved to a vendor CSS.
-        if (module.resource && (/^.*\.(css|scss)$/).test(module.resource)) {
-          return false
-        }
-
-        return module.context && module.context.includes('node_modules')
-      }
-    }),
-
-    // Put webpack's runtime and manifest in its own chunk to keep the 'vendor'
-    // chunk more stable (and cacheable across builds).  A change to any entry point
-    // chunk or to the vendor chunk will also cause this chunk to change.
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
-    })
+    new webpack.HashedModuleIdsPlugin()
   )
 }
 
 // production specific build configuration
 if (isProd) {
+  config.mode = 'production'
   // emit source map for each generated chunk
   config.devtool = 'source-map'
 
   // hash the output filenames
   config.output.filename = 'js/[name].[chunkhash:8].js'
   config.output.chunkFilename = 'js/[name].[chunkhash:8].chunk.js'
-
-  config.plugins.push(
+  config.optimization.minimizer = [
     new TerserPlugin({
       cache: true,
       parallel: true,
       sourceMap: true
-    }),
-    new ExtractTextPlugin({
-      filename: 'css/[name].[contenthash:8].css',
-      allChunks: true
+    })
+  ]
+  config.plugins.push(
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[contenthash:8].css'
     }),
     // emit banner comment at the top of each generated chunk
     new webpack.BannerPlugin({
@@ -207,22 +205,23 @@ if (isProd) {
 
 // add resonable source maps for dev builds
 if (isDev) {
+  config.mode = 'development'
   config.devtool = 'eval-source-map'
-  config.plugins.push(
+  config.optimization.minimizer = [
     new TerserPlugin({
       cache: true,
       parallel: os.cpus().length / 2,
       sourceMap: true
     })
-  )
+  ]
 }
 
 // test specific build configuration
 if (isTest) {
   config.devtool = 'inline-source-map'
-  config.plugins.push(
+  config.optimization.minimizer = [
     new TerserPlugin({
       sourceMap: true
     })
-  )
+  ]
 }
