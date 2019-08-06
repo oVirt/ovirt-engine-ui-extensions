@@ -126,7 +126,7 @@ async function upgradeCluster ({
     host_names: ansiblePayload.hostNames,
     check_upgrade: ansiblePayload.checkForUpgradesOnHosts,
     reboot_after_upgrade: ansiblePayload.rebootAfterUpgrade,
-    use_maintenace_policy: ansiblePayload.useMaintenanceClusterPolicy
+    use_maintenance_policy: ansiblePayload.useMaintenanceClusterPolicy
   })
   const playbookName = config.clusterUpgradePlaybook
 
