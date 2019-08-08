@@ -57,6 +57,8 @@ describe('buildSearch', function () {
 
 describe('applySearch', function () {
   it('calls pluginApi with search built via buildSearch', function () {
+    const pluginApiStubs = window.top.pluginApi()
+
     const place = 'FooPlace'
     const prefix = 'FooPrefix'
     const fields = [{ name: 'bar', values: ['aa', 'bb'] }]
@@ -64,9 +66,9 @@ describe('applySearch', function () {
 
     applySearch(place, prefix, fields)
 
-    expect(this.pluginApiStubs.revealPlace.calledWith(place)).to.equal(true)
-    expect(this.pluginApiStubs.revealPlace.calledOnce).to.equal(true)
-    expect(this.pluginApiStubs.setSearchString.calledWith(expectedSearch)).to.equal(true)
-    expect(this.pluginApiStubs.setSearchString.calledOnce).to.equal(true)
+    expect(pluginApiStubs.revealPlace.mock.calls[0]).to.deep.equal([ place ])
+    expect(pluginApiStubs.revealPlace.mock.calls.length).to.equal(1)
+    expect(pluginApiStubs.setSearchString.mock.calls[0]).to.deep.equal([ expectedSearch ])
+    expect(pluginApiStubs.setSearchString.mock.calls.length).to.equal(1)
   })
 })

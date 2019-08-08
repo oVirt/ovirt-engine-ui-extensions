@@ -7,6 +7,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin-legacy')
+const os = require('os')
 
 const packageInfo = require('./package.json')
 const env = process.env.NODE_ENV || 'development'
@@ -15,24 +17,6 @@ const isDev = env === 'development'
 const isTest = env === 'test'
 
 const useFakeData = process.env.FAKE_DATA === 'true'
-
-// browserslist query used by babel-preset-env
-// https://github.com/browserslist/browserslist#queries
-const targetBrowsers = [
-  // include browsers with at least 0.5% global coverage
-  '> 0.5%',
-  // exclude browsers without official support or updates for 24 months
-  'not dead',
-  // exclude all IE versions - we are committed to support Edge
-  'not ie > 0',
-  // include Firefox ESR (Extended Support Release)
-  'firefox esr',
-  // include last 2 versions of browsers we are committed to support
-  'last 2 Chrome versions',
-  'last 2 Firefox versions',
-  'last 2 Edge versions',
-  'last 2 Safari versions'
-]
 
 // common modules required by all entry points
 const commonModules = ['babel-polyfill']
@@ -48,19 +32,10 @@ const config = module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules)|(zanata)/,
+        exclude: /(node_modules)|(zanata)|(rpmbuild)/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: [
-              ['env', {
-                targets: { browsers: targetBrowsers },
-                debug: isDev
-              }],
-              'react'
-            ],
-            plugins: ['transform-object-rest-spread']
-          }
+          options: require('./.babelrc')
         }
       },
       {
@@ -136,6 +111,7 @@ if (isDev || isProd) {
     'plugin': commonModules.concat(['./src/plugin.js']),
     'dashboard': commonModules.concat(['./src/dashboard.js'])
   }
+
   config.output = {
     filename: '[name].js',
     path: `${__dirname}/dist/ui-extensions-resources`,
@@ -209,11 +185,10 @@ if (isProd) {
   config.output.chunkFilename = 'js/[name].[chunkhash:8].chunk.js'
 
   config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false // suppress warnings when dropping unreachable code, unused declarations etc.
-      }
+    new TerserPlugin({
+      cache: true,
+      parallel: true,
+      sourceMap: true
     }),
     new ExtractTextPlugin({
       filename: 'css/[name].[contenthash:8].css',
@@ -230,18 +205,19 @@ if (isProd) {
 if (isDev) {
   config.devtool = 'eval-source-map'
   config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
+    new TerserPlugin({
+      cache: true,
+      parallel: os.cpus().length / 2,
       sourceMap: true
     })
   )
 }
 
-// test specific build configuration (via karma)
+// test specific build configuration
 if (isTest) {
-  // inline source map into generated JavaScript
   config.devtool = 'inline-source-map'
   config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({ // needed to have error stack traces with proper files/line numbers
+    new TerserPlugin({
       sourceMap: true
     })
   )

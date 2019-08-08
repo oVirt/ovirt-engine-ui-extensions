@@ -5,7 +5,7 @@ module.exports = {
   ],
   'env': {
     'browser': true,
-    'mocha': true
+    'jest': true
   },
   'globals': {
     '__DEV__': false
