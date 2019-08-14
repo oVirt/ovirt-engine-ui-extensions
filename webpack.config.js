@@ -1,14 +1,18 @@
 'use strict'
 
-const webpack = require('webpack')
+const fs = require('fs')
 const path = require('path')
+const os = require('os')
+const webpack = require('webpack')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin-legacy')
-const os = require('os')
+
+const appDirectory = fs.realpathSync(process.cwd())
+const appSrc = path.resolve(appDirectory, 'src')
 
 const packageInfo = require('./package.json')
 const env = process.env.NODE_ENV || 'development'
@@ -32,7 +36,7 @@ const config = module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules)|(zanata)|(rpmbuild)/,
+        include: [ appSrc ],
         use: {
           loader: 'babel-loader',
           options: require('./.babelrc')
