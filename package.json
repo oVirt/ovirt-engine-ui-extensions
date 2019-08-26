@@ -18,6 +18,7 @@
     "intl:pull-all": "cd zanata && zanata-cli pull --pull-type trans --locales $npm_package_zanataLocales",
     "intl:apply": "rip po2json 'extra/messages/po/messages.*.po' -m 'extra/messages/**/*.json' -o 'src/intl/translations.json'",
     "intl:normalize": "node zanata/normalize-translations.js",
+    "intl:report": "node zanata/report.js",
     "lint": "eslint . --ext js,jsx",
     "pretest": "yarn lint",
     "test": "NODE_ENV=test jest --no-watch",
