@@ -6,7 +6,7 @@ const targetBrowsers = [
   '> 0.5%',
   // exclude browsers without official support or updates for 24 months
   'not dead',
-  // exclude all IE versions - we are committed to support Edge
+  // exclude IE - we are committed to support Edge
   'not ie > 0',
   // include Firefox ESR (Extended Support Release)
   'firefox esr',
@@ -18,16 +18,19 @@ const targetBrowsers = [
 ]
 
 const env = process.env.NODE_ENV || 'development'
+
 // babel configs
 module.exports = {
   presets: [
     ['@babel/preset-env', {
-      targets: { browsers: targetBrowsers, node: 'current' },
-      debug: env === 'development' || env === 'production',
+      targets: {
+        browsers: targetBrowsers,
+        node: 'current'
+      },
+      debug: !process.env.Q && env === 'development',
       useBuiltIns: 'usage',
       corejs: 3
     }],
     '@babel/preset-react'
-  ],
-  plugins: ['@babel/plugin-proposal-object-rest-spread']
+  ]
 }

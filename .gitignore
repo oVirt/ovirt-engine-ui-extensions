@@ -6,6 +6,9 @@ dist/
 
 # Additional build artifacts
 extra/
+packaging/ovirt-engine-ui-extensions.spec
+packaging/ovirt-engine-ui-extensions*.tar.gz
+stats.json
 
 # Yarn log files
 yarn-error.log
