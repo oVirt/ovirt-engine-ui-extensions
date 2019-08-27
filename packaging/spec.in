@@ -64,6 +64,12 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Aug 27 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.7-1
+- update translations
+- update dependencies (for jquery, patternfly, patternfly-react, webpack, bible etc)
+- fix typo in use_maintenance_policy
+- Convert karma/mocha/sinon/phantomjs to jest/jsdom for unit tests
+
 * Tue Jun 25 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.6-1
 - update translations
 
