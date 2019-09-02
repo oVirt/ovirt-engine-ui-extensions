@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom'
-import { getWebAdminDocumentBody } from './webadmin-dom'
+import uniqueId from 'lodash/uniqueId'
+
+import { getWebAdminWindow } from './webadmin-dom'
 
 /**
  * Render patternfly-react `Modal` based component into WebAdmin document body.
@@ -11,20 +13,33 @@ import { getWebAdminDocumentBody } from './webadmin-dom'
  * ))
  * ```
  */
-export const showModal = (modalCreator) => {
+export const showModal = (modalCreator, modalId = uniqueId()) => {
   const modalRoot = document.createElement('div')
-  document.body.appendChild(modalRoot)
+  modalRoot.setAttribute('id', modalId)
+
+  const targetWindow = getWebAdminWindow()
+  targetWindow.document.body.appendChild(modalRoot)
+
+  const clonedStyles = []
+  if (window !== targetWindow) {
+    window.document.querySelectorAll('head style, head link[type="text/css"]').forEach(style => {
+      const cloned = style.cloneNode(true)
+      cloned.setAttribute('data-style-for', modalId)
+      clonedStyles.push(cloned)
+      targetWindow.document.head.appendChild(cloned)
+    })
+  }
 
   const destroyModal = () => {
     ReactDOM.unmountComponentAtNode(modalRoot)
-    document.body.removeChild(modalRoot)
+    targetWindow.document.body.removeChild(modalRoot)
+    clonedStyles.forEach(style => {
+      targetWindow.document.head.removeChild(style)
+    })
   }
 
   ReactDOM.render(
-    modalCreator({
-      container: getWebAdminDocumentBody(),
-      destroyModal
-    }),
+    modalCreator({ container: modalRoot, destroyModal }),
     modalRoot
   )
 }
