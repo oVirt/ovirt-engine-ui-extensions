@@ -11,6 +11,9 @@ function showVmMigrateModal (upVms) {
   showModal(({ container, destroyModal }) => (
     <VmMigrateDataProvider vmIds={upVms.map(vm => vm.id)}>
       <VmMigrateModal
+        show
+        container={container}
+        onExited={destroyModal}
         title={msg.migrateVmDialogTitle()}
         vmInfoLabel={msg.migrateVmInfoLabel({
           value: config.useFakeData ? 1337 : upVms.length
@@ -31,9 +34,6 @@ function showVmMigrateModal (upVms) {
         }}
         migrateButtonLabel={msg.migrateVmButton()}
         cancelButtonLabel={msg.cancelButton()}
-        show
-        container={container}
-        onExited={destroyModal}
       />
     </VmMigrateDataProvider>
   ))
