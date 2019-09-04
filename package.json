@@ -1,6 +1,6 @@
 {
   "name": "ovirt-engine-ui-extensions",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "UI plugin that provides various extensions to oVirt administration UI, such as dashboard, migrate vm, and cluster upgrade",
   "license": "Apache-2.0",
   "repository": {

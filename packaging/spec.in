@@ -64,6 +64,11 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Sep 4 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.9-1
+- change CI version to STDCI V2
+- use showModal in both ClusterUpgrade and VmMigrate modals
+- update dependencies
+
 * Tue Aug 27 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.7-1
 - update translations
 - update dependencies (for jquery, patternfly, patternfly-react, webpack, bible etc)
