@@ -277,6 +277,7 @@ class ClusterUpgradeWizard extends React.Component {
 
     return (
       <WizardPattern
+        id='clusterUpgradeWizard'
         show={show}
         container={container}
         title={title}

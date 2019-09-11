@@ -22,7 +22,7 @@ export const showModal = (modalCreator, modalId = uniqueId()) => {
 
   const clonedStyles = []
   if (window !== targetWindow) {
-    window.document.querySelectorAll('head style, head link[type="text/css"]').forEach(style => {
+    window.document.querySelectorAll('head style, head link[type="text/css"], head link[rel="stylesheet"]').forEach(style => {
       const cloned = style.cloneNode(true)
       cloned.setAttribute('data-style-for', modalId)
       clonedStyles.push(cloned)

@@ -8,6 +8,7 @@ import { wizardStepShape } from 'patternfly-react/dist/js/components/Wizard/Patt
  * WizardPattern - the Wizard Pattern Body component.
  */
 const WizardPattern = ({
+  id,
   steps,
   activeStepIndex,
   onStepChanged,
@@ -104,6 +105,7 @@ const WizardPattern = ({
 
   return (
     <Wizard
+      id={id}
       show={show}
       onHide={onHideClick}
       onExited={onExited}
@@ -158,6 +160,7 @@ const WizardPattern = ({
 }
 
 WizardPattern.propTypes = {
+  id: PropTypes.string,
   activeStepIndex: PropTypes.number.isRequired,
   show: PropTypes.bool,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
