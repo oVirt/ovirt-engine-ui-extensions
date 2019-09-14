@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Format from 'intl-messageformat'
-import { propNamesToType } from '../../../utils/react'
+import { propNamesToType } from '_/utils/react'
 
 import {
   Card,
+  CardTitle, // NOTE: Can't use Card.Title due to https://github.com/patternfly/patternfly-react/issues/2931
+  CardBody,
   Icon
 } from 'patternfly-react'
 
@@ -28,42 +30,42 @@ const UpgradeReview = ({
     <div className='clusterUpgradeWizard-UpgradeReview'>
 
       <Card>
-        <Card.Title>
+        <CardTitle>
           <Icon type='pf' name='container-node' className='circle-icon' />
           <div className='info-label'>
             { hostLabelFormat.format({ count: hostCount }) }
           </div>
-        </Card.Title>
-        <Card.Body>
+        </CardTitle>
+        <CardBody>
           { hostsDescription }
-        </Card.Body>
+        </CardBody>
       </Card>
 
       { nonMigratableVmCount !== undefined &&
       <Card>
-        <Card.Title>
+        <CardTitle>
           <Icon type='pf' name='virtual-machine' className='circle-icon' />
           <div className='info-label'>
             { nonMigratableLabelFormat.format({ count: nonMigratableVmCount }) }
           </div>
-        </Card.Title>
-        <Card.Body>
+        </CardTitle>
+        <CardBody>
           { nonMigratableDescription }
-        </Card.Body>
+        </CardBody>
       </Card>
       }
 
       { migrateVmCount !== undefined &&
       <Card>
-        <Card.Title>
+        <CardTitle>
           <Icon type='pf' name='virtual-machine' className='circle-icon' />
           <div className='info-label'>
             { migrateLabelFormat.format({ count: migrateVmCount }) }
           </div>
-        </Card.Title>
-        <Card.Body>
+        </CardTitle>
+        <CardBody>
           { migrateDescription }
-        </Card.Body>
+        </CardBody>
       </Card>
       }
 
