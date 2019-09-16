@@ -64,6 +64,12 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Sep 16 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.10-1
+- remove unused devDependency sinon
+- add `yarn intl:report` to report on multiple i18n topics
+- fix cluster upgrade dialog big margin
+- fix a bug that caused cluster upgrade dialog to be closed unexpectedly before reaching the review screen
+
 * Tue Sep 4 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.9-1
 - change CI version to STDCI V2
 - use showModal in both ClusterUpgrade and VmMigrate modals
