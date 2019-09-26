@@ -4,7 +4,8 @@ stage:
   - check-patch
 distros:
   - fc29
-  - fc28
+  - fc30
   - el7
+  - el8
 release_branches:
   master: [ "ovirt-master", "ovirt-4.3" ]

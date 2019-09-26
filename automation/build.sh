@@ -1,13 +1,11 @@
 #!/bin/sh -ex
 
-DISTVER="$(rpm --eval "%dist"|cut -c2-3)"
-PACKAGER=""
-if [[ "${DISTVER}" == "el" ]]; then
-    PACKAGER=yum
-else
-    PACKAGER=dnf
-fi
+# Force updating nodejs-modules so any pre-seed update to rpm wait is minimized
+PACKAGER=$(command -v dnf >/dev/null 2>&1 && echo 'dnf' || echo 'yum')
+REPOS=$(sed -e '/^#/d' -e '/^[ \t]*$/d' automation/build.repos | cut -f 1 -d ',' | paste -s -d,)
 
+${PACKAGER} --disablerepo='*' --enablerepo="${REPOS}" clean metadata
+${PACKAGER} -y install ovirt-engine-nodejs-modules
 
 # Clean and then create the artifacts directory:
 rm -rf exported-artifacts
@@ -31,26 +29,12 @@ tar_prefix="${tar_name}-${version}/"
 tar_file="${tar_name}-${version}${snapshot}.tar.gz"
 git archive --prefix="${tar_prefix}" --output="${tar_file}" HEAD
 
-# The "build.packages.force" file contains BuildRequires packages
-# to be installed using their latest version.
-# When reading the file, make sure to remove blank lines as well
-# as lines starting with the "#" character:
-build_requires="$(sed -e '/^[ \t]*$/d' -e '/^#/d' -e 's/^/BuildRequires: /' < \
-    automation/build.packages.force | \
-    sed ':a;N;$!ba;s/\n/\\n/g')"
-
-# Force CI to get the latest version of these packages:
-dependencies="$(sed -e '/^[ \t]*$/d' -e '/^#/d' automation/build.packages.force)"
-${PACKAGER} clean metadata
-${PACKAGER} -y install ${dependencies}
-
 # Build the RPM:
 mv "${tar_file}" packaging/
 pushd packaging
     export tar_version="${version}"
     export tar_file
     export rpm_snapshot="${snapshot}"
-    export build_requires
     ./build.sh
 popd
 

@@ -6,17 +6,15 @@ tar_file="${tar_file:=ovirt-engine-ui-extensions-${tar_version}.tar.gz}"
 rpm_version="${rpm_version:=${tar_version}}"
 rpm_snapshot="${rpm_snapshot:=}"
 rpm_dist="${rpm_dist:=$(rpm --eval '%dist')}"
-build_requires="${build_requires:=}"
 
 # Generate the .spec file from the template for the distribution where
 # the build process is running:
-spec_template="spec${rpm_dist}.in"
+spec_template=$(test -e "spec${rpm_dist}.in" && echo "spec${rpm_dist}.in" || echo "spec.in")
 spec_file="ovirt-engine-ui-extensions.spec"
 sed \
   -e "s|@RPM_VERSION@|${rpm_version}|g" \
   -e "s|@RPM_SNAPSHOT@|${rpm_snapshot}|g" \
   -e "s|@TAR_FILE@|${tar_file}|g" \
-  -e "s|@BUILD_REQUIRES@|${build_requires}|g" \
   < "${spec_template}" \
   > "${spec_file}" \
 

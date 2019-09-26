@@ -1,18 +1,11 @@
 #!/bin/sh -ex
 
-DISTVER="$(rpm --eval "%dist"|cut -c2-3)"
-PACKAGER=""
-if [[ "${DISTVER}" == "el" ]]; then
-    PACKAGER=yum
-else
-    PACKAGER=dnf
-fi
+# Force updating nodejs-modules so any pre-seed update to rpm wait is minimized
+PACKAGER=$(command -v dnf >/dev/null 2>&1 && echo 'dnf' || echo 'yum')
+REPOS=$(sed -e '/^#/d' -e '/^[ \t]*$/d' automation/build.repos | cut -f 1 -d ',' | paste -s -d,)
 
-
-# Force CI to get the latest version of these packages:
-dependencies="$(sed -e '/^[ \t]*$/d' -e '/^#/d' automation/build.packages.force)"
-${PACKAGER} clean metadata
-${PACKAGER} -y install ${dependencies}
+${PACKAGER} --disablerepo='*' --enablerepo="${REPOS}" clean metadata
+${PACKAGER} -y install ovirt-engine-nodejs-modules
 
 # Set up Node.js environment with dependencies linked to ./node_modules:
 source /usr/share/ovirt-engine-nodejs-modules/setup-env.sh
