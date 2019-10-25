@@ -38,6 +38,12 @@ const messageDescriptors = {
     description: 'label of `OK` button used in dialogs'
   },
 
+  saveButton: {
+    id: 'common.saveButton',
+    defaultMessage: 'Save',
+    description: 'label of `Save` button used in dialogs'
+  },
+
   cancelButton: {
     id: 'common.cancelButton',
     defaultMessage: 'Cancel',
@@ -336,7 +342,7 @@ const messageDescriptors = {
     description: 'title of resource utilization dialog for `Storage` utilization card'
   },
 
-  // modal dialog related strings
+  // migrate VM modal dialog related strings
 
   migrateVmDialogTitle: {
     id: 'migrate.vm.dialogTitle',
@@ -732,6 +738,121 @@ const messageDescriptors = {
     id: 'export.vm.noTemplateOnStorageDomainError',
     defaultMessage: '{vmName} is based on a thin template, make sure the template\'s disks are present on the target storage domain',
     description: 'message shown when thin template disk are not present on target SD'
+  },
+  // manage VM's vGPU modal dialog related strings
+
+  vmManageGpuDataError: {
+    id: 'vm.gpu.dataError',
+    defaultMessage: 'Could not fetch data needed for Manage vGPU operation',
+    description: 'notification shown when Manage vGPU dialog failed to load its data'
+  },
+
+  vmManageGpuDialogTitle: {
+    id: 'vm.gpu.dialogTitle',
+    defaultMessage: 'Manage vGPU',
+    description: 'title of Manage vGPU dialog'
+  },
+
+  vmManageGpuEmptyStateTitle: {
+    id: 'vm.gpu.emptyState.title',
+    defaultMessage: 'No available hosts with vGPUs attached',
+    description: 'title of the empty state component'
+  },
+
+  vmManageGpuEmptyStateBody: {
+    id: 'vm.gpu.emptyState.body',
+    defaultMessage: 'There are currently no hosts with vGPUs attached in this cluster.',
+    description: 'body of the empty state component'
+  },
+
+  vmManageGpuBodyDescription: {
+    id: 'vm.gpu.body.descrption',
+    defaultMessage: 'Select a vGPU on host(s) that you would like to use. The selected host(s) will automatically be pinned to the VM',
+    description: 'Manage vGPU dialog body description'
+  },
+
+  vmManageGpuSearchButtonPlaceholder: {
+    id: 'vm.gpu.body.search.placeholder',
+    defaultMessage: 'Enter a search term',
+    description: 'Manage vGPU dialog search field placeholder'
+  },
+
+  vmManageGpuButton: {
+    id: 'vm.gpu.buttonLabel',
+    defaultMessage: 'Manage vGPU',
+    description: 'label of `Manage vGPU` button in VM Manage vGPU dialog'
+  },
+
+  vmManageGpuTableCardName: {
+    id: 'vm.gpu.table.cardName',
+    defaultMessage: 'Card name',
+    description: 'label of `Card name` table column in VM Manage vGPU dialog'
+  },
+
+  vmManageGpuTableMaxResolution: {
+    id: 'vm.gpu.table.maxResolution',
+    defaultMessage: 'Max resolution',
+    description: 'label of `Max resolution` table column in VM Manage vGPU dialog'
+  },
+
+  vmManageGpuTableMaxInstances: {
+    id: 'vm.gpu.table.maxInstances',
+    defaultMessage: 'Max instances',
+    description: 'label of `Max instances` int VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableHostName: {
+    id: 'vm.gpu.table.hostName',
+    defaultMessage: 'Host',
+    description: 'label of `Host` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableProduct: {
+    id: 'vm.gpu.table.product',
+    defaultMessage: 'Product',
+    description: 'label of `Product` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableNumberOfHeads: {
+    id: 'vm.gpu.table.numberOfHeads',
+    defaultMessage: 'Number of heads',
+    description: 'label of `Number of heads` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableFrameRateLimiter: {
+    id: 'vm.gpu.table.frameRateLimiter',
+    defaultMessage: 'Frame rate limiter',
+    description: 'label of `Frame rate limiter` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableFrameBuffer: {
+    id: 'vm.gpu.table.frameBuffer',
+    defaultMessage: 'Frame buffer',
+    description: 'label of `Frame buffer` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableAvailableInstances: {
+    id: 'vm.gpu.table.availableInstances',
+    defaultMessage: 'Available instances',
+    description: 'label of `Available instances` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableVendor: {
+    id: 'vm.gpu.table.vendor',
+    defaultMessage: 'Vendor',
+    description: 'label of `Vendor` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableEmptyStateTitle: {
+    id: 'vm.gpu.table.emptyState.title',
+    defaultMessage: 'No results found',
+    description: 'title of the table empty state component'
+  },
+
+  vmManageGpuTableEmptyStateBody: {
+    id: 'vm.gpu.table.emptyState.body',
+    defaultMessage: 'No results match the filter criteria. Clear all filters to show results.',
+    description: 'body of the table empty state component'
   }
 }
 

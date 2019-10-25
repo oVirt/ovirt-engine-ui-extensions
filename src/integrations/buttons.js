@@ -2,13 +2,23 @@ import { entityTypes, vmUpStates } from '_/constants'
 import getPluginApi from '_/plugin-api'
 import config from '_/plugin-config'
 import { msg } from '_/intl-messages'
-
+import { showVmManageGpuModal } from './showVmManageGpu'
 import { showVmMigrateModal } from './showVmMigrate'
 import { showClusterUpgradeWizard } from './showClusterUpgrade'
 import { showVmExportModal } from './showVmExport'
 
 function isVmUp (vm) {
   return vmUpStates.includes(vm.status)
+}
+
+function addVmManageGpuButton () {
+  getPluginApi().addDetailPlaceActionButton(entityTypes.vm, entityTypes.hostDevices, msg.vmManageGpuButton(), {
+    onClick: function (_selectedItems, parent) {
+      showVmManageGpuModal(parent)
+    },
+
+    index: 2
+  })
 }
 
 /**
@@ -99,6 +109,7 @@ function addClusterUpgradeButton () {
 }
 
 export function addButtons () {
+  addVmManageGpuButton()
   addVmMigrateButton()
   addHostVmMigrateButton()
   addVmExportButton()

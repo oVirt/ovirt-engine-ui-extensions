@@ -1,0 +1,6 @@
+.vgpu-search-box {
+    width: 100%;
+}
+.vgpu-body-element {
+    margin-top: var(--pf-global--spacer--md);
+}

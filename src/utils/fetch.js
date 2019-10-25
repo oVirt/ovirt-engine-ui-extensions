@@ -58,6 +58,25 @@ export async function enginePost (relativePath, body, extraHeaders) {
 }
 
 /**
+ * Initiate Engine HTTP `PUT` request, expecting JSON response.
+ *
+ * @example
+ * ```
+ * const body = JSON.stringify({ host: { id: targetHostId } })
+ * const json = await enginePost(`api/vms/${vmId}/migrate`, body)
+ * ```
+ */
+export async function enginePut (relativePath, body, extraHeaders) {
+  const response = await fetch(engineUrl(relativePath), {
+    method: 'PUT',
+    headers: engineRequestHeaders(extraHeaders),
+    credentials: 'same-origin',
+    body
+  })
+  return response.json()
+}
+
+/**
  * Initiate Engine HTTP `POST` to the async ansible playbook execution service.
  *
  * @example

@@ -68,7 +68,8 @@ export const webadminToastTypes = { // plugin-api: NotificationType
 export const entityTypes = {
   cluster: 'Cluster',
   host: 'Host',
-  vm: 'VirtualMachine'
+  vm: 'VirtualMachine',
+  hostDevices: 'HostDevice'
 }
 
 export const heatMapThresholds = {
