@@ -9,7 +9,7 @@ Source: @TAR_FILE@
 BuildArch: noarch
 
 # embeds yarn and ovirt-engine-nodejs (or nodejs on fc30+,el8) already
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.10-3
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.11-5
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-cluster-upgrade >= 1.1.12
