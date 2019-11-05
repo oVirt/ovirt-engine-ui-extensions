@@ -686,8 +686,53 @@ const messageDescriptors = {
     id: 'cluster.upgrade.OperationFailed',
     defaultMessage: 'Failed to start the upgrade for {clusterName}.',
     description: 'cluster upgrade operation failed toast notification text'
-  }
+  },
 
+  exportVmTitle: {
+    id: 'export.vm.Title',
+    defaultMessage: 'Export VM',
+    description: 'Title for the Export VM dialog'
+  },
+  exportVmOriginalVmLabel: {
+    id: 'export.vm.originalVmName',
+    defaultMessage: 'VM name',
+    description: 'Label for the original VM name'
+  },
+  exportVmDataError: {
+    id: 'export.vm.dataError',
+    defaultMessage: 'Could not fetch data needed for VM export operation',
+    description: 'notification shown when VM export dialog failed to load its data'
+  },
+  exportVmNoStorageDomainsError: {
+    id: 'export.vm.noStorageDomainsError',
+    defaultMessage: 'No storage domains currently available',
+    description: 'message shown when no storage domain are available to export the VM'
+  },
+  exportVmButton: {
+    id: 'export.vm.buttonLabel',
+    defaultMessage: 'Export',
+    description: 'label of `Export` button in VM export dialog'
+  },
+  exportedVmNameTextFieldLabel: {
+    id: 'export.vm.exportedVm',
+    defaultMessage: 'Exported VM name',
+    description: 'label of `Export VM name` text field'
+  },
+  collapseSnapshots: {
+    id: 'export.vm.collapseSnapshotsLabel',
+    defaultMessage: 'Collapse snapshots',
+    description: 'label for the checkbox used to indicate snapshots will be collapsed'
+  },
+  storageDomains: {
+    id: 'export.vm.storageDomainsLabel',
+    defaultMessage: 'Storage domain',
+    description: 'label for the storage domain list box used to choose a storage domain'
+  },
+  exportVmTemplateNotOnStorageDomainError: {
+    id: 'export.vm.noTemplateOnStorageDomainError',
+    defaultMessage: '{vmName} is based on a thin template, make sure the template\'s disks are present on the target storage domain',
+    description: 'message shown when thin template disk are not present on target SD'
+  }
 }
 
 module.exports = exports = messageDescriptors

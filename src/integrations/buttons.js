@@ -5,6 +5,7 @@ import { msg } from '_/intl-messages'
 
 import { showVmMigrateModal } from './showVmMigrate'
 import { showClusterUpgradeWizard } from './showClusterUpgrade'
+import { showVmExportModal } from './showVmExport'
 
 function isVmUp (vm) {
   return vmUpStates.includes(vm.status)
@@ -27,6 +28,24 @@ function addVmMigrateButton () {
 
     index: 8
 
+  })
+}
+
+function addVmExportButton () {
+  let selectedVms = []
+
+  getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.exportVmButton(), {
+    onClick: function () {
+      showVmExportModal(selectedVms[0])
+    },
+
+    isEnabled: function () {
+      selectedVms = Array.from(arguments)
+      const enable = selectedVms.length === 1 && selectedVms[0] && selectedVms[0].status === 'Down'
+      return enable
+    },
+
+    index: 4
   })
 }
 
@@ -73,4 +92,5 @@ export function addButtons () {
   addVmMigrateButton()
   addHostVmMigrateButton()
   addClusterUpgradeButton()
+  addVmExportButton()
 }
