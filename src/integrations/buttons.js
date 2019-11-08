@@ -11,19 +11,21 @@ function isVmUp (vm) {
   return vmUpStates.includes(vm.status)
 }
 
-let lastSelectedMainVms = []
-let lastSelectedHostVms = []
-
+/**
+ * "Migrate" button to VMs List.  Enabled when at least 1 running VM is selected.
+ */
 function addVmMigrateButton () {
+  let selectedUpVms = []
+
   getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.migrateVmButton(), {
 
     onClick: function () {
-      showVmMigrateModal(lastSelectedMainVms.filter(isVmUp))
+      showVmMigrateModal(selectedUpVms)
     },
 
-    isEnabled: function () {
-      lastSelectedMainVms = Array.from(arguments)
-      return lastSelectedMainVms.filter(isVmUp).length > 0 || config.useFakeData
+    isEnabled: function (selectedVms) {
+      selectedUpVms = selectedVms.filter(isVmUp)
+      return selectedUpVms.length > 0 || config.useFakeData
     },
 
     index: 8
@@ -31,34 +33,21 @@ function addVmMigrateButton () {
   })
 }
 
-function addVmExportButton () {
-  let selectedVms = []
-
-  getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.exportVmButton(), {
-    onClick: function () {
-      showVmExportModal(selectedVms[0])
-    },
-
-    isEnabled: function () {
-      selectedVms = Array.from(arguments)
-      const enable = selectedVms.length === 1 && selectedVms[0] && selectedVms[0].status === 'Down'
-      return enable
-    },
-
-    index: 4
-  })
-}
-
+/**
+ * "Migrate" button to Host Detail / VMs List.  Enabled when at least 1 running VM is selected.
+ */
 function addHostVmMigrateButton () {
+  let selectedUpVms = []
+
   getPluginApi().addDetailPlaceActionButton(entityTypes.host, entityTypes.vm, msg.migrateVmButton(), {
 
     onClick: function () {
-      showVmMigrateModal(lastSelectedHostVms.filter(isVmUp))
+      showVmMigrateModal(selectedUpVms)
     },
 
-    isEnabled: function () {
-      lastSelectedHostVms = Array.from(arguments)
-      return lastSelectedHostVms.filter(isVmUp).length > 0 || config.useFakeData
+    isEnabled: function (selectedVms) {
+      selectedUpVms = selectedVms.filter(isVmUp)
+      return selectedUpVms.length > 0 || config.useFakeData
     },
 
     index: 5
@@ -67,20 +56,41 @@ function addHostVmMigrateButton () {
 }
 
 /**
- * Add an "Upgrade" button to the Cluster main view.  It will be enabled when exactly
- * 1 cluster is selected.
+ * "Export" button to VMs List.  Enabled when 1 down VM is selected.
+ */
+function addVmExportButton () {
+  let selectedDownVm
+
+  getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.exportVmButton(), {
+    onClick: function () {
+      showVmExportModal(selectedDownVm)
+    },
+
+    isEnabled: function (selectedVms) {
+      const enable = selectedVms.length === 1 && selectedVms[0] && selectedVms[0].status === 'Down'
+      selectedDownVm = enable ? selectedVms[0] : undefined
+      return enable
+    },
+
+    index: 4
+
+  })
+}
+
+/**
+ * "Upgrade" button to Cluster List.  Enabled when exactly 1 cluster is selected.
  */
 function addClusterUpgradeButton () {
   getPluginApi().addMenuPlaceActionButton(entityTypes.cluster, msg.clusterUpgradeButton(), {
 
-    onClick: function (selectedCluster) {
-      if (selectedCluster && selectedCluster.id && selectedCluster.name) {
+    onClick: function ([ selectedCluster ]) {
+      if (selectedCluster.id && selectedCluster.name) {
         showClusterUpgradeWizard(selectedCluster)
       }
     },
 
-    isEnabled: function (...selectedClusters) {
-      return selectedClusters && selectedClusters.length === 1
+    isEnabled: function (selectedClusters) {
+      return selectedClusters.length === 1
     },
 
     index: 3
@@ -91,6 +101,6 @@ function addClusterUpgradeButton () {
 export function addButtons () {
   addVmMigrateButton()
   addHostVmMigrateButton()
-  addClusterUpgradeButton()
   addVmExportButton()
+  addClusterUpgradeButton()
 }

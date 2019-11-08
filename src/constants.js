@@ -58,9 +58,17 @@ export const webadminPlaces = {
   vdoSavings: 'vdoSavings'
 }
 
-export const webadminToastTypes = {
+export const webadminToastTypes = { // plugin-api: NotificationType
   info: 'info',
+  success: 'success',
+  warning: 'warning',
   danger: 'danger'
+}
+
+export const entityTypes = {
+  cluster: 'Cluster',
+  host: 'Host',
+  vm: 'VirtualMachine'
 }
 
 export const heatMapThresholds = {
@@ -89,11 +97,5 @@ export const storageUnitTable = [
 
 // number of characters before giving more space to bar chart labels
 export const utilizationListGridNameThreshold = 30
-
-export const entityTypes = {
-  cluster: 'Cluster',
-  host: 'Host',
-  vm: 'VirtualMachine'
-}
 
 export const vmUpStates = ['Up', 'PoweringUp', 'RebootInProgress', 'Paused']
