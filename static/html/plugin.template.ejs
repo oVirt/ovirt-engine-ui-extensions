@@ -2,6 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <% if (webpackConfig.mode === 'development') { %>
+  <script>
+    if (window.parent !== window) {
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
+    }
+  </script>
+  <% } %>
 </head>
 <body>
   <%=htmlWebpackPlugin.files.webpackManifest%>
