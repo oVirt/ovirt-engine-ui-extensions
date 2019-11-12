@@ -1,21 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { bindMethods, excludeKeys, filterKeys, noop, Button, Spinner } from 'patternfly-react'
+import { excludeKeys, noop, Button, Spinner } from 'patternfly-react'
 import VmMigrateModalBody from './VmMigrateModalBody'
 import StatefulModalPattern from '../StatefulModalPattern'
 
 class VmMigrateModal extends StatefulModalPattern {
   constructor (props) {
     super(props)
-    bindMethods(this, ['onHostSelectionChange', 'onMigrateVmsInAffinityChange'])
     this.state = {
       ...this.state,
       migrateVmsInAffinity: false
     }
+
+    this.onHostSelectionChange = this.onHostSelectionChange.bind(this)
+    this.onMigrateVmsInAffinityChange = this.onMigrateVmsInAffinityChange.bind(this)
+    this.onMigrateButtonClick = this.onMigrateButtonClick.bind(this)
   }
 
   onHostSelectionChange (newHostId) {
-    this._hostId = newHostId
+    this.setState({ hostId: newHostId })
   }
 
   onMigrateVmsInAffinityChange (migrateVmsInAffinity) {
@@ -23,10 +26,15 @@ class VmMigrateModal extends StatefulModalPattern {
     this.props.refreshHosts(migrateVmsInAffinity)
   }
 
-  getModalPatternProps () {
-    // TODO(vs) check if the latest patternfly-react version has 'includeKeys'
-    // to complement the existing 'excludeKeys' helper, post a PR otherwise
-    return filterKeys(this.props, key => Object.keys(StatefulModalPattern.propTypes).includes(key))
+  onMigrateButtonClick () {
+    const { hostAutoSelectItem, hostSelectItems, migrateToHost } = this.props
+
+    const hostId = this.state.hostId ||
+      (hostAutoSelectItem && hostAutoSelectItem.value) ||
+      (hostSelectItems.length > 0 && hostSelectItems[0].value)
+
+    migrateToHost(hostId, this.state.migrateVmsInAffinity)
+    this.close()
   }
 
   render () {
@@ -41,20 +49,10 @@ class VmMigrateModal extends StatefulModalPattern {
       hostSelectItems,
       hostAutoSelectItem,
       affinityText,
-      migrateToHost,
       isLoading,
       migrateButtonLabel,
       cancelButtonLabel
     } = this.props
-
-    const onMigrateButtonClick = () => {
-      const hostId = this._hostId ||
-        (hostAutoSelectItem && hostAutoSelectItem.value) ||
-        (hostSelectItems.length > 0 && hostSelectItems[0].value)
-
-      migrateToHost(hostId, this.state.migrateVmsInAffinity)
-      this.close()
-    }
 
     const modalBody = (
       <Spinner loading={isLoading}>
@@ -83,7 +81,7 @@ class VmMigrateModal extends StatefulModalPattern {
         </Button>
         <Button
           bsStyle='primary'
-          onClick={onMigrateButtonClick}
+          onClick={this.onMigrateButtonClick}
           disabled={hostSelectItems.length === 0}
         >
           {migrateButtonLabel}
