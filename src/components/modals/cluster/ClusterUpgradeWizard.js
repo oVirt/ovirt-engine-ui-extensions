@@ -4,7 +4,6 @@ import { selectProps, propNamesToType } from '../../../utils/react'
 
 import {
   selectKeys,
-  propOrState,
   noop,
   Icon
 } from 'patternfly-react'
@@ -45,6 +44,8 @@ class ClusterUpgradeWizard extends React.Component {
     super(props)
     this.state = {
       show: props.show,
+      lastPropShow: props.show,
+
       confirmedClusterPolicy: false,
       activeStepIndex: 0,
 
@@ -117,10 +118,15 @@ class ClusterUpgradeWizard extends React.Component {
   }
 
   static getDerivedStateFromProps (nextProps, prevState) {
-    return {
-      show: propOrState(nextProps, prevState, 'show'),
-      mapIdToHost: hostListToMapById(nextProps.clusterHosts)
+    const updates = {}
+
+    updates.mapIdToHost = hostListToMapById(nextProps.clusterHosts)
+    if (prevState.lastPropShow !== nextProps.show) {
+      updates.show = nextProps.show
+      updates.lastPropShow = nextProps.show
     }
+
+    return updates
   }
 
   open () {
