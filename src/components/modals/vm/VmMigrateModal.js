@@ -1,14 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { excludeKeys, noop, Button, Spinner } from 'patternfly-react'
-import VmMigrateModalBody from './VmMigrateModalBody'
+import { noop, Button, Spinner } from 'patternfly-react'
+import { msg } from '_/intl-messages'
+
+import VmMigrateModalBody, { AUTO_SELECT_ITEM } from './VmMigrateModalBody'
 import StatefulModalPattern from '../StatefulModalPattern'
+import { selectItemShape } from '../../forms/SelectFormGroup'
 
 class VmMigrateModal extends StatefulModalPattern {
   constructor (props) {
     super(props)
     this.state = {
       ...this.state,
+      hostId: AUTO_SELECT_ITEM.value,
       migrateVmsInAffinity: false
     }
 
@@ -23,51 +27,33 @@ class VmMigrateModal extends StatefulModalPattern {
 
   onMigrateVmsInAffinityChange (migrateVmsInAffinity) {
     this.setState({ migrateVmsInAffinity: migrateVmsInAffinity })
-    this.props.refreshHosts(migrateVmsInAffinity)
+    this.props.onRefreshHosts(migrateVmsInAffinity)
   }
 
   onMigrateButtonClick () {
-    const { hostAutoSelectItem, hostSelectItems, migrateToHost } = this.props
+    const hostId =
+      this.state.hostId === AUTO_SELECT_ITEM.value
+        ? undefined
+        : this.state.hostId
 
-    const hostId = this.state.hostId ||
-      (hostAutoSelectItem && hostAutoSelectItem.value) ||
-      (hostSelectItems.length > 0 && hostSelectItems[0].value)
-
-    migrateToHost(hostId, this.state.migrateVmsInAffinity)
+    this.props.onMigrateToHost(hostId, this.state.migrateVmsInAffinity)
     this.close()
   }
 
   render () {
     const {
-      vmInfoLabel,
-      vmListLabel,
-      vmListShowAllLabel,
-      vmListShowLessLabel,
-      vmNames,
-      hostSelectLabel,
-      hostSelectFieldHelp,
-      hostSelectItems,
-      hostAutoSelectItem,
-      affinityText,
       isLoading,
-      migrateButtonLabel,
-      cancelButtonLabel
+      vmNames,
+      targetHostItems
     } = this.props
 
     const modalBody = (
       <Spinner loading={isLoading}>
         <VmMigrateModalBody
-          vmInfoLabel={vmInfoLabel}
-          vmListLabel={vmListLabel}
-          vmListShowAllLabel={vmListShowAllLabel}
-          vmListShowLessLabel={vmListShowLessLabel}
           vmNames={vmNames}
-          hostSelectLabel={hostSelectLabel}
-          hostSelectFieldHelp={hostSelectFieldHelp}
-          hostSelectItems={hostSelectItems}
-          hostAutoSelectItem={hostAutoSelectItem}
-          affinityText={affinityText}
           migrateVmsInAffinity={this.state.migrateVmsInAffinity}
+          targetHostItems={targetHostItems}
+
           onHostSelectionChange={this.onHostSelectionChange}
           onMigrateVmsInAffinityChange={this.onMigrateVmsInAffinityChange}
         />
@@ -77,43 +63,61 @@ class VmMigrateModal extends StatefulModalPattern {
     const modalButtons = (
       <React.Fragment>
         <Button onClick={this.close}>
-          {cancelButtonLabel}
+          {msg.cancelButton()}
         </Button>
         <Button
           bsStyle='primary'
           onClick={this.onMigrateButtonClick}
-          disabled={hostSelectItems.length === 0}
+          disabled={targetHostItems.length === 0}
         >
-          {migrateButtonLabel}
+          {msg.migrateVmButton()}
         </Button>
       </React.Fragment>
     )
 
-    return React.cloneElement(super.render(), {
-      children: modalBody,
-      footer: modalButtons
-    })
+    return React.cloneElement(
+      super.render(),
+      {
+        title: msg.migrateVmDialogTitle(),
+        children: modalBody,
+        footer: modalButtons
+      }
+    )
   }
 }
 
 VmMigrateModal.propTypes = {
-  ...excludeKeys(StatefulModalPattern.propTypes, ['children', 'footer']),
-  ...excludeKeys(VmMigrateModalBody.propTypes, ['onHostSelectionChange']),
-  migrateToHost: PropTypes.func,
+  // data input
   isLoading: PropTypes.bool,
-  migrateButtonLabel: PropTypes.string,
-  cancelButtonLabel: PropTypes.string
+  vmNames: PropTypes.arrayOf(PropTypes.string),
+  targetHostItems: PropTypes.arrayOf(PropTypes.shape(selectItemShape)),
+
+  // operation callbacks
+  onMigrateToHost: PropTypes.func,
+  onRefreshHosts: PropTypes.func,
+
+  // modal props
+  show: PropTypes.bool,
+  onExited: StatefulModalPattern.propTypes.onExited,
+  container: StatefulModalPattern.propTypes.container,
+  dialogClassName: StatefulModalPattern.propTypes.dialogClassName
 }
 
 VmMigrateModal.defaultProps = {
-  ...excludeKeys(StatefulModalPattern.defaultProps, ['children', 'footer']),
-  ...excludeKeys(VmMigrateModalBody.defaultProps, ['onHostSelectionChange']),
-  dialogClassName: 'modal-lg',
-  title: 'Migrate VM(s)',
-  migrateToHost: noop,
+  // data input
   isLoading: false,
-  migrateButtonLabel: 'Migrate',
-  cancelButtonLabel: 'Cancel'
+  vmNames: [],
+  targetHostItems: [],
+
+  // operation callbacks
+  migrateToHost: noop,
+  refreshHosts: noop,
+
+  // modal props
+  show: false,
+  onExited: StatefulModalPattern.defaultProps.onExited,
+  container: StatefulModalPattern.defaultProps.container,
+  dialogClassName: 'modal-lg'
 }
 
 export default VmMigrateModal

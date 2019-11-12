@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import getPluginApi from '../../../plugin-api'
-import { hostAutoSelectItemValue } from './VmMigrateModalBody'
 import DataProvider from '../../helper/DataProvider'
 import { webadminToastTypes } from '../../../constants'
 import config from '../../../plugin-config'
@@ -86,19 +85,19 @@ async function fetchTargetHosts (vms, checkVmAffinity) {
  * (no further interaction available) once the "Migrate" button is clicked.
  */
 function migrateToHost (targetHostId, migrateVmsInAffinity, vms) {
-  if (!targetHostId || config.useFakeData) {
-    if (config.useFakeData) {
-      getPluginApi().showToast(webadminToastTypes.info, 'Using fake data, nothing to migrate.')
-    }
-    return
-  }
-
   const requestBody = { force: true }
+
+  if (targetHostId) {
+    requestBody['host'] = { id: targetHostId }
+  }
   if (migrateVmsInAffinity) {
     requestBody['migrate_vms_in_affinity_closure'] = true
   }
-  if (targetHostId !== hostAutoSelectItemValue) {
-    requestBody['host'] = {id: targetHostId}
+
+  if (config.useFakeData) {
+    getPluginApi().showToast(webadminToastTypes.info, 'Using fake data, nothing to migrate.')
+    console.info('migrateToHost, requestBody:', requestBody)
+    return
   }
 
   vms.forEach(vm => {
@@ -123,43 +122,41 @@ class VmMigrateDataProvider extends React.Component {
   }
 
   render () {
+    const childRender = this.props.children
+
     return (
       <DataProvider fetchData={this.fetchData}>
-
         {({ data, fetchError, fetchInProgress, fetchAndUpdateData }) => {
-          // expecting single child component
-          const child = React.Children.only(this.props.children)
-
           // handle data loading and error scenarios
           if (fetchError) {
             getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmDataError())
-            return React.cloneElement(child, { show: false })
-          } else if (fetchInProgress || !data) {
-            return React.cloneElement(child, { isLoading: true })
+            return null
+          }
+          if (fetchInProgress || !data) {
+            return childRender({ isLoading: true })
           }
 
           // unwrap data
           const { vms, targetHosts } = data
 
           // pass relevant data and operations to child component
-          return React.cloneElement(child, {
+          return childRender({
             vmNames: vms.map(vm => vm.name),
-            hostSelectItems: targetHosts.map(host => ({
+            targetHostItems: targetHosts.map(host => ({
               value: host.id,
               text: host.name
             })),
-            refreshHosts: (checkVmAffinity) => this.setState({ checkVmAffinity: checkVmAffinity }, fetchAndUpdateData),
+            refreshHosts: (checkVmAffinity) => this.setState({ checkVmAffinity }, fetchAndUpdateData),
             migrateToHost: (hostId, migrateVmsInAffinity) => migrateToHost(hostId, migrateVmsInAffinity, vms)
           })
         }}
-
       </DataProvider>
     )
   }
 }
 
 VmMigrateDataProvider.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.func.isRequired,
   vmIds: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
