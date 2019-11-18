@@ -1,0 +1,12 @@
+:root {
+  /*
+    increase z-index in PF4 so it displays above PF3 components,
+    especially for Modal and backdrop components
+  */
+  --pf-global--ZIndex--xs: 1100;
+  --pf-global--ZIndex--sm: 1200;
+  --pf-global--ZIndex--md: 1300;
+  --pf-global--ZIndex--lg: 1400;
+  --pf-global--ZIndex--xl: 1500;
+  --pf-global--ZIndex--2xl: 1600;
+}

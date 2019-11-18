@@ -24,6 +24,7 @@ import 'patternfly-react/dist/css/patternfly-react.css'
     do right now (4-Nov-2019).
  */
 import '@patternfly/patternfly/patternfly-no-reset.css'
+import '../static/css/plugin-pf4-overrides.css'
 
 // register event handlers
 getPluginApi().register({
