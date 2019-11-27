@@ -1,5 +1,6 @@
 const path = require('path')
 const util = require('util')
+const tty = require('tty')
 const merge = require('webpack-merge')
 const TerserPlugin = require('terser-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -74,8 +75,9 @@ async function prod () {
   })
 
   if (!process.env.Q) {
+    const colors = tty.isatty(1)
     console.log('production webpack configuration:')
-    console.log(util.inspect(prodConfig, { compact: false, breakLength: 120, depth: null, colors: true }))
+    console.log(util.inspect(prodConfig, { compact: false, breakLength: 120, depth: null, colors }))
   }
   return prodConfig
 }

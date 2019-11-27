@@ -3,10 +3,42 @@ const git = require('isomorphic-git')
 const fs = require('fs')
 git.plugins.set('fs', fs)
 
-async function fetchGitInfo () {
+async function tagsToCommits ({ dir }) {
+  const map = {}
+
+  const tags = await git.listTags({ dir })
+  for (const tag of tags) {
+    const ref = await git.resolveRef({ dir, ref: tag })
+    map[tag] = ref
+  }
+
+  return map
+}
+
+async function tagsPointAt ({ dir, oid }) {
+  const tagMap = await tagsToCommits({ dir })
+  const pointAt =
+    Object.entries(tagMap)
+      .filter(([tag, commit]) => commit === oid)
+      .map(([tag]) => tag)
+
+  return pointAt
+}
+
+function extractChangeId ({ message }) {
+  const re = /change-id: (I[a-z0-9]+)/i
+  const [ , changeId ] = re.exec(message) || []
+  return changeId
+}
+
+async function fetchGitInfo ({ ref, dir = '.' } = {}) {
   try {
+    const [ head ] = await git.log({ dir, depth: 1, ref })
+    const tagsPointAtHead = await tagsPointAt({ dir, oid: head.oid })
+    const changeId = extractChangeId(head)
+
     // https://isomorphic-git.org/docs/en/statusMatrix
-    const fileStatus = (await git.statusMatrix({ dir: '.' })).reduce((fs, file) => {
+    const fileStatus = (await git.statusMatrix({ dir })).reduce((fs, file) => {
       fs.push({
         file: file[0],
         untracked: file[1] === 0 && file[2] === 2 && file[3] === 0,
@@ -19,11 +51,12 @@ async function fetchGitInfo () {
       return fs
     }, [])
 
-    const [ head ] = await git.log({ dir: '.', depth: 1 })
-
-    return {
+    const gitInfo = {
       headOid: head.oid.substr(0, 8),
       hasChanges: fileStatus.length !== fileStatus.filter(status => status.unmodified).length,
+      isHeadOidTagged: tagsPointAtHead.length > 0,
+      headTags: tagsPointAtHead,
+      changeId,
 
       untracked: fileStatus.filter(status => status.untracked).length,
       staged: fileStatus.filter(status => status.staged).length,
@@ -31,7 +64,11 @@ async function fetchGitInfo () {
       modified: fileStatus.filter(status => status.modified).length,
       deleted: fileStatus.filter(status => status.deleted).length
     }
+    return gitInfo
   } catch (e) {
+    if (e.name === 'ResolveRefError') {
+      console.info('building from non-git repo')
+    }
     return false
   }
 }

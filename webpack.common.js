@@ -18,6 +18,17 @@ const commonModules = ['core-js/stable']
 // @see: https://github.com/patternfly/patternfly-react-seed/blob/master/webpack.common.js
 async function common () {
   const gitInfo = await fetchGitInfo()
+  const rpmInfo = process.env.RPM_PACKAGE_NAME && {
+    packageName: process.env.RPM_PACKAGE_NAME,
+    packageVersion: process.env.RPM_PACKAGE_VERSION,
+    packageRelease: process.env.RPM_PACKAGE_RELEASE
+  }
+
+  const banner =
+    `${packageInfo.name} v${packageInfo.version}` +
+    (rpmInfo ? ` [rpm ${rpmInfo.packageName}-${rpmInfo.packageVersion}-${rpmInfo.packageRelease}]` : '') +
+    (gitInfo ? ` [git ${gitInfo.headOid}, change-id: ${gitInfo.changeId}, tags: ${gitInfo.headTags}]` : '') +
+    (gitInfo && gitInfo.hasChanges ? ` ${JSON.stringify(gitInfo)}` : '')
 
   // define specific fonts to be embed in CSS via data urls
   let fontsToEmbed
@@ -133,12 +144,14 @@ async function common () {
       new HtmlWebpackPlugin({
         filename: 'plugin.html',
         template: 'static/html/plugin.template.ejs',
+        extraParams: { gitInfo, rpmInfo },
         inject: true,
         chunks: ['webpack-manifest', 'vendor', 'plugin']
       }),
       new HtmlWebpackPlugin({
         filename: 'dashboard.html',
         template: 'static/html/dashboard.template.ejs',
+        extraParams: { gitInfo, rpmInfo },
         inject: true,
         chunks: ['webpack-manifest', 'vendor', 'dashboard']
       }),
@@ -152,11 +165,7 @@ async function common () {
       new webpack.HashedModuleIdsPlugin(),
 
       // emit banner comment at the top of each generated chunk
-      new webpack.BannerPlugin({
-        banner: `${packageInfo.name} v${packageInfo.version}` +
-          (gitInfo ? ` [git.${gitInfo.headOid}]` : '') +
-          (gitInfo && gitInfo.hasChanges ? ` ${JSON.stringify(gitInfo)}` : '')
-      })
+      new webpack.BannerPlugin({ banner })
     ]
   }
 

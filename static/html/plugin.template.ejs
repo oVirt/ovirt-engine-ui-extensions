@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<% if (htmlWebpackPlugin.options.extraParams) { const { gitInfo, rpmInfo } = htmlWebpackPlugin.options.extraParams %><!--
+<% if (gitInfo) { %>  Head:      <%= gitInfo.headOid %><%= gitInfo.hasChanges ? '*' : '' %>
+  Change-Id: <%= gitInfo.changeId %>
+  Tags:      <%= gitInfo.headTags.join(", ") %>
+<% } %><% if (rpmInfo) { %>  Package: <%= rpmInfo.packageName %>
+  Version: <%= rpmInfo.packageVersion %>
+  Release: <%= rpmInfo.packageRelease %>
+<% } %>--><% } %>
 <html>
 <head>
   <meta charset="utf-8">

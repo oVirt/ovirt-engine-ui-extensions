@@ -1,4 +1,5 @@
 const util = require('util')
+const tty = require('tty')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 
@@ -22,8 +23,9 @@ async function dev () {
   })
 
   if (!process.env.Q) {
+    const colors = tty.isatty(1)
     console.log('development webpack configuration:')
-    console.log(util.inspect(devConfig, { compact: false, breakLength: 120, depth: null, colors: true }))
+    console.log(util.inspect(devConfig, { compact: false, breakLength: 120, depth: null, colors }))
   }
   return devConfig
 }
