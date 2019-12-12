@@ -65,6 +65,14 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Thu Dec 12 2019 Scott J Dickerson <sdickers@redhat.com> - 1.0.11-1
+- introduce Manage vGPU dialog
+- introduce Export VM dialog
+- adapt to breaking change in webadmin UI plugin call contract for business entities
+- enable PF4 on the project, include overrides needed to work with webadmin
+- update webpack builds, add build info to chunks and entry points
+- update STDCI to add distros fc30 adn el8
+
 * Mon Sep 16 2019 Sharon Gratch <sgratch@redhat.com> - 1.0.10-1
 - remove unused devDependency sinon
 - add `yarn intl:report` to report on multiple i18n topics
