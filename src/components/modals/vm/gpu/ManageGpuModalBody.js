@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
+  Chip,
+  ChipGroup,
   Title,
   Bullseye,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
-  TextContent,
+  Stack,
+  StackItem,
   TextInput,
-  TextVariants,
-  Text,
   Toolbar,
   ToolbarGroup,
   ToolbarItem
@@ -29,6 +30,12 @@ const ManageGpuModalBody = ({
     setSearchText(value)
   }
 
+  const selectedCards = new Set(
+    gpus
+      .filter((gpu) => selectedGpus.get(gpu.cardName) === undefined ? gpu.selected : selectedGpus.get(gpu.cardName))
+      .map((gpu) => gpu.cardName)
+  )
+
   if (gpus.length === 0) {
     return (
       <Bullseye>
@@ -46,42 +53,62 @@ const ManageGpuModalBody = ({
     gpu.cardName.toLowerCase().includes(searchText.toLowerCase()) ||
     gpu.host.toLowerCase().includes(searchText.toLowerCase()))
   return (
-    <React.Fragment>
-      <TextContent>
-        <Text
-          component={TextVariants.small}
-        >
+    <Stack gutter='sm'>
+      <StackItem>
+        <span className='vgpu-modal-description'>
           {msg.vmManageGpuBodyDescription()}
-        </Text>
-      </TextContent>
-      <Toolbar>
-        <ToolbarGroup className='vgpu-search-box'>
-          <ToolbarItem className='vgpu-search-box'>
-            <TextInput
-              value={searchText}
-              placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
-              type='search'
-              onChange={onSearchBoxInput}
-              aria-label='text input'
-              className='vgpu-body-element vgpu-search-box'
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-      <GpuTable
-        gpus={filteredGpus}
-        selectedGpus={selectedGpus}
-        onGpuSelectionChange={onGpuSelectionChange}
-        className='vgpu-body-element'
-      />
-    </React.Fragment>
+        </span>
+      </StackItem>
+      <StackItem>
+        <span className='vgpu-selected-cards-chips-label'>
+          {msg.vmManageGpuBodySubTitleSelectionsCards()}
+        </span>
+        { selectedCards.size === 0 &&
+          <span className='vgpu-selected-cards-chips-label'>
+            {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
+          </span>
+        }
+        { selectedCards.size > 0 &&
+          <ChipGroup>
+            {Array.from(selectedCards).sort().map(selectedCard => (
+              <Chip key={selectedCard} onClick={() => onGpuSelectionChange(selectedCard, false)}>
+                {selectedCard}
+              </Chip>
+            ))}
+          </ChipGroup>
+        }
+      </StackItem>
+      <StackItem>
+        <Toolbar>
+          <ToolbarGroup className='vgpu-search-box'>
+            <ToolbarItem className='vgpu-search-box'>
+              <TextInput
+                value={searchText}
+                placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
+                type='search'
+                onChange={onSearchBoxInput}
+                aria-label='text input'
+                className='vgpu-search-box'
+              />
+            </ToolbarItem>
+          </ToolbarGroup>
+        </Toolbar>
+      </StackItem>
+      <StackItem className='vgpu-table-wrapper'>
+        <GpuTable
+          gpus={filteredGpus}
+          selectedGpus={selectedGpus}
+          onGpuSelectionChange={onGpuSelectionChange}
+          className='vgpu-body-element'
+        />
+      </StackItem>
+    </Stack>
   )
 }
 
 ManageGpuModalBody.propTypes = {
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
       cardName: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
@@ -92,6 +119,7 @@ ManageGpuModalBody.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
+      address: PropTypes.string,
       selected: PropTypes.bool
     })),
   selectedGpus: PropTypes.any,

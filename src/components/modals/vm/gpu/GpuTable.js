@@ -25,10 +25,11 @@ import GpuTableRowDetail from './GpuTableRowDetail'
 const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   const columns = [
     { title: msg.vmManageGpuTableCardName(), transforms: [sortable], cellFormatters: [expandable] },
-    { title: msg.vmManageGpuTableHostName(), transforms: [sortable] },
-    msg.vmManageGpuTableAvailableInstances(),
-    msg.vmManageGpuTableMaxInstances(),
-    msg.vmManageGpuTableMaxResolution()
+    msg.vmManageGpuTableNumberOfHeads(),
+    msg.vmManageGpuTableFrameRateLimiter(),
+    msg.vmManageGpuTableMaxResolution(),
+    msg.vmManageGpuTableFrameBuffer(),
+    msg.vmManageGpuTableMaxInstances()
   ]
 
   const emptyTableRows = [{
@@ -38,7 +39,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
         props: { colSpan: columns.length },
         title: (
           <Bullseye>
-            <EmptyState variant={EmptyStateVariant.small}>
+            <EmptyState variant={EmptyStateVariant.small} className='vgpu-table-empty-state'>
               <EmptyStateIcon icon={SearchIcon} />
               <Title headingLevel='h2' size='lg'>{msg.vmManageGpuTableEmptyStateTitle()}</Title>
               <EmptyStateBody>{msg.vmManageGpuTableEmptyStateBody()}</EmptyStateBody>
@@ -58,39 +59,67 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     return stringWithNumberSuffixCompare(a.cells[cellIndex], b.cells[cellIndex])
   }
 
-  const createRows = (gpus) => {
-    let parentRows = gpus.map((gpu) => {
-      const isOpen = openRows.get(gpu.id)
-      const isSelected = selectedGpus.get(gpu.id)
-      return {
-        isOpen: isOpen === true,
-        selected: isSelected === undefined ? gpu.selected : isSelected,
-        cells: [
-          gpu.cardName,
-          gpu.host,
-          handleNonAvailableValue(gpu.availableInstances),
-          handleNonAvailableValue(gpu.maxInstances),
-          handleNonAvailableValue(gpu.maxResolution)
-        ],
-        gpu: gpu
+  const createCardNameToGpusMap = (gpus) => {
+    const cardNameToGpus = new Map()
+
+    // group gpus by card name
+    gpus.forEach(gpu => {
+      if (cardNameToGpus.get(gpu.cardName) === undefined) {
+        cardNameToGpus.set(gpu.cardName, [])
       }
-    }).sort(compareRows)
+
+      cardNameToGpus.get(gpu.cardName).push(gpu)
+    })
+
+    return cardNameToGpus
+  }
+
+  const createParentRow = (gpu) => {
+    const isOpen = openRows.get(gpu.cardName)
+    const isSelected = selectedGpus.get(gpu.cardName)
+    return {
+      isOpen: isOpen === true,
+      selected: isSelected === undefined ? gpu.selected : isSelected,
+      cells: [
+        gpu.cardName,
+        handleNonAvailableValue(gpu.numberOfHeads),
+        handleNonAvailableValue(gpu.frameRateLimiter),
+        handleNonAvailableValue(gpu.maxResolution),
+        handleNonAvailableValue(gpu.frameBuffer),
+        handleNonAvailableValue(gpu.maxInstances)
+      ],
+      gpu: gpu
+    }
+  }
+
+  const createChildRow = (gpus, parentIndex) => {
+    return {
+      parent: parentIndex,
+      fullWidth: true,
+      noPadding: true,
+      cells: [
+        {
+          title: (
+            <GpuTableRowDetail gpus={gpus} />
+          )
+        }
+      ]
+    }
+  }
+
+  const createRows = (cardNameToGpus) => {
+    let parentRows = []
+    cardNameToGpus.forEach((gpus) => {
+      parentRows.push(createParentRow(gpus[0]))
+    })
+    parentRows.sort(compareRows)
     parentRows = sortBy.direction === SortByDirection.asc ? parentRows : parentRows.reverse()
 
     let allRows = []
     parentRows.forEach(parentRow => {
       let parentIndex = allRows.length
       allRows.push(parentRow)
-      allRows.push({
-        parent: parentIndex,
-        cells: [
-          {
-            title: (
-              <GpuTableRowDetail gpu={parentRow.gpu} />
-            )
-          }
-        ]
-      })
+      allRows.push(createChildRow(cardNameToGpus.get(parentRow.gpu.cardName), parentIndex))
     })
     return allRows
   }
@@ -100,11 +129,11 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   }
 
   const onSelect = (_event, isSelected, _rowIndex, rowData) => {
-    onGpuSelectionChange(rowData.gpu, isSelected)
+    onGpuSelectionChange(rowData.gpu.cardName, isSelected)
   }
 
   const onCollapse = (_event, _rowIndex, isOpen, rowData) => {
-    setOpenRows(openRows => new Map(openRows).set(rowData.gpu.id, isOpen))
+    setOpenRows(openRows => new Map(openRows).set(rowData.gpu.cardName, isOpen))
   }
 
   if (gpus.length === 0) {
@@ -117,28 +146,25 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   }
 
   return (
-    <div className='vgpu-table-wrapper'>
-      <Table
-        aria-label='Simple Table'
-        cells={columns}
-        rows={createRows(gpus)}
-        onSelect={onSelect}
-        canSelectAll={false}
-        onSort={onSort}
-        sortBy={sortBy}
-        onCollapse={onCollapse}
-      >
-        <TableHeader />
-        <TableBody />
-      </Table>
-    </div>
+    <Table
+      aria-label='Simple Table'
+      cells={columns}
+      rows={createRows(createCardNameToGpusMap(gpus))}
+      onSelect={onSelect}
+      canSelectAll={false}
+      onSort={onSort}
+      sortBy={sortBy}
+      onCollapse={onCollapse}
+    >
+      <TableHeader />
+      <TableBody />
+    </Table>
   )
 }
 
 GpuTable.propTypes = {
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
       cardName: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
@@ -149,6 +175,7 @@ GpuTable.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
+      address: PropTypes.string,
       selected: PropTypes.bool
     })),
   selectedGpus: PropTypes.any,

@@ -29,7 +29,8 @@ ModalPattern.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onClose: PropTypes.func,
   footer: PropTypes.node,
-  children: PropTypes.node
+  children: PropTypes.node,
+  className: PropTypes.string
 }
 
 ModalPattern.defaultProps = {
@@ -38,7 +39,8 @@ ModalPattern.defaultProps = {
   title: '',
   onClose: noop,
   footer: null,
-  children: null
+  children: null,
+  className: ''
 }
 
 export default ModalPattern

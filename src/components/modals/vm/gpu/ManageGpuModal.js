@@ -17,15 +17,15 @@ class ManageGpuModal extends StatefulModalPattern {
     }
   }
 
-  onGpuSelectionChange (gpu, isSelected) {
+  onGpuSelectionChange (cardName, isSelected) {
     this.setState(state => ({
-      selectedGpus: state.selectedGpus.set(gpu.id, isSelected)
+      selectedGpus: state.selectedGpus.set(cardName, isSelected)
     }))
   }
 
   onSelect () {
     const selectedGpus = this.props.gpus.filter(gpu => {
-      const rowSelected = this.state.selectedGpus.get(gpu.id)
+      const rowSelected = this.state.selectedGpus.get(gpu.cardName)
       return rowSelected === undefined ? gpu.selected : rowSelected
     })
     this.props.onSelectButtonClick(selectedGpus)
@@ -35,12 +35,14 @@ class ManageGpuModal extends StatefulModalPattern {
   render () {
     const {
       isLoading,
+      vmName,
       gpus
     } = this.props
 
     const modalBody = (
       <Spinner loading={isLoading}>
         <ManageGpuModalBody
+          vmName={vmName}
           gpus={gpus}
           selectedGpus={this.state.selectedGpus}
           onGpuSelectionChange={this.onGpuSelectionChange}
@@ -75,7 +77,6 @@ ManageGpuModal.propTypes = {
   isLoading: PropTypes.bool,
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
       cardName: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
@@ -86,6 +87,7 @@ ManageGpuModal.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
+      address: PropTypes.string,
       selected: PropTypes.bool
     })),
   onSelectButtonClick: PropTypes.func

@@ -1,70 +1,71 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  TextContent,
-  TextList,
-  TextListVariants,
-  TextListItem,
-  TextListItemVariants
-} from '@patternfly/react-core'
+  Table,
+  TableBody,
+  TableHeader,
+  TableVariant
+} from '@patternfly/react-table'
 import { msg } from '_/intl-messages'
 import { handleNonAvailableValue } from './handleNonAvailableValue'
 
-const DataList = ({ children }) => {
+const cellWidth = (width) => () => ({
+  width: width
+})
+
+const columns = [
+  msg.vmManageGpuTableHostName(),
+  { title: msg.vmManageGpuTableVendor(), transforms: [cellWidth(160)] },
+  { title: msg.vmManageGpuTableProduct(), transforms: [cellWidth(180)] },
+  { title: msg.vmManageGpuTableAddress(), transforms: [cellWidth(180)] },
+  { title: msg.vmManageGpuTableAvailableInstances(), transforms: [cellWidth(120)] }
+]
+
+const createRows = (gpus) => {
+  return gpus.map((gpu) => {
+    return {
+      cells: [
+        gpu.host,
+        handleNonAvailableValue(gpu.vendor),
+        handleNonAvailableValue(gpu.product),
+        handleNonAvailableValue(gpu.address),
+        handleNonAvailableValue(gpu.availableInstances)
+      ]
+    }
+  })
+}
+
+const GpuTableRowDetail = ({gpus}) => {
   return (
-    <TextContent>
-      <TextList component={TextListVariants.dl}>
-        { children }
-      </TextList>
-    </TextContent>
-  )
-}
-
-DataList.propTypes = {
-  children: PropTypes.node
-}
-
-const DataListItem = ({ label, value }) => {
-  return (
-    <React.Fragment>
-      <TextListItem component={TextListItemVariants.dt}>{ label }</TextListItem>
-      <TextListItem component={TextListItemVariants.dd}>{ handleNonAvailableValue(value) }</TextListItem>
-    </React.Fragment>
-  )
-}
-
-DataListItem.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.node
-}
-
-const GpuTableRowDetail = ({gpu}) => {
-  return (
-    <DataList>
-      <DataListItem label={msg.vmManageGpuTableVendor()} value={gpu.vendor} />
-      <DataListItem label={msg.vmManageGpuTableProduct()} value={gpu.product} />
-      <DataListItem label={msg.vmManageGpuTableNumberOfHeads()} value={gpu.numberOfHeads} />
-      <DataListItem label={msg.vmManageGpuTableFrameRateLimiter()} value={gpu.frameRateLimiter} />
-      <DataListItem label={msg.vmManageGpuTableFrameBuffer()} value={gpu.frameBuffer} />
-    </DataList>
+    <Table
+      aria-label='Simple Table'
+      variant={TableVariant.compact}
+      cells={columns}
+      rows={createRows(gpus)}
+      className={'vgpu-detail-table'}
+    >
+      <TableHeader />
+      <TableBody />
+    </Table>
   )
 }
 
 GpuTableRowDetail.propTypes = {
-  gpu: PropTypes.shape({
-    id: PropTypes.string,
-    cardName: PropTypes.string,
-    host: PropTypes.string,
-    availableInstances: PropTypes.number,
-    maxInstances: PropTypes.number,
-    maxResolution: PropTypes.string,
-    numberOfHeads: PropTypes.number,
-    frameBuffer: PropTypes.string,
-    frameRateLimiter: PropTypes.number,
-    product: PropTypes.string,
-    vendor: PropTypes.string,
-    selected: PropTypes.bool
-  })
+  gpus: PropTypes.arrayOf(
+    PropTypes.shape({
+      cardName: PropTypes.string,
+      host: PropTypes.string,
+      availableInstances: PropTypes.number,
+      maxInstances: PropTypes.number,
+      maxResolution: PropTypes.string,
+      numberOfHeads: PropTypes.number,
+      frameBuffer: PropTypes.string,
+      frameRateLimiter: PropTypes.number,
+      product: PropTypes.string,
+      vendor: PropTypes.string,
+      address: PropTypes.string,
+      selected: PropTypes.bool
+    }))
 }
 
 export default GpuTableRowDetail

@@ -766,7 +766,7 @@ const messageDescriptors = {
 
   vmManageGpuEmptyStateTitle: {
     id: 'vm.gpu.emptyState.title',
-    defaultMessage: 'No available hosts with vGPUs attached',
+    defaultMessage: 'No hosts with vGPUs attached',
     description: 'title of the empty state component'
   },
 
@@ -778,13 +778,25 @@ const messageDescriptors = {
 
   vmManageGpuBodyDescription: {
     id: 'vm.gpu.body.descrption',
-    defaultMessage: 'Select a vGPU on host(s) that you would like to use. The selected host(s) will automatically be pinned to the VM',
+    defaultMessage: 'Select vGPU(s) that you would like to use with this VM. ',
     description: 'Manage vGPU dialog body description'
+  },
+
+  vmManageGpuBodySubTitleSelectionsCards: {
+    id: 'vm.gpu.body.selections.cards.label',
+    defaultMessage: 'Selected card name(s)',
+    description: 'Manage vGPU dialog body label `Card name(s)`'
+  },
+
+  vmManageGpuBodySubTitleSelectionsCardsEmpty: {
+    id: 'vm.gpu.body.subtitle.selections.cards.empty',
+    defaultMessage: 'No cards are currently selected',
+    description: 'Manage vGPU dialog body empty message `Card name(s)`'
   },
 
   vmManageGpuSearchButtonPlaceholder: {
     id: 'vm.gpu.body.search.placeholder',
-    defaultMessage: 'Enter a search term',
+    defaultMessage: 'Search for a vGPU device or host',
     description: 'Manage vGPU dialog search field placeholder'
   },
 
@@ -822,6 +834,12 @@ const messageDescriptors = {
     id: 'vm.gpu.table.product',
     defaultMessage: 'Product',
     description: 'label of `Product` in VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableAddress: {
+    id: 'vm.gpu.table.address',
+    defaultMessage: 'Address',
+    description: 'label of `Address` in VM Manage vGPU dialog table'
   },
 
   vmManageGpuTableNumberOfHeads: {

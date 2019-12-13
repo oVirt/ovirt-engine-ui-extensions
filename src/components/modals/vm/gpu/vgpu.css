@@ -1,12 +1,35 @@
+.vgpu-modal .modal-lg {
+    width: 1100px;
+}
+
+.vgpu-modal-description {
+    font-size: var(--pf-global--FontSize--sm);
+    color: var(--pf-global--Color--300)
+}
+
 .vgpu-search-box {
     width: 100%;
 }
 
-.vgpu-body-element {
-    margin-top: var(--pf-global--spacer--md);
+.vgpu-selected-cards-chips-label {
+    font-size: var(--pf-global--FontSize--sm);
+    color: var(--pf-global--color--200);
+    padding-right: 20px;
 }
 
 .vgpu-table-wrapper {
     height: 500px;
     overflow: auto;
+}
+
+.vgpu-table-empty-state {
+    height: 380px;
+}
+
+.vgpu-detail-table > * > tr > :first-child {
+    padding-left: 0px;
+}
+
+.vgpu-detail-table > * > tr > :last-child {
+    padding-right: 20px;
 }

@@ -13,6 +13,7 @@ function showVmManageGpuModal (vm) {
         container={container}
         onExited={destroyModal}
         title={msg.vmManageGpuDialogTitle()}
+        className='vgpu-modal'
       />
     </GpuDataProvider>
   ))

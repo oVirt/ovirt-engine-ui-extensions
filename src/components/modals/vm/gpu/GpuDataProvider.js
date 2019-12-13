@@ -27,8 +27,12 @@ const GpuDataProvider = ({children, vmId}) => {
     return engineGet(`api/hosts/` + hostId + '/devices')
   }
 
-  const fetchHostsMDevTypes = async (hosts) => {
+  const fetchHostsMDevTypes = async (hostsEnvelope) => {
+    if (!hostsEnvelope || !hostsEnvelope.host) {
+      return []
+    }
     let hostDevices = []
+    let hosts = hostsEnvelope.host
 
     for (let i = 0; i < hosts.length; i++) {
       let devices = await fetchHostDevices(hosts[i].id)
@@ -46,6 +50,7 @@ const GpuDataProvider = ({children, vmId}) => {
             host: hosts[i],
             product: get(hostDevice, ['product', 'name']),
             vendor: get(hostDevice, ['vendor', 'name']),
+            address: hostDevice.name,
             mDevTypes: mdevs
           })
         }
@@ -74,16 +79,22 @@ const GpuDataProvider = ({children, vmId}) => {
     let gpus = []
     hostMDevTypes.forEach(hostMDevType => {
       hostMDevType.mDevTypes.forEach(mDevType => {
-        gpus.push(createGpu(hostMDevType.host, hostMDevType.product, hostMDevType.vendor, mDevType, selectedMdevs.includes(mDevType.name)))
+        gpus.push(
+          createGpu(
+            hostMDevType.host,
+            hostMDevType.product,
+            hostMDevType.vendor,
+            hostMDevType.address,
+            mDevType,
+            selectedMdevs.includes(mDevType.name)))
       })
     })
     return gpus
   }
 
-  const createGpu = (host, product, vendor, mDevType, selected) => {
+  const createGpu = (host, product, vendor, address, mDevType, selected) => {
     const descriptionKeyValues = parseMDevDescription(mDevType.description)
     return {
-      id: mDevType.name + ':' + host.name,
       cardName: mDevType.name,
       host: host.name,
       availableInstances: parseStringToIntSafely(mDevType.available_instances),
@@ -94,6 +105,7 @@ const GpuDataProvider = ({children, vmId}) => {
       frameRateLimiter: parseStringToIntSafely(descriptionKeyValues.get('frl_config')),
       product: product,
       vendor: vendor,
+      address: address,
       selected: selected
     }
   }
@@ -122,39 +134,17 @@ const GpuDataProvider = ({children, vmId}) => {
     return undefined
   }
 
-  const mergeDuplicateGpus = (gpus) => {
-    let removedDuplicates = new Map()
-    gpus.forEach(gpu => {
-      let mapGpu = removedDuplicates.get(gpu.id)
-      if (mapGpu === undefined) {
-        removedDuplicates.set(gpu.id, gpu)
-      } else {
-        if (isNumber(mapGpu.maxInstances) && isNumber(gpu.maxInstances)) {
-          mapGpu.maxInstances += gpu.maxInstances
-        } else {
-          mapGpu.maxInstances = undefined
-        }
-        if (isNumber(mapGpu.availableInstances) && isNumber(gpu.availableInstances)) {
-          mapGpu.availableInstances += gpu.availableInstances
-        } else {
-          mapGpu.availableInstances = undefined
-        }
-      }
-    })
-    return Array.from(removedDuplicates.values())
-  }
-
   const fetchData = async () => {
     const vm = await fetchVm()
     const cluster = await fetchCluster(vm.cluster.id)
     const hosts = await fetchHosts(cluster.name)
-    const hostMDevTypes = await fetchHostsMDevTypes(hosts.host)
+    const hostMDevTypes = await fetchHostsMDevTypes(hosts)
 
     allCustomProperties = getCustomProperties(vm)
     const selectedMdevs = getSelectedMdevs(allCustomProperties)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
 
-    return mergeDuplicateGpus(gpus)
+    return gpus
   }
 
   const updateCustomProperties = (selectedGpus) => {
@@ -171,7 +161,7 @@ const GpuDataProvider = ({children, vmId}) => {
     }
   }
 
-  const saveGpus = (selectedGpus) => {
+  const saveVm = (selectedGpus) => {
     updateCustomProperties(selectedGpus)
     const requestBody = {
       'custom_properties': {
@@ -200,7 +190,7 @@ const GpuDataProvider = ({children, vmId}) => {
         // pass relevant data and operations to child component
         return React.cloneElement(child, {
           gpus: data,
-          onSelectButtonClick: saveGpus
+          onSelectButtonClick: saveVm
         })
       }}
 
