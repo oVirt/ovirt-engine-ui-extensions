@@ -1,15 +1,9 @@
-import '@patternfly/react-core/dist/styles/base.css'
 import {
   Bullseye,
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
   EmptyStateIcon,
-  TextContent,
-  TextList,
-  TextListVariants,
-  TextListItem,
-  TextListItemVariants,
   Title
 } from '@patternfly/react-core'
 import { expandable, sortable, SortByDirection, Table, TableBody, TableHeader } from '@patternfly/react-table'
@@ -17,6 +11,9 @@ import { SearchIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { msg } from '_/intl-messages'
+import { stringWithNumberSuffixCompare } from '_/utils/compare'
+import { handleNonAvailableValue } from './handleNonAvailableValue'
+import GpuTableRowDetail from './GpuTableRowDetail'
 
 const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   const columns = [
@@ -49,28 +46,9 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
 
   const [openRows, setOpenRows] = React.useState(new Map())
 
-  const stringCompare = (a, b) => {
-    return a < b ? -1 : a > b ? 1 : 0
-  }
-
   const compareRows = (a, b) => {
     let cellIndex = sortBy.index - 2
-    let aNumberPart = parseInt(a.cells[cellIndex].match(/[0-9]+$/))
-    let aStringPart = a.cells[cellIndex].replace(/[0-9]+$/, '')
-    let bNumberPart = parseInt(b.cells[cellIndex].match(/[0-9]+$/))
-    let bStringPart = b.cells[cellIndex].replace(/[0-9]+$/, '')
-
-    if (!isNaN(aNumberPart) && !isNaN(bNumberPart)) {
-      if (aStringPart !== bStringPart) {
-        return stringCompare(aStringPart, bStringPart)
-      } else {
-        let aNumber = parseInt(aNumberPart, 10)
-        let bNumber = parseInt(bNumberPart, 10)
-        return aNumber - bNumber
-      }
-    } else {
-      return stringCompare(a.cells[cellIndex], b.cells[cellIndex])
-    }
+    return stringWithNumberSuffixCompare(a.cells[cellIndex], b.cells[cellIndex])
   }
 
   const createRows = (gpus) => {
@@ -83,9 +61,9 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
         cells: [
           gpu.cardName,
           gpu.host,
-          gpu.availableInstances === undefined ? 'N/A' : gpu.availableInstances,
-          gpu.maxInstances === undefined ? 'N/A' : gpu.maxInstances,
-          gpu.maxResolution === undefined ? 'N/A' : gpu.maxResolution
+          handleNonAvailableValue(gpu.availableInstances),
+          handleNonAvailableValue(gpu.maxInstances),
+          handleNonAvailableValue(gpu.maxResolution)
         ],
         gpu: gpu
       }
@@ -101,22 +79,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
         cells: [
           {
             title: (
-              <React.Fragment>
-                <TextContent>
-                  <TextList component={TextListVariants.dl}>
-                    <TextListItem component={TextListItemVariants.dt}>{msg.vmManageGpuTableVendor()}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>{parentRow.gpu.vendor === undefined ? 'N/A' : parentRow.gpu.vendor}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dt}>{msg.vmManageGpuTableProduct()}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>{parentRow.gpu.product === undefined ? 'N/A' : parentRow.gpu.product}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dt}>{msg.vmManageGpuTableNumberOfHeads()}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>{parentRow.gpu.numberOfHeads === undefined ? 'N/A' : parentRow.gpu.numberOfHeads}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dt}>{msg.vmManageGpuTableFrameRateLimiter()}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>{parentRow.gpu.frameRateLimiter === undefined ? 'N/A' : parentRow.gpu.frameRateLimiter}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dt}>{msg.vmManageGpuTableFrameBuffer()}</TextListItem>
-                    <TextListItem component={TextListItemVariants.dd}>{parentRow.gpu.frameBuffer === undefined ? 'N/A' : parentRow.gpu.frameBuffer}</TextListItem>
-                  </TextList>
-                </TextContent>
-              </React.Fragment>
+              <GpuTableRowDetail gpu={parentRow.gpu} />
             )
           }
         ]
@@ -134,11 +97,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   }
 
   const onCollapse = (_event, _rowIndex, isOpen, rowData) => {
-    setOpenRows(openRows => {
-      const tmp = new Map(openRows)
-      tmp.set(rowData.gpu.id, isOpen)
-      return tmp
-    })
+    setOpenRows(openRows => new Map(openRows).set(rowData.gpu.id, isOpen))
   }
 
   if (gpus.length === 0) {
@@ -148,22 +107,23 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
         <TableBody />
       </Table>
     )
-  } else {
-    return (
-      <Table
-        aria-label='Simple Table'
-        cells={columns}
-        rows={createRows(gpus)}
-        onSelect={onSelect}
-        canSelectAll={false}
-        onSort={onSort}
-        sortBy={sortBy}
-        onCollapse={onCollapse}>
-        <TableHeader />
-        <TableBody />
-      </Table>
-    )
   }
+
+  return (
+    <Table
+      aria-label='Simple Table'
+      cells={columns}
+      rows={createRows(gpus)}
+      onSelect={onSelect}
+      canSelectAll={false}
+      onSort={onSort}
+      sortBy={sortBy}
+      onCollapse={onCollapse}
+    >
+      <TableHeader />
+      <TableBody />
+    </Table>
+  )
 }
 
 GpuTable.propTypes = {

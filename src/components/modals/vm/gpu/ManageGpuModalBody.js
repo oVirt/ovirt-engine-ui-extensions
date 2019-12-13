@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import '@patternfly/react-core/dist/styles/base.css'
 import {
   Title,
   Bullseye,
@@ -40,43 +39,43 @@ const ManageGpuModalBody = ({
         </EmptyState>
       </Bullseye>
     )
-  } else {
-    const filteredGpus =
-      gpus.filter(gpu => searchText === '' ||
-      gpu.cardName.toLowerCase().includes(searchText.toLowerCase()) ||
-      gpu.host.toLowerCase().includes(searchText.toLowerCase()))
-    return (
-      <React.Fragment>
-        <TextContent>
-          <Text
-            component={TextVariants.small}
-          >
-            {msg.vmManageGpuBodyDescription()}
-          </Text>
-        </TextContent>
-        <Toolbar>
-          <ToolbarGroup className='vgpu-search-box'>
-            <ToolbarItem className='vgpu-search-box'>
-              <TextInput
-                value={searchText}
-                placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
-                type='search'
-                onChange={onSearchBoxInput}
-                aria-label='text input'
-                className='vgpu-body-element vgpu-search-box'
-              />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </Toolbar>
-        <GpuTable
-          gpus={filteredGpus}
-          selectedGpus={selectedGpus}
-          onGpuSelectionChange={onGpuSelectionChange}
-          className='vgpu-body-element'
-        />
-      </React.Fragment>
-    )
   }
+
+  const filteredGpus =
+    gpus.filter(gpu => searchText === '' ||
+    gpu.cardName.toLowerCase().includes(searchText.toLowerCase()) ||
+    gpu.host.toLowerCase().includes(searchText.toLowerCase()))
+  return (
+    <React.Fragment>
+      <TextContent>
+        <Text
+          component={TextVariants.small}
+        >
+          {msg.vmManageGpuBodyDescription()}
+        </Text>
+      </TextContent>
+      <Toolbar>
+        <ToolbarGroup className='vgpu-search-box'>
+          <ToolbarItem className='vgpu-search-box'>
+            <TextInput
+              value={searchText}
+              placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
+              type='search'
+              onChange={onSearchBoxInput}
+              aria-label='text input'
+              className='vgpu-body-element vgpu-search-box'
+            />
+          </ToolbarItem>
+        </ToolbarGroup>
+      </Toolbar>
+      <GpuTable
+        gpus={filteredGpus}
+        selectedGpus={selectedGpus}
+        onGpuSelectionChange={onGpuSelectionChange}
+        className='vgpu-body-element'
+      />
+    </React.Fragment>
+  )
 }
 
 ManageGpuModalBody.propTypes = {

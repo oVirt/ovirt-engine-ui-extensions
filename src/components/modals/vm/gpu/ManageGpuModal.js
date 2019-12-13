@@ -1,28 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { bindMethods, excludeKeys, Button, Spinner } from 'patternfly-react'
+import { excludeKeys, Spinner } from 'patternfly-react'
 import { msg } from '_/intl-messages'
 import ManageGpuModalBody from './ManageGpuModalBody'
 import StatefulModalPattern from '../../StatefulModalPattern'
+import { Button } from '@patternfly/react-core'
 
 class ManageGpuModal extends StatefulModalPattern {
   constructor (props) {
     super(props)
-    bindMethods(this, ['onSelect', 'onGpuSelectionChange'])
-    this.state = {selectedGpus: new Map()}
+    this.onSelect = this.onSelect.bind(this)
+    this.onGpuSelectionChange = this.onGpuSelectionChange.bind(this)
+    this.state = {
+      ...this.state,
+      selectedGpus: new Map()
+    }
   }
 
   onGpuSelectionChange (gpu, isSelected) {
-    const tmp = new Map(this.state.selectedGpus)
-    tmp.set(gpu.id, isSelected)
-    this.setState({
-      selectedGpus: tmp
-    })
+    this.setState(state => ({
+      selectedGpus: state.selectedGpus.set(gpu.id, isSelected)
+    }))
   }
 
   onSelect () {
-    let selectedGpus = this.props.gpus.filter(gpu => {
-      let rowSelected = this.state.selectedGpus.get(gpu.id)
+    const selectedGpus = this.props.gpus.filter(gpu => {
+      const rowSelected = this.state.selectedGpus.get(gpu.id)
       return rowSelected === undefined ? gpu.selected : rowSelected
     })
     this.props.onSelectButtonClick(selectedGpus)
@@ -47,10 +50,14 @@ class ManageGpuModal extends StatefulModalPattern {
 
     const modalButtons = (
       <React.Fragment>
-        <Button onClick={this.close}>
+        <Button variant='link' onClick={this.close}>
           {msg.cancelButton()}
         </Button>
-        <Button bsStyle='primary' onClick={this.onSelect} disabled={gpus.length === 0}>
+        <Button
+          variant='primary'
+          onClick={this.onSelect}
+          isDisabled={gpus.length === 0}
+        >
           {msg.saveButton()}
         </Button>
       </React.Fragment>

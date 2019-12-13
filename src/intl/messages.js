@@ -122,6 +122,12 @@ const messageDescriptors = {
     description: 'text shown to compare currently used vs. total value'
   },
 
+  nonAvailableValue: {
+    id: 'common.nonAvailableValue',
+    defaultMessage: 'N/A',
+    description: 'text shown when a value is not available'
+  },
+
   // dashboard related strings
 
   dashboardTitle: {

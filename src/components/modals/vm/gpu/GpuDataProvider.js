@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { webadminToastTypes } from '../../../../constants'
-import { msg } from '../../../../intl-messages'
-import getPluginApi from '../../../../plugin-api'
-import { engineGet, enginePut } from '../../../../utils/fetch'
-import DataProvider from '../../../helper/DataProvider'
+import { webadminToastTypes } from '_/constants'
+import { msg } from '_/intl-messages'
+import getPluginApi from '_/plugin-api'
+import { engineGet, enginePut } from '_/utils/fetch'
+import { isNumber } from '_/utils/type-validation'
+import DataProvider from '_/components/helper/DataProvider'
+import get from 'lodash/get'
 
 const GpuDataProvider = ({children, vmId}) => {
   let allCustomProperties = []
@@ -37,10 +39,15 @@ const GpuDataProvider = ({children, vmId}) => {
 
       for (let y = 0; y < devices.host_device.length; y++) {
         let hostDevice = devices.host_device[y]
-        if (hostDevice.m_dev_types && hostDevice.m_dev_types.m_dev_type && hostDevice.m_dev_types.m_dev_type.length > 0) {
+        if (get(hostDevice, ['m_dev_types', 'm_dev_type']) && hostDevice.m_dev_types.m_dev_type.length > 0) {
           let mdevs = []
           hostDevice.m_dev_types.m_dev_type.forEach(mDevType => mdevs.push(mDevType))
-          hostDevices.push({host: hosts[i], product: hostDevice.product.name, vendor: hostDevice.vendor.name, mDevTypes: mdevs})
+          hostDevices.push({
+            host: hosts[i],
+            product: get(hostDevice, ['product', 'name']),
+            vendor: get(hostDevice, ['vendor', 'name']),
+            mDevTypes: mdevs
+          })
         }
       }
     }
@@ -108,11 +115,11 @@ const GpuDataProvider = ({children, vmId}) => {
   }
 
   const parseStringToIntSafely = (stringValue) => {
-    const intValue = parseInt(stringValue)
-    if (isNaN(intValue)) {
-      return undefined
+    const parsedValue = parseInt(stringValue)
+    if (isNumber(parsedValue)) {
+      return parsedValue
     }
-    return intValue
+    return undefined
   }
 
   const mergeDuplicateGpus = (gpus) => {
@@ -122,12 +129,12 @@ const GpuDataProvider = ({children, vmId}) => {
       if (mapGpu === undefined) {
         removedDuplicates.set(gpu.id, gpu)
       } else {
-        if (mapGpu.maxInstances && gpu.maxInstances) {
+        if (isNumber(mapGpu.maxInstances) && isNumber(gpu.maxInstances)) {
           mapGpu.maxInstances += gpu.maxInstances
         } else {
           mapGpu.maxInstances = undefined
         }
-        if (mapGpu.availableInstances && gpu.availableInstances) {
+        if (isNumber(mapGpu.availableInstances) && isNumber(gpu.availableInstances)) {
           mapGpu.availableInstances += gpu.availableInstances
         } else {
           mapGpu.availableInstances = undefined

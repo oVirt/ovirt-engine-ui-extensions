@@ -63,7 +63,7 @@ export async function enginePost (relativePath, body, extraHeaders) {
  * @example
  * ```
  * const body = JSON.stringify({ host: { id: targetHostId } })
- * const json = await enginePost(`api/vms/${vmId}/migrate`, body)
+ * const json = await enginePut(`api/vms/${vmId}/migrate`, body)
  * ```
  */
 export async function enginePut (relativePath, body, extraHeaders) {
