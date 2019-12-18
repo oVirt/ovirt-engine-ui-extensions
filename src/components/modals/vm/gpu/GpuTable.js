@@ -6,7 +6,14 @@ import {
   EmptyStateIcon,
   Title
 } from '@patternfly/react-core'
-import { expandable, sortable, SortByDirection, Table, TableBody, TableHeader } from '@patternfly/react-table'
+import {
+  expandable,
+  sortable,
+  SortByDirection,
+  Table,
+  TableBody,
+  TableHeader
+} from '@patternfly/react-table'
 import { SearchIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -110,19 +117,21 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   }
 
   return (
-    <Table
-      aria-label='Simple Table'
-      cells={columns}
-      rows={createRows(gpus)}
-      onSelect={onSelect}
-      canSelectAll={false}
-      onSort={onSort}
-      sortBy={sortBy}
-      onCollapse={onCollapse}
-    >
-      <TableHeader />
-      <TableBody />
-    </Table>
+    <div className='vgpu-table-wrapper'>
+      <Table
+        aria-label='Simple Table'
+        cells={columns}
+        rows={createRows(gpus)}
+        onSelect={onSelect}
+        canSelectAll={false}
+        onSort={onSort}
+        sortBy={sortBy}
+        onCollapse={onCollapse}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
+    </div>
   )
 }
 
