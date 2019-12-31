@@ -60,9 +60,7 @@ async function exportVm (vmId, vmName, sdId, collapseSnapshots) {
     )
   }
   const requestBody = {}
-  if (collapseSnapshots) {
-    requestBody['discard_snapshots'] = true
-  }
+  requestBody['discard_snapshots'] = !!collapseSnapshots
 
   if (vmName) {
     requestBody['vm'] = {
