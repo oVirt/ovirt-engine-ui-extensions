@@ -89,7 +89,9 @@ class VmExportModal extends StatefulModalPattern {
         <Stack gutter='md'>
           <StackItem>
             {this.state.error && (
-              <Alert variant='danger' isInline title={this.state.error} />
+              <Alert variant='danger' isInline title={msg.exportVmErrorTitle()}>
+                {this.state.error}
+              </Alert>
             )}
           </StackItem>
           <StackItem>
@@ -182,9 +184,14 @@ class VmExportModal extends StatefulModalPattern {
       this.state.vmName,
       this.state.selectedStorageDomain,
       this.state.shouldCollapseSnapshots
-    ).then(res =>
-      this.close()
-    ).catch(e => {
+    ).then(res => {
+      console.log(JSON.stringify(res))
+      if (res.status === 'failed') {
+        this.setState({ error: res['fault']['detail'] })
+      } else {
+        this.close()
+      }
+    }).catch(e => {
       this.setState({ error: e.message })
       throw new Error(this.state.error)
     })

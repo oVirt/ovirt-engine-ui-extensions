@@ -739,6 +739,11 @@ const messageDescriptors = {
     defaultMessage: '{vmName} is based on a thin template, make sure the template\'s disks are present on the target storage domain',
     description: 'message shown when thin template disk are not present on target SD'
   },
+  exportVmErrorTitle: {
+    id: 'export.vm.exportFailedTitle',
+    defaultMessage: 'Export VM Failed',
+    description: 'title for the alert box shown when ovirt-engine returns an error'
+  },
   // manage VM's vGPU modal dialog related strings
 
   vmManageGpuDataError: {
