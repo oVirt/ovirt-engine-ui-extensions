@@ -127,18 +127,20 @@ const WizardPattern = ({
         />
       </Wizard.Body>
       <Wizard.Footer>
-        <Button bsStyle='default' className='btn-cancel' onClick={onHideClick}>
+        <Button bsStyle='default' className='btn-cancel' onClick={onHideClick} id={`${id}-action-cancel`}>
           {cancelText}
         </Button>
         <Button
           bsStyle='default'
           onClick={onBackClick}
           disabled={prevStepUnreachable}
+          id={`${id}-action-previous-step`}
         >
           <Icon type='fa' name='angle-left' />
           {backText}
         </Button>
         <Button
+          id={onFinalStep ? `${id}-action-finish` : `${id}-action-next-step`}
           bsStyle='primary'
           onClick={onFinalStep ? onFinalStepClick : onNextClick}
           disabled={nextStepUnreachable}

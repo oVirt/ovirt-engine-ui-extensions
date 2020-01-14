@@ -17,7 +17,9 @@ function addVmManageGpuButton () {
       showVmManageGpuModal(parent)
     },
 
-    index: 2
+    index: 2,
+
+    id: 'VmManageGpu'
   })
 }
 
@@ -38,7 +40,9 @@ function addVmMigrateButton () {
       return selectedUpVms.length > 0 || config.useFakeData
     },
 
-    index: 8
+    index: 8,
+
+    id: 'VmMigrate'
 
   })
 }
@@ -60,8 +64,9 @@ function addHostVmMigrateButton () {
       return selectedUpVms.length > 0 || config.useFakeData
     },
 
-    index: 5
+    index: 5,
 
+    id: 'HostVmMigrate'
   })
 }
 
@@ -82,7 +87,9 @@ function addVmExportButton () {
       return enable
     },
 
-    index: 4
+    index: 4,
+
+    id: 'VmExport'
 
   })
 }
@@ -103,7 +110,9 @@ function addClusterUpgradeButton () {
       return selectedClusters.length === 1
     },
 
-    index: 3
+    index: 3,
+
+    id: 'ClusterUpgrade'
 
   })
 }

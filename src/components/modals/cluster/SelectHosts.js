@@ -37,7 +37,7 @@ class SelectHosts extends React.Component {
     const headerFormatText = (label, { column }) => <Table.Heading {...column.header.props}>{label}</Table.Heading>
     const headerFormatSelect = (label, { column }, ...rest) =>
       Table.selectionHeaderCellFormatter({
-        cellProps: { id: 'selectAll' },
+        cellProps: {},
         column,
         rows: this.state.sortedHosts.map(host => ({
           id: host.id,
