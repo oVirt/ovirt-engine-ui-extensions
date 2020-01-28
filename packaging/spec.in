@@ -65,6 +65,10 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Jan 28 2020 Sharon Gratch <sgratch@redhat.com> - 1.0.13-1
+- VM export dialog:  display the error returned from the backend
+- vGPU dialog: code improvements, Make vGPU table scrollable, table redesign + summary section
+
 * Wed Jan 8 2020 Sharon Gratch <sgratch@redhat.com> - 1.0.12-1
 - refactoring of VM Migrate dialog components
 - fix a bug by setting discard_snapshots explictly in code
