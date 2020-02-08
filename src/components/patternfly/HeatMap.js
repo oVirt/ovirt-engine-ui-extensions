@@ -7,6 +7,7 @@ import d3 from 'd3'
 //  http://www.patternfly.org/pattern-library/data-visualization/heat-map/
 
 // TODO(vs) rewrite in pure React & consider contributing to patternfly-react
+// TODO: PF4 tooltip
 
 class HeatMap extends React.Component {
   componentDidMount () {

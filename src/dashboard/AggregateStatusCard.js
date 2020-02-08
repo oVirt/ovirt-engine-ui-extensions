@@ -1,52 +1,89 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { msg } from '../intl-messages'
-import { formatNumber0D } from '../utils/intl'
-import Tooltip from '../components/bootstrap/Tooltip'
+import { msg } from '_/intl-messages'
+import { formatNumber0D } from '_/utils/intl'
+import { inventoryStatus as inventoryStatusDataShape } from './dataShapes'
 
-// PatternFly reference:
-//  http://www.patternfly.org/pattern-library/cards/aggregate-status-card/
+import { Card, CardHeader, CardBody, Tooltip } from '@patternfly/react-core'
+import {
+  EnterpriseIcon, ClusterIcon, ScreenIcon, StorageDomainIcon, VolumeIcon,
+  VirtualMachineIcon, BellIcon, QuestionCircleIcon, ErrorCircleOIcon, WarningTriangleIcon,
+  FlagIcon, OkIcon, ArrowAltCircleUpIcon, ArrowAltCircleDownIcon
+} from '@patternfly/react-icons'
 
-// TODO(vs) replace with
-//  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/Cards/AggregateStatusCard
+/* eslint-disable key-spacing */
+const HEADER_ICON = {
+  'building'       : <EnterpriseIcon height='1.1rem' width='1.1rem' />,
+  'cluster'        : <ClusterIcon height='1.1rem' width='1.1rem' />,
+  'screen'         : <ScreenIcon height='1.1rem' width='1.1rem' />,
+  'storage-domain' : <StorageDomainIcon height='1.1rem' width='1.1rem' />,
+  'volume'         : <VolumeIcon height='1.1rem' width='1.1rem' />,
+  'virtual-machine': <VirtualMachineIcon height='1.1rem' width='1.1rem' />,
+  'bell'           : <BellIcon height='1.1rem' width='1.1rem' />
+}
+
+const STATUS_TYPE = {
+  up: {
+    text: msg.dashboardStatusTypeUp(),
+    iconClass: <ArrowAltCircleUpIcon style={{height: '15px'}} />
+  },
+  down: {
+    text: msg.dashboardStatusTypeDown(),
+    iconClass: <ArrowAltCircleDownIcon style={{height: '15px'}} />
+  },
+  error: {
+    text: msg.dashboardStatusTypeError(),
+    iconClass: <ErrorCircleOIcon style={{color: 'var(--pf-global--danger-color--100)', height: '15px'}} />
+  },
+  warning: {
+    text: msg.dashboardStatusTypeWarning(),
+    iconClass: <WarningTriangleIcon style={{color: 'var(--pf-global--warning-color--100)', height: '15px'}} />
+  },
+  alert: {
+    text: msg.dashboardStatusTypeAlert(),
+    iconClass: <FlagIcon style={{height: '15px'}} />
+  }
+}
 
 const AggregateStatusCard = ({
   data: { totalCount, statuses },
-  title, mainIconClass, statusTypeToText, statusTypeToIconClass,
-  noStatusText, noStatusIconClass, onTotalCountClick, onStatusCountClick
+  title,
+  mainIconClass,
+  noStatusText = '',
+  noStatusIconClass = 'ok',
+  onTotalCountClick = () => {},
+  onStatusCountClick = () => {}
 }) => {
-  function getStatusItemTooltip (statusItem) {
-    return `${statusTypeToText(statusItem.type)}: ${formatNumber0D(statusItem.count)}`
-  }
+  const statusTypeToText =
+    (statusType) => STATUS_TYPE[statusType] ? STATUS_TYPE[statusType].text : msg.dashboardStatusTypeUnknown()
+
+  const statusTypeToIconClass =
+    (statusType) => STATUS_TYPE[statusType] ? STATUS_TYPE[statusType].iconClass : <QuestionCircleIcon />
+
+  const getStatusItemTooltip =
+    (statusItem) => `${statusTypeToText(statusItem.type)}: ${formatNumber0D(statusItem.count)}`
 
   return (
-    <div className='card-pf card-pf-aggregate-status card-pf-accented'>
-
-      {/* header */}
-      <h2 className='card-pf-title'>
-        <a href='#' onClick={event => {
-          event.preventDefault()
-          onTotalCountClick()
-        }}>
-          <span className={mainIconClass} />
-          <span className='card-pf-aggregate-status-count'>{formatNumber0D(totalCount)}</span>
+    <Card className='aggregate-status-card' isHoverable>
+      <CardHeader>
+        <a href='#' onClick={event => { event.preventDefault(); onTotalCountClick() }}>
+          {HEADER_ICON[mainIconClass]}
           {' '}
-          <span className='card-pf-aggregate-status-title'>{title}</span>
+          <span className='aggregate-status-count'>{formatNumber0D(totalCount)}</span>
+          {' '}
+          <span className='aggregate-status-title'>{title}</span>
         </a>
-      </h2>
-
-      {/* status icons */}
-      <div className='card-pf-body'>
-        <p className='card-pf-aggregate-status-notifications'>
-
+      </CardHeader>
+      <CardBody>
+        <p className='aggregate-status-notifications'>
           {statuses.map(statusItem => (
-            <span className='card-pf-aggregate-status-notification' key={statusItem.type}>
-              <Tooltip text={getStatusItemTooltip(statusItem)}>
+            <span className='aggregate-status-notification' key={statusItem.type}>
+              <Tooltip content={getStatusItemTooltip(statusItem)} distance={5}>
                 <a href='#' onClick={event => {
                   event.preventDefault()
                   onStatusCountClick(statusItem)
                 }}>
-                  <span className={statusTypeToIconClass(statusItem.type)} />
+                  {statusTypeToIconClass(statusItem.type)}
                   {formatNumber0D(statusItem.count)}
                 </a>
               </Tooltip>
@@ -54,73 +91,25 @@ const AggregateStatusCard = ({
           ))}
 
           {statuses.length === 0 &&
-            <span className='card-pf-aggregate-status-notification'>
-              {noStatusIconClass && <span className={noStatusIconClass} />}
+            <span className='aggregate-status-notification'>
+              {noStatusIconClass && <OkIcon />}
               {noStatusText}
             </span>
           }
-
         </p>
-      </div>
-
-    </div>
+      </CardBody>
+    </Card>
   )
 }
 
-const statusTypeInfo = {
-  up: {
-    text () { return msg.dashboardStatusTypeUp() },
-    iconClass: 'fa fa-arrow-circle-o-up'
-  },
-  down: {
-    text () { return msg.dashboardStatusTypeDown() },
-    iconClass: 'fa fa-arrow-circle-o-down'
-  },
-  error: {
-    text () { return msg.dashboardStatusTypeError() },
-    iconClass: 'pficon pficon-error-circle-o'
-  },
-  warning: {
-    text () { return msg.dashboardStatusTypeWarning() },
-    iconClass: 'pficon pficon-warning-triangle-o'
-  },
-  alert: {
-    text () { return msg.dashboardStatusTypeAlert() },
-    iconClass: 'pficon pficon-flag'
-  }
-}
-
-const dataShape = AggregateStatusCard.dataShape = {
-  totalCount: PropTypes.number,
-  statuses: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.string, // should be unique within the array
-    count: PropTypes.number
-  }))
-}
-
 AggregateStatusCard.propTypes = {
-  data: PropTypes.shape(dataShape).isRequired,
+  data: inventoryStatusDataShape.isRequired,
   title: PropTypes.string.isRequired,
   mainIconClass: PropTypes.string.isRequired,
-  statusTypeToText: PropTypes.func,      // (statusType:string) => string
-  statusTypeToIconClass: PropTypes.func, // (statusType:string) => string
   noStatusText: PropTypes.string,
   noStatusIconClass: PropTypes.string,
   onTotalCountClick: PropTypes.func,     // () => void
   onStatusCountClick: PropTypes.func     // (statusItem:object) => void
-}
-
-AggregateStatusCard.defaultProps = {
-  statusTypeToText (statusType) {
-    return statusTypeInfo[statusType] ? statusTypeInfo[statusType].text() : msg.dashboardStatusTypeUnknown()
-  },
-  statusTypeToIconClass (statusType) {
-    return statusTypeInfo[statusType] ? statusTypeInfo[statusType].iconClass : 'fa fa-question'
-  },
-  noStatusText: '',
-  noStatusIconClass: 'pficon pficon-ok',
-  onTotalCountClick () {},
-  onStatusCountClick () {}
 }
 
 export default AggregateStatusCard

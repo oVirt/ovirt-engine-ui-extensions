@@ -1,15 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { msg } from '../intl-messages'
-import Tooltip from '../components/bootstrap/Tooltip'
+import { msg } from '_/intl-messages'
 
-// TODO(vs) utilize
-//  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/Tooltip
-//  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/OverlayTrigger
+import { Tooltip } from '@patternfly/react-core'
 
 const RefreshDataControl = ({ onRefresh }) => {
   return (
-    <Tooltip text={msg.dashboardRefreshButtonTooltip()} placement='bottom' hideOnClick>
+    <Tooltip content={msg.dashboardRefreshButtonTooltip()} position='bottom' distance={5}>
       <div className='btn-group'>
         <button type='button' className='btn btn-default' onClick={event => {
           event.preventDefault()

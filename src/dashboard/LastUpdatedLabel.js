@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { msg } from '../intl-messages'
-import { formatDateTime } from '../utils/intl'
+import { msg } from '_/intl-messages'
+import { formatDateTime } from '_/utils/intl'
+
+import { ClockIcon } from '@patternfly/react-icons'
 
 const LastUpdatedLabel = ({ date }) => {
   return (
     <span>
-      <span className='fa fa-clock-o' /> <b>{msg.dashboardLastUpdated()}</b> {formatDateTime(date)}
+      <ClockIcon /> <b>{msg.dashboardLastUpdated()}</b> {formatDateTime(date)}
     </span>
   )
 }

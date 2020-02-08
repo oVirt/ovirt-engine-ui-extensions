@@ -1,0 +1,43 @@
+/* Bar Chart styles */
+.bar-chart {
+  width: 80%;
+  float: left;
+  padding-bottom: 15px;
+}
+
+.bar-chart-label {
+  font-size: 12px;
+  width: 20%;
+  display: inline-block;
+}
+
+.bar-chart-success .pf-c-progress__bar::before {
+    background-color: var(--pf-global--secondary-color--100);
+}
+
+.bar-chart-success .pf-c-progress__bar .pf-c-progress__indicator {
+    background-color: var(--pf-global--success-color--100);
+}
+
+.bar-chart-warning  .pf-c-progress__bar::before {
+    background-color: var(--pf-global--secondary-color--100);
+}
+
+.bar-chart-warning .pf-c-progress__bar .pf-c-progress__indicator {
+    background-color: var(--pf-global--warning-color--100);
+}
+
+.bar-chart-danger .pf-c-progress__bar::before {
+    background-color: var(--pf-global--secondary-color--100);
+}
+
+.bar-chart-danger .pf-c-progress__bar .pf-c-progress__indicator {
+    background-color: var(--pf-global--danger-color--100)
+}
+
+/* Donut chart styles */
+.donut-chart {
+    width: 200px;
+    margin: 0 auto;
+    display: grid;
+}

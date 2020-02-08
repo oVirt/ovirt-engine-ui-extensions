@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import DataProvider from '../components/helper/DataProvider'
-import config from '../plugin-config'
-import { engineGet } from '../utils/fetch'
+import config from '_/plugin-config'
+import { engineGet } from '_/utils/fetch'
+
+import DataProvider from '_/components/helper/DataProvider'
 
 /**
  * Fetch dashboard data from Engine server.
