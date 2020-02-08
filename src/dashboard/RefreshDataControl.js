@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '../intl-messages'
-import Tooltip from './bootstrap/Tooltip'
+import Tooltip from '../components/bootstrap/Tooltip'
 
 // TODO(vs) utilize
 //  https://github.com/patternfly/patternfly-react/tree/master/packages/core/src/components/Tooltip

@@ -10,9 +10,9 @@ import RefreshDataControl from './RefreshDataControl'
 import LastUpdatedLabel from './LastUpdatedLabel'
 import AggregateStatusCard from './AggregateStatusCard'
 import UtilizationTrendCard from './UtilizationTrendCard'
-import HeatMap from './patternfly/HeatMap'
-import HeatMapLegend from './patternfly/HeatMapLegend'
-import HeightMatching from './helper/HeightMatching'
+import HeatMap from '../components/patternfly/HeatMap'
+import HeatMapLegend from '../components/patternfly/HeatMapLegend'
+import HeightMatching from '../components/helper/HeightMatching'
 import classNames from 'classnames'
 
 const GlobalDashboard = ({ data, lastUpdated, onRefreshData }) => {

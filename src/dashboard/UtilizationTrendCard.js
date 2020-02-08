@@ -6,12 +6,12 @@ import { formatNumber0D, formatNumber1D } from '../utils/intl'
 import { round } from '../utils/round'
 import { convertValue } from '../utils/unit-conversion'
 import { applySearch } from '../utils/webadmin-search'
-import DonutChart from './patternfly/DonutChart'
-import SparklineChart from './patternfly/SparklineChart'
-import ModalDialog from './bootstrap/ModalDialog'
+import DonutChart from '../components/patternfly/DonutChart'
+import SparklineChart from '../components/patternfly/SparklineChart'
+import ModalDialog from '../components/bootstrap/ModalDialog'
 import ObjectUtilizationList from './ObjectUtilizationList'
 import ObjectUtilizationListTitle from './ObjectUtilizationListTitle'
-import Tooltip from './bootstrap/Tooltip'
+import Tooltip from '../components/bootstrap/Tooltip'
 
 // PatternFly reference:
 //  http://www.patternfly.org/pattern-library/cards/utilization-trend-card/

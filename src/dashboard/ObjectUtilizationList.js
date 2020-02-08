@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import UtilizationBarChart from './patternfly/UtilizationBarChart'
+import UtilizationBarChart from '../components/patternfly/UtilizationBarChart'
 import { utilizationListGridNameThreshold } from '../constants'
 
 // TODO(vs) utilize

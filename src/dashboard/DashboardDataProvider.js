@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import DataProvider from './helper/DataProvider'
+import DataProvider from '../components/helper/DataProvider'
 import config from '../plugin-config'
 import { engineGet } from '../utils/fetch'
 

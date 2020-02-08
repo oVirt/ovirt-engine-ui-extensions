@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '../intl-messages'
 import { formatNumber0D } from '../utils/intl'
-import Tooltip from './bootstrap/Tooltip'
+import Tooltip from '../components/bootstrap/Tooltip'
 
 // PatternFly reference:
 //  http://www.patternfly.org/pattern-library/cards/aggregate-status-card/
