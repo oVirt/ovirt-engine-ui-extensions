@@ -48,7 +48,7 @@ engine as follows:
 Symlink the extensions's ansible resources to `playbooks` directory of your developer
 engine as follows:
 
- % cd ${PREFIX}/share/ovirt-engine/playbooks/
+ % cd ${PREFIX}/share/ovirt-engine/ansible-runner-service-project/project
  % ln -s ${PLUGIN_REPO}/ansible-playbooks/*
 
 NOTE: If you add additional playbook yml files after the initial symlink, the

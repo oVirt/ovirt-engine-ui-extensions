@@ -54,13 +54,13 @@ ln -s "%{_datadir}/%{name}/ui-extensions-resources" "%{buildroot}%{_datadir}/ovi
 mkdir -p %{buildroot}%{_datadir}/ovirt-engine/playbooks
 
 # Link plugin playbooks to Engine playbooks directory:
-ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{buildroot}%{_datadir}/ovirt-engine/playbooks"
+ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{buildroot}%{_datadir}/ovirt-engine/ansible-runner-service-project/project"
 
 %files
 %{_datadir}/%{name}
 %{_datadir}/ovirt-engine/ui-plugins/ui-extensions.json
 %{_datadir}/ovirt-engine/ui-plugins/ui-extensions-resources
-%{_datadir}/ovirt-engine/playbooks/ovirt-cluster-upgrade.yml
+%{_datadir}/ovirt-engine/ansible-runner-service-project/project/ovirt-cluster-upgrade.yml
 %doc README.adoc
 %license LICENSE
 
