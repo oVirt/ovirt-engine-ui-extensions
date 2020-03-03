@@ -51,7 +51,7 @@ ln -s "%{_datadir}/%{name}/ui-extensions.json" "%{buildroot}%{_datadir}/ovirt-en
 ln -s "%{_datadir}/%{name}/ui-extensions-resources" "%{buildroot}%{_datadir}/ovirt-engine/ui-plugins"
 
 # Ensure the Engine playbooks directory exists:
-mkdir -p %{buildroot}%{_datadir}/ovirt-engine/playbooks
+mkdir -p %{buildroot}%{_datadir}/ovirt-engine/ansible-runner-service-project/project
 
 # Link plugin playbooks to Engine playbooks directory:
 ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{buildroot}%{_datadir}/ovirt-engine/ansible-runner-service-project/project"
