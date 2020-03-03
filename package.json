@@ -27,10 +27,10 @@
     "test:watch": "NODE_ENV=test jest --watch"
   },
   "dependencies": {
-    "@patternfly/patternfly": "^2.40.6",
-    "@patternfly/react-charts": "^5.1.5",
-    "@patternfly/react-core": "^3.120.5",
-    "@patternfly/react-icons": "^3.14.18",
+    "@patternfly/patternfly": "^2.57.1",
+    "@patternfly/react-charts": "^5.2.21",
+    "@patternfly/react-core": "^3.134.2",
+    "@patternfly/react-icons": "^3.14.40",
     "@patternfly/react-table": "^2.24.41",
     "bootstrap": "3.4.1",
     "c3": "0.4.22",
