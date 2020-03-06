@@ -382,7 +382,7 @@ const messageDescriptors = {
 
   migrateVmListLabel: {
     id: 'migrate.vm.vmListLabel',
-    defaultMessage: 'Virtual Machines',
+    defaultMessage: 'Virtual machines',
     description: 'label for the VM list shown below the target host dropdown'
   },
 
@@ -400,7 +400,7 @@ const messageDescriptors = {
 
   migrateVmSelectHostLabel: {
     id: 'migrate.vm.selectHostLabel',
-    defaultMessage: 'Destination Host',
+    defaultMessage: 'Destination host',
     description: 'label for the dropdown used to select migration target host'
   },
 
@@ -418,13 +418,13 @@ const messageDescriptors = {
 
   migrateVmAffinityLabel: {
     id: 'migrate.vm.affinityLabel',
-    defaultMessage: 'Migrate VMs in Affinity',
+    defaultMessage: 'Migrate VMs in affinity',
     description: 'label for the checkbox used to indicate that all VMs in affinity will be migrated'
   },
 
   migrateVmAffinityLabelHelp: {
     id: 'migrate.vm.affinityLabelHelp',
-    defaultMessage: 'This will migrate also VMs that are not shown in the list below. If the selected VMs are in an affinity together, there may be errors in the log, because it will try to initiate a migration multiple times.',
+    defaultMessage: 'VMs that are not listed below may also be migrated. VMs that are grouped by affinity may have log errors because of multiple migration attempts.',
     description: 'help for the checkbox used to indicate that all VMs in affinity will be migrated'
   },
 

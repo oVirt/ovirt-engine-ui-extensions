@@ -146,8 +146,8 @@ class VmMigrateDataProvider extends React.Component {
               value: host.id,
               text: host.name
             })),
-            refreshHosts: (checkVmAffinity) => this.setState({ checkVmAffinity }, fetchAndUpdateData),
-            migrateToHost: (hostId, migrateVmsInAffinity) => migrateToHost(hostId, migrateVmsInAffinity, vms)
+            onRefreshHosts: (checkVmAffinity) => this.setState({ checkVmAffinity }, fetchAndUpdateData),
+            onMigrateToHost: (hostId, migrateVmsInAffinity) => migrateToHost(hostId, migrateVmsInAffinity, vms)
           })
         }}
       </DataProvider>

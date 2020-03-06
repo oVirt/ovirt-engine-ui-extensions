@@ -1,7 +1,11 @@
+import React from 'react'
 import ReactDOM from 'react-dom'
 import uniqueId from 'lodash/uniqueId'
 
 import { getWebAdminWindow } from './webadmin-dom'
+
+export const WebAdminModalContext = React.createContext()
+WebAdminModalContext.displayName = 'WebAdminModalContext'
 
 /**
  * Render patternfly-react `Modal` based component into WebAdmin document body.
@@ -14,32 +18,41 @@ import { getWebAdminWindow } from './webadmin-dom'
  * ```
  */
 export const showModal = (modalCreator, modalId = uniqueId()) => {
-  const modalRoot = document.createElement('div')
-  modalRoot.setAttribute('id', modalId)
-
   const targetWindow = getWebAdminWindow()
-  targetWindow.document.body.appendChild(modalRoot)
+
+  const modalContainer = targetWindow.document.createElement('div')
+  modalContainer.setAttribute('id', `showModal-${modalId}`)
+
+  targetWindow.document.body.appendChild(modalContainer)
 
   const clonedStyles = []
   if (window !== targetWindow) {
     window.document.querySelectorAll('head style, head link[type="text/css"], head link[rel="stylesheet"]').forEach(style => {
       const cloned = style.cloneNode(true)
-      cloned.setAttribute('data-style-for', modalId)
+      cloned.setAttribute('data-style-for', `showModal-${modalId}`)
       clonedStyles.push(cloned)
       targetWindow.document.head.appendChild(cloned)
     })
   }
 
   const destroyModal = () => {
-    ReactDOM.unmountComponentAtNode(modalRoot)
-    targetWindow.document.body.removeChild(modalRoot)
+    ReactDOM.unmountComponentAtNode(modalContainer)
+    targetWindow.document.body.removeChild(modalContainer)
     clonedStyles.forEach(style => {
       targetWindow.document.head.removeChild(style)
     })
   }
 
   ReactDOM.render(
-    modalCreator({ container: modalRoot, destroyModal }),
-    modalRoot
+    <WebAdminModalContext.Provider
+      value={{
+        window: targetWindow,
+        modalContainer,
+        destroyModal
+      }}
+    >
+      {modalCreator({ container: modalContainer, destroyModal })}
+    </WebAdminModalContext.Provider>,
+    modalContainer
   )
 }

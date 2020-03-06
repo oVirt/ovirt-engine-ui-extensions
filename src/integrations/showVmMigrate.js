@@ -7,17 +7,15 @@ import VmMigrateModal from '_/components/modals/vm/VmMigrateModal'
 function showVmMigrateModal (upVms) {
   showModal(({ container, destroyModal }) => (
     <VmMigrateDataProvider vmIds={upVms.map(vm => vm.id)}>
-      {({ isLoading, vmNames, targetHostItems, refreshHosts, migrateToHost }) =>
+      {({ isLoading, vmNames, targetHostItems, onRefreshHosts, onMigrateToHost }) =>
         <VmMigrateModal
-          show
-          container={container}
-          onExited={destroyModal}
           isLoading={isLoading}
           vmNames={vmNames}
           targetHostItems={targetHostItems}
-
-          onRefreshHosts={refreshHosts}
-          onMigrateToHost={migrateToHost}
+          appendTo={container}
+          onClose={destroyModal}
+          onMigrateToHost={onMigrateToHost}
+          onRefreshHosts={onRefreshHosts}
         />
       }
     </VmMigrateDataProvider>

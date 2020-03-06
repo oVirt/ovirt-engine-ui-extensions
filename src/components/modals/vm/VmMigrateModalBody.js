@@ -1,12 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { noop, Form, Grid, Checkbox } from 'patternfly-react'
-import { msg } from '_/intl-messages'
-import config from '_/plugin-config'
+import {
+  Text,
+  TextContent,
+  Form,
+  Checkbox,
+  FormGroup,
+  FormSelect,
+  FormSelectOption
+} from '@patternfly/react-core'
 
-import BaseFormGroup from '../../forms/BaseFormGroup'
-import SelectFormGroup, { selectItemShape } from '../../forms/SelectFormGroup'
-import VmListFormGroup from '../../forms/VmListFormGroup'
+import { msg } from '_/intl-messages'
+
+import FieldLevelHelp from '_/components/helper/FieldLevelHelp'
+import VmList from './VmList'
 
 const NO_HOST_AVAILABLE_HOST_ITEMS = [{
   text: msg.migrateVmNoAvailableHost(),
@@ -18,87 +25,97 @@ export const AUTO_SELECT_ITEM = {
   value: '_AutoSelect_'
 }
 
-const VmMigrateModalBody = ({
-  vmNames,
-  targetHostItems,
-  migrateVmsInAffinity,
+export const selectItemShape = {
+  value: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired
+}
 
-  onHostSelectionChange,
-  onMigrateVmsInAffinityChange
+const VmMigrateModalBody = ({
+  selectedHostId,
+  targetHostItems = [],
+  migrateVmsInAffinity = false,
+  vmNames = [],
+  onHostSelectionChange = () => {},
+  onMigrateVmsInAffinityChange = () => {}
 }) => {
-  const items = [ AUTO_SELECT_ITEM, ...targetHostItems ]
   const migrationDisabled = targetHostItems.length === 0
+  const items = migrationDisabled
+    ? NO_HOST_AVAILABLE_HOST_ITEMS
+    : [ AUTO_SELECT_ITEM, ...targetHostItems ]
 
   return (
-    <Grid fluid>
-      <Grid.Row>
-        <Grid.Col sm={12}>
-          <div className={'form-group'}>
-            {msg.migrateVmInfoLabel({ value: config.useFakeData ? 1337 : vmNames.length })}
-          </div>
-        </Grid.Col>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Col sm={12}>
-          <Form horizontal>
-            <SelectFormGroup
-              id='vm-migrate-select-target-host'
-              label={msg.migrateVmSelectHostLabel()}
-              fieldHelp={msg.migrateVmSelectHostFieldHelp()}
-              fieldHelpPlacement={'right'}
-              items={migrationDisabled ? NO_HOST_AVAILABLE_HOST_ITEMS : items}
-              defaultValue={AUTO_SELECT_ITEM.value}
-              disabled={migrationDisabled}
-              usePlaceholder={false}
-              onChange={event => { onHostSelectionChange(event.target.value) }}
-            />
+    <React.Fragment>
+      <TextContent>
+        <Text>{msg.migrateVmInfoLabel({ value: vmNames.length }) }</Text>
+      </TextContent>
 
-            <BaseFormGroup
-              id='vm-migrate-vms-in-affinity'
-              label={msg.migrateVmAffinityLabel()}
-              fieldHelp={msg.migrateVmAffinityLabelHelp()}
-              fieldHelpPlacement='right'
-            >
-              <Checkbox
-                id='vm-migrate-vms-in-affinity'
-                checked={migrateVmsInAffinity}
-                onChange={event => { onMigrateVmsInAffinityChange(event.target.checked) }}
-              >
+      <Form isHorizontal>
+        <FormGroup
+          fieldId='vm-migrate-select-target-host'
+          label={
+            <div>
+              {msg.migrateVmSelectHostLabel()}
+              <FieldLevelHelp content={msg.migrateVmSelectHostFieldHelp()} />
+            </div>
+          }
+        >
+          <FormSelect
+            id='vm-migrate-select-target-host'
+            value={selectedHostId}
+            onChange={(value) => { onHostSelectionChange(value) }}
+            isDisabled={migrationDisabled}
+          >
+            {items.map((option, index) => (
+              <FormSelectOption key={index} label={option.text} value={option.value} />
+            ))}
+          </FormSelect>
+        </FormGroup>
+
+        <FormGroup
+          fieldId='vm-migrate-vms-in-affinity'
+        >
+          <Checkbox
+            id='vm-migrate-vms-in-affinity'
+            label={
+              <div>
                 {msg.migrateVmAffinityCheckbox()}
-              </Checkbox>
-            </BaseFormGroup>
+                <FieldLevelHelp content={msg.migrateVmAffinityLabelHelp()} />
+              </div>
+            }
+            isChecked={migrateVmsInAffinity}
+            onChange={(checked) => { onMigrateVmsInAffinityChange(checked) }}
+          />
+        </FormGroup>
 
-            <VmListFormGroup
-              id='vm-migrate-vm-list'
-              label={msg.migrateVmListLabel()}
-              vmNames={vmNames}
-              showAllThreshold={10}
-              showAllLabel={msg.migrateVmListShowAllLabel()}
-              showLessLabel={msg.migrateVmListShowLessLabel()}
-            />
-          </Form>
-        </Grid.Col>
-      </Grid.Row>
-    </Grid>
+        <FormGroup
+          fieldId='vm-migrate-vm-list'
+          label={
+            <div style={{ whiteSpace: 'nowrap' }}>
+              {msg.migrateVmListLabel()}
+            </div>
+          }
+        >
+          <VmList
+            id='vm-migrate-vm-list'
+            vmNames={vmNames}
+            showAllThreshold={10}
+            showAllLabel={msg.migrateVmListShowAllLabel()}
+            showLessLabel={msg.migrateVmListShowLessLabel()}
+          />
+        </FormGroup>
+      </Form>
+    </React.Fragment>
   )
 }
 
 VmMigrateModalBody.propTypes = {
-  vmNames: PropTypes.arrayOf(PropTypes.string),
+  selectedHostId: PropTypes.string,
   targetHostItems: PropTypes.arrayOf(PropTypes.shape(selectItemShape)),
   migrateVmsInAffinity: PropTypes.bool,
+  vmNames: PropTypes.arrayOf(PropTypes.string),
 
   onHostSelectionChange: PropTypes.func,
   onMigrateVmsInAffinityChange: PropTypes.func
-}
-
-VmMigrateModalBody.defaultProps = {
-  vmNames: [],
-  targetHostItems: [],
-  migrateVmsInAffinity: false,
-
-  onHostSelectionChange: noop,
-  onMigrateVmsInAffinityChange: noop
 }
 
 export default VmMigrateModalBody

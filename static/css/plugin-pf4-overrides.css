@@ -10,3 +10,11 @@
   --pf-global--ZIndex--xl: 1500;
   --pf-global--ZIndex--2xl: 1600;
 }
+
+.pf-c-backdrop {
+  /*
+    skip the backdrop blurring - makes the Modals look very different from PF3 and
+    you can't see anything on the main page with the blur filter turned on
+  */
+  --pf-c-backdrop--BackdropFilter: none;
+}

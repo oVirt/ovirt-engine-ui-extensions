@@ -1,89 +1,95 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { noop, Button, Spinner } from 'patternfly-react'
 import { msg } from '_/intl-messages'
+import { Spinner } from 'patternfly-react'
+import { Modal, Button } from '@patternfly/react-core'
 
-import VmMigrateModalBody, { AUTO_SELECT_ITEM } from './VmMigrateModalBody'
-import StatefulModalPattern from '../StatefulModalPattern'
-import { selectItemShape } from '../../forms/SelectFormGroup'
+import VmMigrateModalBody, { AUTO_SELECT_ITEM, selectItemShape } from './VmMigrateModalBody'
+import './vm-migrate.css'
 
-class VmMigrateModal extends StatefulModalPattern {
-  constructor (props) {
-    super(props)
-    this.state = {
-      ...this.state,
-      hostId: AUTO_SELECT_ITEM.value,
-      migrateVmsInAffinity: false
-    }
+const VmMigrateModal = ({
+  isLoading = false,
+  vmNames = [],
+  targetHostItems = [],
+  onMigrateToHost = () => {},
+  onRefreshHosts = () => {},
+  onClose = () => {},
+  appendTo
+}) => {
+  const [isOpen, setOpen] = useState(true)
+  const [hostId, setHostId] = useState(AUTO_SELECT_ITEM.value)
+  const [migrateVmsInAffinity, setMigrateVmsInAffinity] = useState(false)
 
-    this.onHostSelectionChange = this.onHostSelectionChange.bind(this)
-    this.onMigrateVmsInAffinityChange = this.onMigrateVmsInAffinityChange.bind(this)
-    this.onMigrateButtonClick = this.onMigrateButtonClick.bind(this)
+  if (!appendTo) {
+    return null
   }
 
-  onHostSelectionChange (newHostId) {
-    this.setState({ hostId: newHostId })
+  if (!isOpen) {
+    onClose()
+    return null
   }
 
-  onMigrateVmsInAffinityChange (migrateVmsInAffinity) {
-    this.setState({ migrateVmsInAffinity: migrateVmsInAffinity })
-    this.props.onRefreshHosts(migrateVmsInAffinity)
+  const close = () => setOpen(false)
+
+  const onMigrateVmsInAffinityChange = (migrateVmsInAffinity) => {
+    setMigrateVmsInAffinity(migrateVmsInAffinity)
+    onRefreshHosts(migrateVmsInAffinity)
   }
 
-  onMigrateButtonClick () {
-    const hostId =
-      this.state.hostId === AUTO_SELECT_ITEM.value
+  const onMigrateButtonClick = () => {
+    const hostOrNothing =
+      hostId === AUTO_SELECT_ITEM.value
         ? undefined
-        : this.state.hostId
+        : hostId
 
-    this.props.onMigrateToHost(hostId, this.state.migrateVmsInAffinity)
-    this.close()
+    onMigrateToHost(hostOrNothing, migrateVmsInAffinity)
+    close()
   }
 
-  render () {
-    const {
-      isLoading,
-      vmNames,
-      targetHostItems
-    } = this.props
+  const modalActionButtons = [
+    <Button
+      key='vm-migrate-cancel-button'
+      ouiaId='vm-migrate-cancel-button'
+      variant='link'
+      onClick={close}
+    >
+      {msg.cancelButton()}
+    </Button>,
+    <Button
+      key='vm-migrate-migrate-button'
+      ouiaId='vm-migrate-migrate-button'
+      variant='primary'
+      onClick={onMigrateButtonClick}
+      isDisabled={targetHostItems.length === 0}
+    >
+      {msg.migrateVmButton()}
+    </Button>
+  ]
 
-    const modalBody = (
+  return (
+    <Modal
+      isLarge
+      title={msg.migrateVmDialogTitle()}
+
+      isOpen={isOpen}
+      onClose={close}
+      appendTo={appendTo}
+
+      actions={modalActionButtons}
+    >
       <Spinner loading={isLoading}>
         <VmMigrateModalBody
           vmNames={vmNames}
-          migrateVmsInAffinity={this.state.migrateVmsInAffinity}
+          migrateVmsInAffinity={migrateVmsInAffinity}
           targetHostItems={targetHostItems}
+          selectedHostId={hostId}
 
-          onHostSelectionChange={this.onHostSelectionChange}
-          onMigrateVmsInAffinityChange={this.onMigrateVmsInAffinityChange}
+          onHostSelectionChange={setHostId}
+          onMigrateVmsInAffinityChange={onMigrateVmsInAffinityChange}
         />
       </Spinner>
-    )
-
-    const modalButtons = (
-      <React.Fragment>
-        <Button onClick={this.close}>
-          {msg.cancelButton()}
-        </Button>
-        <Button
-          bsStyle='primary'
-          onClick={this.onMigrateButtonClick}
-          disabled={targetHostItems.length === 0}
-        >
-          {msg.migrateVmButton()}
-        </Button>
-      </React.Fragment>
-    )
-
-    return React.cloneElement(
-      super.render(),
-      {
-        title: msg.migrateVmDialogTitle(),
-        children: modalBody,
-        footer: modalButtons
-      }
-    )
-  }
+    </Modal>
+  )
 }
 
 VmMigrateModal.propTypes = {
@@ -97,27 +103,8 @@ VmMigrateModal.propTypes = {
   onRefreshHosts: PropTypes.func,
 
   // modal props
-  show: PropTypes.bool,
-  onExited: StatefulModalPattern.propTypes.onExited,
-  container: StatefulModalPattern.propTypes.container,
-  dialogClassName: StatefulModalPattern.propTypes.dialogClassName
-}
-
-VmMigrateModal.defaultProps = {
-  // data input
-  isLoading: false,
-  vmNames: [],
-  targetHostItems: [],
-
-  // operation callbacks
-  migrateToHost: noop,
-  refreshHosts: noop,
-
-  // modal props
-  show: false,
-  onExited: StatefulModalPattern.defaultProps.onExited,
-  container: StatefulModalPattern.defaultProps.container,
-  dialogClassName: 'modal-lg'
+  appendTo: PropTypes.object,
+  onClose: PropTypes.func
 }
 
 export default VmMigrateModal
