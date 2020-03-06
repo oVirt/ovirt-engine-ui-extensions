@@ -8,8 +8,8 @@ Source: @TAR_FILE@
 
 BuildArch: noarch
 
-# embeds yarn and ovirt-engine-nodejs (or nodejs on fc30+,el8) already
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.12-1
+# nodejs-modules embeds yarn and requires nodejs
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.17-1
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-cluster-upgrade >= 1.1.12
@@ -23,6 +23,8 @@ UI plugin that provides various extensions to oVirt administration UI.
 Extensions include:
   - dashboard
   - VM migrate dialog
+  - VM export dialog
+  - VM manage GPU dialog
   - Cluster upgrade wizard
 
 %prep
