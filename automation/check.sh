@@ -12,7 +12,8 @@ source /usr/share/ovirt-engine-nodejs-modules/setup-env.sh
 
 # Verify that dependency versions (semver ranges) in package.json have
 # matching resolutions in the yarn.lock file:
-yarn check
+# Ignore failures anyway, because of https://classic.yarnpkg.com/en/docs/cli/check/
+yarn check || true
 
 # Lint code and run tests:
 yarn test
