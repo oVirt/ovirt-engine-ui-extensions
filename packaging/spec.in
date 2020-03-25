@@ -67,6 +67,14 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Wed Mar 25 2020 Sharon Gratch <sgratch@redhat.com> - 1.1.0-1
+- Added missing 'id' attribute to buttons
+- Update zanata server and version
+- Move dashboard sources to 'src/dashboard'
+- Update install location and fix install script path of ansible playbooks
+- Update STDCI configs
+- Update patternfly 4 dependencies
+
 * Tue Jan 28 2020 Sharon Gratch <sgratch@redhat.com> - 1.0.13-1
 - VM export dialog:  display the error returned from the backend
 - vGPU dialog: code improvements, Make vGPU table scrollable, table redesign + summary section
