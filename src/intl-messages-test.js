@@ -58,38 +58,66 @@ function normalizeMessagesForDiff (messages) {
   return normalForm
 }
 
-describe('validate messageDescriptors from ./intl/messages.js', function () {
-  it('every key has a non-empty id', function () {
+describe('validate messageDescriptors from ./intl/messages.js', () => {
+  it('every key has a non-empty id', () => {
     Object.keys(messageDescriptors).forEach(key => {
       expect(messageDescriptors[key], `key[${key}]`).to.have.property('id').that.is.a('string').and.is.not.empty
     })
   })
 
-  it('every key has a non-empty defaultMessage', function () {
+  it('every key has a non-empty defaultMessage', () => {
     Object.keys(messageDescriptors).forEach(key => {
       expect(messageDescriptors[key], `key[${key}]`).to.have.property('defaultMessage').that.is.a('string').and.is.not.empty
     })
   })
 
-  it('every key has a non-empty description', function () {
+  it('every key has a non-empty description', () => {
     Object.keys(messageDescriptors).forEach(key => {
       expect(messageDescriptors[key], `key[${key}]`).to.have.property('description').that.is.a('string').and.is.not.empty
     })
   })
+
+  it('every defaultMessage parses as an ICU message successfully', () => {
+    const parseErrors = []
+    for (const { id, defaultMessage } of Object.values(messageDescriptors)) {
+      try {
+        parser.parse(defaultMessage)
+      } catch (e) {
+        parseErrors.push({ id, error: e })
+      }
+    }
+
+    console.log('parseErrors in intl/messages.js:', parseErrors)
+    expect(parseErrors).to.be.empty
+  })
 })
 
-describe('verify the content of each locale in translations.json', function () {
+describe('verify the content of each locale in translations.json', () => {
   const englishNormalForm = normalizeMessagesForDiff(messageDescriptors)
 
   Object.keys(translatedMessages).forEach(locale => {
-    describe(`check ${locale}`, function () {
+    describe(`check ${locale}`, () => {
+      it('translations parse as ICU messages', () => {
+        const parseErrors = []
+        for (const [ id, message ] of Object.entries(translatedMessages[locale])) {
+          try {
+            parser.parse(message)
+          } catch (e) {
+            parseErrors.push({ id, error: e })
+          }
+        }
+
+        console.log(`parseErrors for locale[${locale}]:`, parseErrors)
+        expect(parseErrors).to.be.empty
+      })
+
       const localeNormalForm = normalizeMessagesForDiff(translatedMessages[locale])
 
-      it('no unique message keys', function () {
+      it('no unique message keys', () => {
         expect(englishNormalForm, `locale[${locale}]`).to.have.include.keys(localeNormalForm)
       })
 
-      it('messages match ICU arguments', function () {
+      it('messages match ICU arguments', () => {
         Object.keys(localeNormalForm)
           .filter(name => englishNormalForm[name])
           .forEach(name => {
