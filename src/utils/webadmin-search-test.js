@@ -1,10 +1,9 @@
-import { expect } from 'chai'
 import { buildSearch, applySearch } from './webadmin-search'
 
 describe('buildSearch', function () {
   it('returns prefix only when fields are undefined or empty', function () {
-    expect(buildSearch('FooPrefix')).to.equal('FooPrefix:')
-    expect(buildSearch('FooPrefix', [])).to.equal('FooPrefix:')
+    expect(buildSearch('FooPrefix')).toBe('FooPrefix:')
+    expect(buildSearch('FooPrefix', [])).toBe('FooPrefix:')
   })
 
   it('returns prefix only when fields are not defined properly', function () {
@@ -13,13 +12,13 @@ describe('buildSearch', function () {
         theNameOfMyField: 'bar', // should be `name`
         values: ['aa', 'bb']
       }
-    ])).to.equal('FooPrefix:')
+    ])).toBe('FooPrefix:')
     expect(buildSearch('FooPrefix', [
       {
         name: 'bar',
         values: [] // should not be empty
       }
-    ])).to.equal('FooPrefix:')
+    ])).toBe('FooPrefix:')
   })
 
   it('returns search with field values combined with `or` for the given field', function () {
@@ -28,7 +27,7 @@ describe('buildSearch', function () {
         name: 'bar',
         values: ['aa', 'bb']
       }
-    ])).to.equal('FooPrefix: bar = aa or bar = bb')
+    ])).toBe('FooPrefix: bar = aa or bar = bb')
   })
 
   it('returns search containing `and` to combine multiple field definitions', function () {
@@ -41,7 +40,7 @@ describe('buildSearch', function () {
         name: 'qux',
         values: [1, 2] // values converted to strings
       }
-    ])).to.equal('FooPrefix: bar = aa or bar = bb and qux = 1 or qux = 2')
+    ])).toBe('FooPrefix: bar = aa or bar = bb and qux = 1 or qux = 2')
   })
 
   it('allows customizing the operator for the given field', function () {
@@ -51,7 +50,7 @@ describe('buildSearch', function () {
         values: [1],
         operator: '<'
       }
-    ])).to.equal('FooPrefix: bar < 1')
+    ])).toBe('FooPrefix: bar < 1')
   })
 })
 
@@ -66,9 +65,9 @@ describe('applySearch', function () {
 
     applySearch(place, prefix, fields)
 
-    expect(pluginApiStubs.revealPlace.mock.calls[0]).to.deep.equal([ place ])
-    expect(pluginApiStubs.revealPlace.mock.calls.length).to.equal(1)
-    expect(pluginApiStubs.setSearchString.mock.calls[0]).to.deep.equal([ expectedSearch ])
-    expect(pluginApiStubs.setSearchString.mock.calls.length).to.equal(1)
+    expect(pluginApiStubs.revealPlace.mock.calls[0]).toEqual([ place ])
+    expect(pluginApiStubs.revealPlace.mock.calls.length).toBe(1)
+    expect(pluginApiStubs.setSearchString.mock.calls[0]).toEqual([ expectedSearch ])
+    expect(pluginApiStubs.setSearchString.mock.calls.length).toBe(1)
   })
 })
