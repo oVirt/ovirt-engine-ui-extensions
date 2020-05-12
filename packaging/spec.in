@@ -67,7 +67,9 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
-* Thu Apr 30 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.0-1
+* Tue May 12 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.0-1
+- update VM Migrate dialog to use Patternfly 4
+- update the Dashboard to use Patternfly 4
 - Update dependencies and drop "yarn check"
 - update translations
 - update i18n normalize and unit-tests, bump jest version
