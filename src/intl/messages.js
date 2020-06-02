@@ -894,6 +894,56 @@ const messageDescriptors = {
     id: 'vm.gpu.table.emptyState.body',
     defaultMessage: 'No results match the filter criteria. Clear all filters to show results.',
     description: 'body of the table empty state component'
+  },
+
+  hostCopyNetworksDataError: {
+    id: 'host.copy.networks.dataError',
+    defaultMessage: 'Could not fetch data needed for Host Copy Networks operation',
+    description: 'notification shown when Host Copy Networks dialog failed to load its data'
+  },
+
+  hostCopyNetworksDialogTitle: {
+    id: 'host.copy.networks.dialogTitle',
+    defaultMessage: 'Copy Host Networks',
+    description: 'title of Host Copy Networks dialog'
+  },
+
+  hostCopyNetworksButton: {
+    id: 'host.copy.networks.buttonLabel',
+    defaultMessage: 'Copy Host Networks',
+    description: 'label of `Copy` button in Host Copy Networks dialog'
+  },
+
+  hostCopyNetworksNoAvailableHost: {
+    id: 'host.copy.networks.noAvailableHost',
+    defaultMessage: 'No target hosts for copy networks found',
+    description: 'notification shown when there are no hosts to copy networks to'
+  },
+
+  hostCopyNetworksSelectHost: {
+    id: 'host.copy.networks.selectHost',
+    defaultMessage: 'Choose Host',
+    description: 'label for the target host dropdown option'
+  },
+
+  hostCopyNetworksInfoLabel: {
+    id: 'host.copy.networks.targetHostsInfoLabel',
+    defaultMessage: 'Select a target host to copy network(s) to:',
+    description: 'label shown above the target host dropdown, informing the user about target hosts'
+  },
+
+  hostCopyNetworksSelectHostLabel: {
+    id: 'host.copy.networks.selectHostLabel',
+    defaultMessage: 'Target host',
+    description: 'label for the dropdown used to select migration target host'
+  },
+
+  hostCopyNetworksSelectHostFieldHelp: {
+    id: 'host.copy.networks.selectHostFieldHelp',
+    defaultMessage: 'Select a target host to which the source host networks will be copied. ' +
+      'A target host must be in the same cluster and have at least the same number of NICs ' +
+      'as the source host. The management network configuration is not copied.',
+    description: 'field help for the dropdown used to select copy networks target host'
   }
 }
 

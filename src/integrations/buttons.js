@@ -6,6 +6,7 @@ import { showVmManageGpuModal } from './showVmManageGpu'
 import { showVmMigrateModal } from './showVmMigrate'
 import { showClusterUpgradeWizard } from './showClusterUpgrade'
 import { showVmExportModal } from './showVmExport'
+import { showHostCopyNetworksModal } from './showHostCopyNetworks'
 
 function isVmUp (vm) {
   return vmUpStates.includes(vm.status)
@@ -118,10 +119,34 @@ function addClusterUpgradeButton () {
   })
 }
 
+/**
+ * "Copy Host Networks" button in Host List.  Enabled when exactly 1 host is selected.
+ */
+function addHostCopyNetworksButton () {
+  getPluginApi().addMenuPlaceActionButton(entityTypes.host, msg.hostCopyNetworksButton(), {
+
+    onClick: function ([ selectedHost ]) {
+      if (selectedHost.id && selectedHost.name) {
+        showHostCopyNetworksModal(selectedHost)
+      }
+    },
+
+    isEnabled: function (selectedHosts) {
+      return (selectedHosts.length === 1 && selectedHosts[0].managed) || config.useFakeData
+    },
+
+    index: 9,
+
+    id: 'HostCopyNetworksButton'
+
+  })
+}
+
 export function addButtons () {
   addVmManageGpuButton()
   addVmMigrateButton()
   addHostVmMigrateButton()
   addVmExportButton()
   addClusterUpgradeButton()
+  addHostCopyNetworksButton()
 }
