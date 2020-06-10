@@ -82,7 +82,8 @@ function addVmExportButton () {
     },
 
     isEnabled: function (selectedVms) {
-      const enable = selectedVms.length === 1 && selectedVms[0] && selectedVms[0].status === 'Down'
+      const enable = selectedVms.length === 1 && selectedVms[0] && selectedVms[0].status === 'Down' &&
+        selectedVms[0].managed
       selectedDownVm = enable ? selectedVms[0] : undefined
       return enable
     },
@@ -107,7 +108,7 @@ function addClusterUpgradeButton () {
     },
 
     isEnabled: function (selectedClusters) {
-      return selectedClusters.length === 1
+      return selectedClusters.length === 1 && selectedClusters[0].managed
     },
 
     index: 3,
