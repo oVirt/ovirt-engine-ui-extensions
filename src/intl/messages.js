@@ -794,6 +794,24 @@ const messageDescriptors = {
     description: 'Manage vGPU dialog body description'
   },
 
+  vmManageGpuBodyDisplaySwitchLabel: {
+    id: 'vm.gpu.body.display.switch.label',
+    defaultMessage: 'Secondary display adapter for VNC',
+    description: 'Manage vGPU dialog Display on switch label`'
+  },
+
+  vmManageGpuBodyDisplaySwitchOn: {
+    id: 'vm.gpu.body.display.switch.on',
+    defaultMessage: 'On',
+    description: 'Manage vGPU dialog Display on switch on`'
+  },
+
+  vmManageGpuBodyDisplaySwitchOff: {
+    id: 'vm.gpu.body.display.switch.off',
+    defaultMessage: 'Off',
+    description: 'Manage vGPU dialog Display on switch off`'
+  },
+
   vmManageGpuBodySubTitleSelectionsCards: {
     id: 'vm.gpu.body.selections.cards.label',
     defaultMessage: 'Selected card name(s)',

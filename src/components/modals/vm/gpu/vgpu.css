@@ -7,18 +7,23 @@
     color: var(--pf-global--Color--300)
 }
 
+.vgpu-modal-body-label {
+    font-size: var(--pf-global--FontSize--sm);
+    color: var(--pf-global--Color--100);
+    padding-right: 20px;
+}
+
+#vgpu-display-on-switch > span {
+    font-size: var(--pf-global--FontSize--sm);
+    color: var(--pf-global--Color--100);
+}
+
 .vgpu-search-box {
     width: 100%;
 }
 
-.vgpu-selected-cards-chips-label {
-    font-size: var(--pf-global--FontSize--sm);
-    color: var(--pf-global--color--200);
-    padding-right: 20px;
-}
-
 .vgpu-table-wrapper {
-    height: 500px;
+    height: 450px;
     overflow: auto;
 }
 

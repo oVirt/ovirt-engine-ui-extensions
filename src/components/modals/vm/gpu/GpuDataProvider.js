@@ -67,12 +67,28 @@ const GpuDataProvider = ({children, vmId}) => {
     return []
   }
 
-  const getSelectedMdevs = (customProperties) => {
+  const parseMdevCustomProperty = (customProperties) => {
     let mdevCustomProperty = customProperties.find(property => property.name === 'mdev_type')
     if (mdevCustomProperty !== undefined) {
       return mdevCustomProperty.value.split(',')
     }
     return []
+  }
+
+  const getSelectedMdevs = (customProperties) => {
+    let parsedMdevProperties = parseMdevCustomProperty(customProperties)
+    if (isNoDisplay(customProperties)) {
+      return parsedMdevProperties.slice(1)
+    }
+    return parsedMdevProperties
+  }
+
+  const isNoDisplay = (customProperties) => {
+    let parsedMdevProperties = parseMdevCustomProperty(customProperties)
+    if (parsedMdevProperties.length > 0 && parsedMdevProperties[0] === 'nodisplay') {
+      return true
+    }
+    return false
   }
 
   const createGpus = (hostMDevTypes, selectedMdevs) => {
@@ -143,11 +159,11 @@ const GpuDataProvider = ({children, vmId}) => {
     allCustomProperties = getCustomProperties(vm)
     const selectedMdevs = getSelectedMdevs(allCustomProperties)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
-
-    return gpus
+    const noDisplay = isNoDisplay(allCustomProperties)
+    return {gpus: gpus, noDisplay: noDisplay}
   }
 
-  const updateCustomProperties = (selectedGpus) => {
+  const updateCustomProperties = (displayOn, selectedGpus) => {
     let mdevCustomProperty = allCustomProperties.find(property => property.name === 'mdev_type')
     if (mdevCustomProperty === undefined) {
       mdevCustomProperty = {name: 'mdev_type'}
@@ -155,14 +171,17 @@ const GpuDataProvider = ({children, vmId}) => {
     }
 
     let uniqueCardNames = [...new Set(selectedGpus.map((gpu) => gpu.cardName))]
+    if (uniqueCardNames.length > 0 && !displayOn) {
+      uniqueCardNames.unshift('nodisplay')
+    }
     mdevCustomProperty.value = uniqueCardNames.join(',')
     if (mdevCustomProperty.value.length === 0) {
       allCustomProperties.pop(mdevCustomProperty)
     }
   }
 
-  const saveVm = (selectedGpus) => {
-    updateCustomProperties(selectedGpus)
+  const saveVm = (displayOn, selectedGpus) => {
+    updateCustomProperties(displayOn, selectedGpus)
     const requestBody = {
       'custom_properties': {
         'custom_property': allCustomProperties
@@ -189,7 +208,8 @@ const GpuDataProvider = ({children, vmId}) => {
 
         // pass relevant data and operations to child component
         return React.cloneElement(child, {
-          gpus: data,
+          gpus: data.gpus,
+          displayOn: !data.noDisplay,
           onSelectButtonClick: saveVm
         })
       }}

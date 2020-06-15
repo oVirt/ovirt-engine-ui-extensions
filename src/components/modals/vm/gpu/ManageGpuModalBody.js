@@ -1,28 +1,28 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import {
+import { Bullseye,
   Chip,
   ChipGroup,
-  Title,
-  Bullseye,
   EmptyState,
+  EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  EmptyStateBody,
   Stack,
   StackItem,
+  Switch,
   TextInput,
+  Title,
   Toolbar,
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core'
 import { SearchIcon } from '@patternfly/react-icons'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { msg } from '_/intl-messages'
 import GpuTable from './GpuTable'
 import './vgpu.css'
 
 const ManageGpuModalBody = ({
-  gpus, selectedGpus, onGpuSelectionChange
+  gpus, displayOn, selectedGpus, onDisplayOnChange, onGpuSelectionChange
 }) => {
   const [searchText, setSearchText] = React.useState('')
 
@@ -60,11 +60,23 @@ const ManageGpuModalBody = ({
         </span>
       </StackItem>
       <StackItem>
-        <span className='vgpu-selected-cards-chips-label'>
+        <span className='vgpu-modal-body-label'>
+          {msg.vmManageGpuBodyDisplaySwitchLabel()}
+        </span>
+        <Switch
+          id='vgpu-display-on-switch'
+          label={msg.vmManageGpuBodyDisplaySwitchOn()}
+          labelOff={msg.vmManageGpuBodyDisplaySwitchOff()}
+          isChecked={displayOn}
+          onChange={onDisplayOnChange}
+        />
+      </StackItem>
+      <StackItem>
+        <span className='vgpu-modal-body-label'>
           {msg.vmManageGpuBodySubTitleSelectionsCards()}
         </span>
         { selectedCards.size === 0 &&
-          <span className='vgpu-selected-cards-chips-label'>
+          <span className='vgpu-modal-body-label'>
             {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
           </span>
         }
@@ -122,7 +134,9 @@ ManageGpuModalBody.propTypes = {
       address: PropTypes.string,
       selected: PropTypes.bool
     })),
+  displayOn: PropTypes.bool,
   selectedGpus: PropTypes.any,
+  onDisplayOnChange: PropTypes.func,
   onGpuSelectionChange: PropTypes.func
 }
 

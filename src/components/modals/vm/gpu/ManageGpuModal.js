@@ -10,11 +10,19 @@ class ManageGpuModal extends StatefulModalPattern {
   constructor (props) {
     super(props)
     this.onSelect = this.onSelect.bind(this)
+    this.onDisplayOnChange = this.onDisplayOnChange.bind(this)
     this.onGpuSelectionChange = this.onGpuSelectionChange.bind(this)
     this.state = {
       ...this.state,
+      displayOn: undefined,
       selectedGpus: new Map()
     }
+  }
+
+  onDisplayOnChange (isSelected) {
+    this.setState(state => ({
+      displayOn: isSelected
+    }))
   }
 
   onGpuSelectionChange (cardName, isSelected) {
@@ -28,7 +36,8 @@ class ManageGpuModal extends StatefulModalPattern {
       const rowSelected = this.state.selectedGpus.get(gpu.cardName)
       return rowSelected === undefined ? gpu.selected : rowSelected
     })
-    this.props.onSelectButtonClick(selectedGpus)
+    const displayOn = this.state.displayOn === undefined ? this.props.displayOn : this.state.displayOn
+    this.props.onSelectButtonClick(displayOn, selectedGpus)
     this.close()
   }
 
@@ -36,7 +45,8 @@ class ManageGpuModal extends StatefulModalPattern {
     const {
       isLoading,
       vmName,
-      gpus
+      gpus,
+      displayOn
     } = this.props
 
     const modalBody = (
@@ -44,7 +54,9 @@ class ManageGpuModal extends StatefulModalPattern {
         <ManageGpuModalBody
           vmName={vmName}
           gpus={gpus}
+          displayOn={this.state.displayOn === undefined ? displayOn : this.state.displayOn}
           selectedGpus={this.state.selectedGpus}
+          onDisplayOnChange={this.onDisplayOnChange}
           onGpuSelectionChange={this.onGpuSelectionChange}
         />
       </Spinner>
@@ -90,6 +102,7 @@ ManageGpuModal.propTypes = {
       address: PropTypes.string,
       selected: PropTypes.bool
     })),
+  displayOn: PropTypes.bool,
   onSelectButtonClick: PropTypes.func
 }
 
@@ -97,7 +110,8 @@ ManageGpuModal.defaultProps = {
   ...excludeKeys(StatefulModalPattern.defaultProps, ['children', 'footer']),
   dialogClassName: 'modal-lg',
   isLoading: false,
-  gpus: []
+  gpus: [],
+  displayOn: true
 }
 
 export default ManageGpuModal
