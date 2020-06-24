@@ -38,7 +38,7 @@ const GpuDataProvider = ({children, vmId}) => {
       let devices = await fetchHostDevices(hosts[i].id)
 
       if (!devices || !Array.isArray(devices.host_device)) {
-        return hostDevices
+        continue
       }
 
       for (let y = 0; y < devices.host_device.length; y++) {
