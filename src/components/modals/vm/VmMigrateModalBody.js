@@ -6,6 +6,7 @@ import {
   Form,
   Checkbox,
   FormGroup,
+  FormHelperText,
   FormSelect,
   FormSelectOption
 } from '@patternfly/react-core'
@@ -31,6 +32,7 @@ export const selectItemShape = {
 }
 
 const VmMigrateModalBody = ({
+  suggestAffinity,
   selectedHostId,
   targetHostItems = [],
   migrateVmsInAffinity = false,
@@ -57,6 +59,11 @@ const VmMigrateModalBody = ({
               {msg.migrateVmSelectHostLabel()}
               <FieldLevelHelp content={msg.migrateVmSelectHostFieldHelp()} />
             </div>
+          }
+          helperText={suggestAffinity && !migrateVmsInAffinity &&
+            <FormHelperText isHidden={false}>
+              {msg.migrateVmSuggestEnablingAffinity()}
+            </FormHelperText>
           }
         >
           <FormSelect
@@ -113,6 +120,7 @@ VmMigrateModalBody.propTypes = {
   targetHostItems: PropTypes.arrayOf(PropTypes.shape(selectItemShape)),
   migrateVmsInAffinity: PropTypes.bool,
   vmNames: PropTypes.arrayOf(PropTypes.string),
+  suggestAffinity: PropTypes.bool.isRequired,
 
   onHostSelectionChange: PropTypes.func,
   onMigrateVmsInAffinityChange: PropTypes.func

@@ -440,6 +440,12 @@ const messageDescriptors = {
     description: 'checkbox used to indicate that all VMs in affinity will be migrated'
   },
 
+  migrateVmSuggestEnablingAffinity: {
+    id: 'migrate.vm.suggestEnablingAffinity',
+    defaultMessage: 'Some of the selected VMs are in positive enforcing affinity with other VMs and therefore cannot be migrated individually. In order to migrate VMs grouped by affinity, enable the option below.',
+    description: 'helper text below host dropdown - it should suggest that enabling migrate-with-affinity checkbox can make a difference'
+  },
+
   clusterUpgradeButton: {
     id: 'cluster.upgrade.button',
     defaultMessage: 'Upgrade',

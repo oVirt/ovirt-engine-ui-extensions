@@ -14,6 +14,7 @@ beforeEach(() => {
     'setPlaceUnloadHandler',
     'revealPlace',
     'setSearchString',
+    'showToast',
     'engineBaseUrl',
     'currentLocale',
     'currentTimeZone' // TODO(vs) this API function isn't currently available
