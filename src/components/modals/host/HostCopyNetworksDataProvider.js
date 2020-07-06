@@ -36,7 +36,7 @@ async function fetchTargetHosts (sourceHostId) {
  * This function doesn't need to be async, since `HostCopyNetworksModal` is closed
  * (no further interaction available) once the "Copy" button is clicked.
  */
-function copyNetworksToHost (sourceHostId, targetHosts) {
+function copyNetworksToHost (sourceHostId, targetHostId) {
   const requestBody = {}
 
   if (config.useFakeData) {
@@ -45,9 +45,9 @@ function copyNetworksToHost (sourceHostId, targetHosts) {
   }
 
   requestBody['source_host'] = { id: sourceHostId }
-  targetHosts.forEach(host => {
-    enginePost(`api/hosts/${host.id}/copyhostnetworks`, JSON.stringify(requestBody))
-  })
+  if (targetHostId) {
+    enginePost(`api/hosts/${targetHostId}/copyhostnetworks`, JSON.stringify(requestBody))
+  }
 }
 
 const HostCopyNetworksDataProvider = ({ sourceHostId, children }) => {
@@ -71,7 +71,7 @@ const HostCopyNetworksDataProvider = ({ sourceHostId, children }) => {
             text: host.name
           })),
           onRefreshHosts: () => { fetchAndUpdateData() },
-          onCopyNetworksToHost: () => copyNetworksToHost(sourceHostId, targetHosts)
+          onCopyNetworksToHost: (targetHostId) => copyNetworksToHost(sourceHostId, targetHostId)
         })
       }}
     </DataProvider>
