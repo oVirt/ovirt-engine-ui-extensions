@@ -67,6 +67,10 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Jul 7 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.2-1
+- update jquery to 3.5.1 due to HeatMap tooltip break that caused dashboard loading failure
+- fix the copy host networks functionality so that networks will be copied to single target host and not multiple hosts
+
 * Fri Jul 3 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.1-1
 - Convert unit test to jest 'expect' and remove the use of `chai` assertion library
 - update translations
