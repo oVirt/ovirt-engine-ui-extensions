@@ -22,6 +22,7 @@ const BaseFormGroup = ({
 
   return (
     <Form.FormGroup
+      style={{position: 'relative'}}
       controlId={id}
       validationState={validationState}
       ref={componentRef}
