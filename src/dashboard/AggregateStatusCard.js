@@ -13,13 +13,13 @@ import {
 
 /* eslint-disable key-spacing */
 const HEADER_ICON = {
-  'building'       : <EnterpriseIcon height='1.1rem' width='1.1rem' />,
-  'cluster'        : <ClusterIcon height='1.1rem' width='1.1rem' />,
-  'screen'         : <ScreenIcon height='1.1rem' width='1.1rem' />,
-  'storage-domain' : <StorageDomainIcon height='1.1rem' width='1.1rem' />,
-  'volume'         : <VolumeIcon height='1.1rem' width='1.1rem' />,
-  'virtual-machine': <VirtualMachineIcon height='1.1rem' width='1.1rem' />,
-  'bell'           : <BellIcon height='1.1rem' width='1.1rem' />
+  'building'       : <EnterpriseIcon height='1.1em' width='1.1em'className='aggregate-status-count' />,
+  'cluster'        : <ClusterIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
+  'screen'         : <ScreenIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
+  'storage-domain' : <StorageDomainIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
+  'volume'         : <VolumeIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
+  'virtual-machine': <VirtualMachineIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
+  'bell'           : <BellIcon height='1.1em' width='1.1em' className='aggregate-status-count' />
 }
 
 const STATUS_TYPE = {
