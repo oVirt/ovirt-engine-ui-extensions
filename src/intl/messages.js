@@ -50,12 +50,6 @@ const messageDescriptors = {
     description: 'label of `Cancel` button used in dialogs'
   },
 
-  notAvailableShort: {
-    id: 'common.notAvailableShort',
-    defaultMessage: 'N/A',
-    description: 'shorthand for `Not Available`'
-  },
-
   cpuTitle: {
     id: 'common.cpuTitle',
     defaultMessage: 'CPU',

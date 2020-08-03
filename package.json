@@ -21,6 +21,7 @@
     "intl:apply": "rip po2json 'extra/messages/po/messages.*.po' -m 'extra/messages/**/*.json' -o 'src/intl/translations.json'",
     "intl:normalize": "node zanata/normalize-translations.js",
     "intl:report": "node zanata/report.js",
+    "intl:sync": "node zanata/sync-messages.js",
     "lint": "eslint . --ext js,jsx",
     "pretest": "yarn lint",
     "test": "NODE_ENV=test jest --no-watch",

@@ -66,7 +66,7 @@ const InventoryStatusCards = ({ inventory }) => {
             data={inventory.cluster}
             title={msg.dashboardStatusCardClusterTitle()}
             mainIconClass='cluster'
-            noStatusText={msg.notAvailableShort()}
+            noStatusText={''}
             noStatusIconClass=''
             onTotalCountClick={() => {
               applySearch(C.webadminPlaces.cluster, C.searchPrefixes.cluster)
