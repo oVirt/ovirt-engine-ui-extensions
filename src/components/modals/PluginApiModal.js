@@ -24,7 +24,12 @@ const PluginApiModal = ({
           const cloned = style.cloneNode(true)
           cloned.setAttribute('data-style-for', modalId)
           clonedStyles.push(cloned)
-          targetWindow.document.head.appendChild(cloned)
+
+          if (/ui-extensions\/css\/vendor\.[^/]*?css$/.test(cloned.href)) {
+            targetWindow.document.head.insertBefore(cloned, targetWindow.document.head.firstChild)
+          } else {
+            targetWindow.document.head.appendChild(cloned)
+          }
         })
       }
 

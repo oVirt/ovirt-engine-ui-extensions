@@ -31,7 +31,12 @@ export const showModal = (modalCreator, modalId = uniqueId()) => {
       const cloned = style.cloneNode(true)
       cloned.setAttribute('data-style-for', `showModal-${modalId}`)
       clonedStyles.push(cloned)
-      targetWindow.document.head.appendChild(cloned)
+
+      if (/ui-extensions\/css\/vendor\.[^/]*?css$/.test(cloned.href)) {
+        targetWindow.document.head.insertBefore(cloned, targetWindow.document.head.firstChild)
+      } else {
+        targetWindow.document.head.appendChild(cloned)
+      }
     })
   }
 
