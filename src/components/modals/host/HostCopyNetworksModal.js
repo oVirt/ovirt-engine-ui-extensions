@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
-import { Spinner } from 'patternfly-react'
-import { Modal, Button } from '@patternfly/react-core'
 
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import { Spinner } from 'patternfly-react'
+import { Button } from '@patternfly/react-core'
 import HostCopyNetworksModalBody, { CHOOSE_MSG, selectItemShape } from './HostCopyNetworksModalBody'
 
 const HostCopyNetworksModal = ({
@@ -12,21 +13,19 @@ const HostCopyNetworksModal = ({
   targetHostItems = [],
   onCopyNetworksToHost = () => {},
   onRefreshHosts = () => {},
-  onClose = () => {},
-  appendTo
+  onClose = () => {}
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [hostId, setHostId] = useState(CHOOSE_MSG.value)
-  if (!appendTo) {
-    return null
-  }
 
   if (!isOpen) {
-    onClose()
     return null
   }
 
-  const close = () => setOpen(false)
+  const close = () => {
+    setOpen(false)
+    onClose()
+  }
 
   const onCopyNetworksToHostButtonClick = () => {
     const hostOrNothing =
@@ -59,12 +58,11 @@ const HostCopyNetworksModal = ({
   ]
 
   return (
-    <Modal
+    <PluginApiModal
       isLarge
       title={msg.hostCopyNetworksDialogTitle()}
       isOpen={isOpen}
       onClose={close}
-      appendTo={appendTo}
       actions={modalActionButtons}
     >
       <Spinner loading={isLoading}>
@@ -72,10 +70,10 @@ const HostCopyNetworksModal = ({
           hostNames={hostNames}
           targetHostItems={targetHostItems}
           selectedHostId={hostId}
-          onHostSelectionChange={setHostId}
+          onHostSelectionChange={value => setHostId(value)}
         />
       </Spinner>
-    </Modal>
+    </PluginApiModal>
   )
 }
 
@@ -90,7 +88,6 @@ HostCopyNetworksModal.propTypes = {
   onRefreshHosts: PropTypes.func,
 
   // modal props
-  appendTo: PropTypes.object,
   onClose: PropTypes.func
 }
 

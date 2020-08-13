@@ -61,3 +61,19 @@ export const showModal = (modalCreator, modalId = uniqueId()) => {
     modalContainer
   )
 }
+
+export const renderComponent = (render, id = `component-${uniqueId()}`) => {
+  let container = document.querySelector(`div#${id}`)
+  if (!container) {
+    container = document.createElement('div')
+    container.setAttribute('id', id)
+    document.body.appendChild(container)
+  }
+
+  const unmountComponent = () => {
+    ReactDOM.unmountComponentAtNode(container)
+    document.body.removeChild(container)
+  }
+
+  ReactDOM.render(render({ unmountComponent }), container)
+}

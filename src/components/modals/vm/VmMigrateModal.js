@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
-import { Spinner } from 'patternfly-react'
-import { Modal, Button } from '@patternfly/react-core'
 
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import { Spinner } from 'patternfly-react'
+import { Button } from '@patternfly/react-core'
 import VmMigrateModalBody, { AUTO_SELECT_ITEM, selectItemShape } from './VmMigrateModalBody'
 import withTargetHosts from './VmMigrateDataProvider'
+
 import './vm-migrate.css'
 
 const VmMigrateModal = ({
@@ -15,23 +17,20 @@ const VmMigrateModal = ({
   suggestAffinity = false,
   onMigrateToHost = () => {},
   onRefreshHosts = () => {},
-  onClose = () => {},
-  appendTo
+  onClose = () => {}
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [hostId, setHostId] = useState(AUTO_SELECT_ITEM.value)
   const [migrateVmsInAffinity, setMigrateVmsInAffinity] = useState(false)
 
-  if (!appendTo) {
-    return null
-  }
-
   if (!isOpen) {
-    onClose()
     return null
   }
 
-  const close = () => setOpen(false)
+  const close = () => {
+    setOpen(false)
+    onClose()
+  }
 
   const onMigrateVmsInAffinityChange = (migrateVmsInAffinity) => {
     setMigrateVmsInAffinity(migrateVmsInAffinity)
@@ -69,14 +68,11 @@ const VmMigrateModal = ({
   ]
 
   return (
-    <Modal
+    <PluginApiModal
       isLarge
       title={msg.migrateVmDialogTitle()}
-
       isOpen={isOpen}
       onClose={close}
-      appendTo={appendTo}
-
       actions={modalActionButtons}
     >
       <Spinner loading={isLoading}>
@@ -87,11 +83,11 @@ const VmMigrateModal = ({
           selectedHostId={hostId}
           suggestAffinity={suggestAffinity}
 
-          onHostSelectionChange={setHostId}
+          onHostSelectionChange={value => setHostId(value)}
           onMigrateVmsInAffinityChange={onMigrateVmsInAffinityChange}
         />
       </Spinner>
-    </Modal>
+    </PluginApiModal>
   )
 }
 
@@ -107,7 +103,6 @@ VmMigrateModal.propTypes = {
   onRefreshHosts: PropTypes.func,
 
   // modal props
-  appendTo: PropTypes.object,
   onClose: PropTypes.func
 }
 

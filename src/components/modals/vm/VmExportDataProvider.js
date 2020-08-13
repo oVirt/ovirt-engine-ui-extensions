@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import getPluginApi from '_/plugin-api'
-import DataProvider from '../../helper/DataProvider'
+import DataProvider from '_/components/helper/DataProvider'
 import { webadminToastTypes } from '_/constants'
+import { currentLocale } from '_/utils/intl'
 import { engineGet, enginePost } from '_/utils/fetch'
 import { msg } from '_/intl-messages'
 
@@ -30,6 +31,7 @@ async function fetchUpStorageDomains (vmId) {
     .map(sd => {
       return { id: sd.id, name: sd.name }
     })
+    .sort((a, b) => a.name.localeCompare(b.name, currentLocale(), { numeric: true }))
 }
 
 async function validateThinVm (vmId, sdId) {
@@ -52,84 +54,73 @@ async function validateThinVm (vmId, sdId) {
   })
 }
 
-async function exportVm (vmId, vmName, sdId, collapseSnapshots) {
+async function exportVm (vmId, exportName, sdId, collapseSnapshots) {
   const validateResponse = await validateThinVm(vmId, sdId)
   if (!validateResponse) {
     throw new Error(
-      msg.exportVmTemplateNotOnStorageDomainError({vmName})
+      msg.exportVmTemplateNotOnStorageDomainError({exportName})
     )
   }
-  const requestBody = {}
-  requestBody['discard_snapshots'] = !!collapseSnapshots
 
-  if (vmName) {
-    requestBody['vm'] = {
-      name: vmName
+  const requestBody = {
+    discard_snapshots: !!collapseSnapshots,
+    storage_domain: {
+      id: sdId
+    },
+    vm: {
+      name: exportName
     }
   }
 
-  requestBody['storage_domain'] = {
-    id: sdId
-  }
-
-  const response = enginePost(
+  const response = await enginePost(
     `api/vms/${vmId}/clone`,
     JSON.stringify(requestBody)
   )
-  response.then(res => {
-    if (res.status === 'failed') {
-      throw new Error(res.fault.detail)
-    }
-  })
+  if (response.status === 'failed') {
+    throw new Error(response.fault.detail)
+  }
+
   return response
 }
 
-class VmExportDataProvider extends React.Component {
-  constructor (props) {
-    super(props)
-    this.fetchData = this.fetchData.bind(this)
-  }
-
-  async fetchData () {
-    const storageDomains = await fetchUpStorageDomains(this.props.vmId)
+const VmExportDataProvider = ({ children, vm }) => {
+  const fetchData = async () => {
+    const storageDomains = await fetchUpStorageDomains(vm.id)
     return { storageDomains }
   }
 
-  render () {
-    return (
-      <DataProvider fetchData={this.fetchData} fetchOnMount>
-        {({ data, fetchError, fetchInProgress }) => {
-          // expecting single child component
-          const child = React.Children.only(this.props.children)
+  return (
+    <DataProvider fetchData={fetchData}>
+      {({ data, fetchError, fetchInProgress }) => {
+        // expecting single child component
+        const child = React.Children.only(children)
 
-          // handle data loading and error scenarios
-          if (fetchError) {
-            getPluginApi().showToast(
-              webadminToastTypes.danger,
-              msg.exportVmDataError()
-            )
-            return null
-          } else if (fetchInProgress || !data) {
-            return React.cloneElement(child, { isLoading: true })
-          }
+        // handle data loading and error scenarios
+        if (fetchError) {
+          getPluginApi().showToast(webadminToastTypes.danger, msg.exportVmDataError())
+          return null
+        }
 
-          // unwrap data
-          const { storageDomains } = data
-          // pass relevant data and operations to child component
-          return React.cloneElement(child, {
-            storageDomains,
-            exportVm: (vmId, vmName, sdId, collapseSnapshots) =>
-              exportVm(vmId, vmName, sdId, collapseSnapshots)
-          })
-        }}
-      </DataProvider>
-    )
-  }
+        if (fetchInProgress || !data) {
+          return React.cloneElement(child, { isLoading: true })
+        }
+
+        // unwrap data
+        const { storageDomains } = data
+
+        // pass relevant data and operations to child component
+        return React.cloneElement(child, {
+          storageDomains,
+          onExportVm: exportVm
+        })
+      }}
+    </DataProvider>
+  )
 }
 
 VmExportDataProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  vmId: PropTypes.string.isRequired
+  vm: PropTypes.object.isRequired
 }
 
 export default VmExportDataProvider

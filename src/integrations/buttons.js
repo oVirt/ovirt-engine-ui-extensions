@@ -19,7 +19,6 @@ function addVmManageGpuButton () {
     },
 
     index: 2,
-
     id: 'VmManageGpu'
   })
 }
@@ -31,7 +30,6 @@ function addVmMigrateButton () {
   let selectedUpVms = []
 
   getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.migrateVmButton(), {
-
     onClick: function () {
       showVmMigrateModal(selectedUpVms)
     },
@@ -42,9 +40,7 @@ function addVmMigrateButton () {
     },
 
     index: 8,
-
     id: 'VmMigrate'
-
   })
 }
 
@@ -55,7 +51,6 @@ function addHostVmMigrateButton () {
   let selectedUpVms = []
 
   getPluginApi().addDetailPlaceActionButton(entityTypes.host, entityTypes.vm, msg.migrateVmButton(), {
-
     onClick: function () {
       showVmMigrateModal(selectedUpVms)
     },
@@ -66,7 +61,6 @@ function addHostVmMigrateButton () {
     },
 
     index: 5,
-
     id: 'HostVmMigrate'
   })
 }
@@ -75,24 +69,22 @@ function addHostVmMigrateButton () {
  * "Export" button to VMs List.  Enabled when 1 down VM is selected.
  */
 function addVmExportButton () {
-  let selectedDownVm
-
   getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.exportVmButton(), {
-    onClick: function () {
+    onClick: function ([ selectedDownVm ]) {
       showVmExportModal(selectedDownVm)
     },
 
     isEnabled: function (selectedVms) {
-      const enable = selectedVms.length === 1 && selectedVms[0] && selectedVms[0].status === 'Down' &&
+      return (
+        selectedVms.length === 1 &&
+        selectedVms[0] &&
+        selectedVms[0].status === 'Down' &&
         selectedVms[0].managed
-      selectedDownVm = enable ? selectedVms[0] : undefined
-      return enable
+      )
     },
 
     index: 4,
-
     id: 'VmExport'
-
   })
 }
 
@@ -101,7 +93,6 @@ function addVmExportButton () {
  */
 function addClusterUpgradeButton () {
   getPluginApi().addMenuPlaceActionButton(entityTypes.cluster, msg.clusterUpgradeButton(), {
-
     onClick: function ([ selectedCluster ]) {
       if (selectedCluster.id && selectedCluster.name) {
         showClusterUpgradeWizard(selectedCluster)
@@ -113,9 +104,7 @@ function addClusterUpgradeButton () {
     },
 
     index: 3,
-
     id: 'ClusterUpgrade'
-
   })
 }
 
@@ -124,7 +113,6 @@ function addClusterUpgradeButton () {
  */
 function addHostCopyNetworksButton () {
   getPluginApi().addMenuPlaceActionButton(entityTypes.host, msg.hostCopyNetworksButton(), {
-
     onClick: function ([ selectedHost ]) {
       if (selectedHost.id && selectedHost.name) {
         showHostCopyNetworksModal(selectedHost)
@@ -132,13 +120,11 @@ function addHostCopyNetworksButton () {
     },
 
     isEnabled: function (selectedHosts) {
-      return (selectedHosts.length === 1 && selectedHosts[0].managed) || config.useFakeData
+      return selectedHosts.length === 1 && selectedHosts[0].managed
     },
 
     index: 9,
-
     id: 'HostCopyNetworksButton'
-
   })
 }
 

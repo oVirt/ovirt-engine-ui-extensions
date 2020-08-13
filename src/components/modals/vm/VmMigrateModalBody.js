@@ -71,7 +71,7 @@ const VmMigrateModalBody = ({
           <FormSelect
             id='vm-migrate-select-target-host'
             value={selectedHostId}
-            onChange={(value) => { onHostSelectionChange(value) }}
+            onChange={value => onHostSelectionChange(value)}
             isDisabled={migrationDisabled}
           >
             {items.map((option, index) => (
@@ -92,7 +92,7 @@ const VmMigrateModalBody = ({
               </div>
             }
             isChecked={migrateVmsInAffinity}
-            onChange={(checked) => { onMigrateVmsInAffinityChange(checked) }}
+            onChange={value => onMigrateVmsInAffinityChange(value)}
           />
         </FormGroup>
 

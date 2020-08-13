@@ -1,92 +1,103 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { excludeKeys, Spinner } from 'patternfly-react'
 import { msg } from '_/intl-messages'
-import ManageGpuModalBody from './ManageGpuModalBody'
-import StatefulModalPattern from '../../StatefulModalPattern'
+
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import { Spinner } from 'patternfly-react'
 import { Button } from '@patternfly/react-core'
+import ManageGpuModalBody from './ManageGpuModalBody'
 
-class ManageGpuModal extends StatefulModalPattern {
-  constructor (props) {
-    super(props)
-    this.onSelect = this.onSelect.bind(this)
-    this.onDisplayOnChange = this.onDisplayOnChange.bind(this)
-    this.onGpuSelectionChange = this.onGpuSelectionChange.bind(this)
-    this.state = {
-      ...this.state,
-      displayOn: undefined,
-      selectedGpus: new Map()
-    }
+function gpuArrayToSelectedMap (gpus) {
+  const selectedGpus = {}
+  for (const gpu of gpus) {
+    selectedGpus[gpu.cardName] = !!gpu.selected
+  }
+  return selectedGpus
+}
+
+const ManageGpuModal = ({
+  isLoading = false,
+  vmName,
+  gpus = [],
+  displayOn = true,
+  onSelectButtonClick = () => {},
+  onClose = () => {}
+}) => {
+  const [ isOpen, setOpen ] = useState(true)
+  const [ displayOn_, setDisplayOn_ ] = useState(undefined)
+  const [ selectedGpus, setSelectedGpus ] = useState(gpuArrayToSelectedMap(gpus))
+
+  useEffect(() => {
+    setSelectedGpus(gpuArrayToSelectedMap(gpus))
+  }, [ gpus ])
+
+  const close = () => {
+    setOpen(false)
+    onClose()
   }
 
-  onDisplayOnChange (isSelected) {
-    this.setState(state => ({
-      displayOn: isSelected
-    }))
+  const onDisplayOnChange = (isSelected) => {
+    setDisplayOn_(isSelected)
   }
 
-  onGpuSelectionChange (cardName, isSelected) {
-    this.setState(state => ({
-      selectedGpus: state.selectedGpus.set(cardName, isSelected)
-    }))
+  const onGpuSelectionChange = (cardName, isSelected) => {
+    setSelectedGpus({
+      ...selectedGpus,
+      [cardName]: isSelected
+    })
   }
 
-  onSelect () {
-    const selectedGpus = this.props.gpus.filter(gpu => {
-      const rowSelected = this.state.selectedGpus.get(gpu.cardName)
+  const onSelect = () => {
+    const allSelectedGpus = gpus.filter(gpu => {
+      const rowSelected = !!selectedGpus[gpu.cardName]
       return rowSelected === undefined ? gpu.selected : rowSelected
     })
-    const displayOn = this.state.displayOn === undefined ? this.props.displayOn : this.state.displayOn
-    this.props.onSelectButtonClick(displayOn, selectedGpus)
-    this.close()
+    const d = displayOn_ === undefined ? displayOn : displayOn_
+    onSelectButtonClick(d, allSelectedGpus)
+    close()
   }
 
-  render () {
-    const {
-      isLoading,
-      vmName,
-      gpus,
-      displayOn
-    } = this.props
-
-    const modalBody = (
-      <Spinner loading={isLoading}>
-        <ManageGpuModalBody
-          vmName={vmName}
-          gpus={gpus}
-          displayOn={this.state.displayOn === undefined ? displayOn : this.state.displayOn}
-          selectedGpus={this.state.selectedGpus}
-          onDisplayOnChange={this.onDisplayOnChange}
-          onGpuSelectionChange={this.onGpuSelectionChange}
-        />
-      </Spinner>
-    )
-
-    const modalButtons = (
-      <React.Fragment>
-        <Button variant='link' onClick={this.close}>
-          {msg.cancelButton()}
-        </Button>
+  return (
+    <PluginApiModal
+      className='vgpu-modal'
+      isLarge
+      title={msg.vmManageGpuDialogTitle()}
+      isOpen={isOpen}
+      onClose={close}
+      actions={[
         <Button
+          key='manage-gpu-cancel-button'
+          variant='link'
+          onClick={close}
+        >
+          {msg.cancelButton()}
+        </Button>,
+        <Button
+          key='manage-gpu-select-button'
           variant='primary'
-          onClick={this.onSelect}
+          onClick={onSelect}
           isDisabled={gpus.length === 0}
         >
           {msg.saveButton()}
         </Button>
-      </React.Fragment>
-    )
-
-    return React.cloneElement(super.render(), {
-      children: modalBody,
-      footer: modalButtons
-    })
-  }
+      ]}
+    >
+      <Spinner loading={isLoading}>
+        <ManageGpuModalBody
+          gpus={gpus}
+          displayOn={displayOn_ === undefined ? displayOn : displayOn_}
+          selectedGpus={selectedGpus}
+          onDisplayOnChange={onDisplayOnChange}
+          onGpuSelectionChange={onGpuSelectionChange}
+        />
+      </Spinner>
+    </PluginApiModal>
+  )
 }
 
 ManageGpuModal.propTypes = {
-  ...excludeKeys(StatefulModalPattern.propTypes, ['children', 'footer']),
   isLoading: PropTypes.bool,
+  vmName: PropTypes.string,
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
       cardName: PropTypes.string,
@@ -103,15 +114,9 @@ ManageGpuModal.propTypes = {
       selected: PropTypes.bool
     })),
   displayOn: PropTypes.bool,
-  onSelectButtonClick: PropTypes.func
-}
 
-ManageGpuModal.defaultProps = {
-  ...excludeKeys(StatefulModalPattern.defaultProps, ['children', 'footer']),
-  dialogClassName: 'modal-lg',
-  isLoading: false,
-  gpus: [],
-  displayOn: true
+  onSelectButtonClick: PropTypes.func,
+  onClose: PropTypes.func
 }
 
 export default ManageGpuModal

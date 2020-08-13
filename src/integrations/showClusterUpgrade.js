@@ -5,7 +5,7 @@ import { showModal } from '_/utils/react-modals'
 import ClusterUpgradeDataProvider from '_/components/modals/cluster/ClusterUpgradeDataProvider'
 import ClusterUpgradeWizard from '_/components/modals/cluster/ClusterUpgradeWizard'
 
-function showClusterUpgradeWizard ({ id, name }) {
+export function showClusterUpgradeWizard ({ id, name }) {
   showModal(({ container, destroyModal }) => (
     <ClusterUpgradeDataProvider cluster={{ id, name }}>
       <ClusterUpgradeWizard
@@ -54,8 +54,4 @@ function showClusterUpgradeWizard ({ id, name }) {
       />
     </ClusterUpgradeDataProvider>
   ))
-}
-
-export {
-  showClusterUpgradeWizard
 }

@@ -32,8 +32,8 @@ const ManageGpuModalBody = ({
 
   const selectedCards = new Set(
     gpus
-      .filter((gpu) => selectedGpus.get(gpu.cardName) === undefined ? gpu.selected : selectedGpus.get(gpu.cardName))
-      .map((gpu) => gpu.cardName)
+      .filter(gpu => selectedGpus[gpu.cardName] === undefined ? gpu.selected : selectedGpus[gpu.cardName])
+      .map(gpu => gpu.cardName)
   )
 
   if (gpus.length === 0) {
@@ -52,6 +52,7 @@ const ManageGpuModalBody = ({
     gpus.filter(gpu => searchText === '' ||
     gpu.cardName.toLowerCase().includes(searchText.toLowerCase()) ||
     gpu.host.toLowerCase().includes(searchText.toLowerCase()))
+
   return (
     <Stack gutter='sm'>
       <StackItem>
@@ -68,7 +69,7 @@ const ManageGpuModalBody = ({
           label={msg.vmManageGpuBodyDisplaySwitchOn()}
           labelOff={msg.vmManageGpuBodyDisplaySwitchOff()}
           isChecked={displayOn}
-          onChange={onDisplayOnChange}
+          onChange={value => onDisplayOnChange(value)}
         />
       </StackItem>
       <StackItem>
@@ -98,7 +99,7 @@ const ManageGpuModalBody = ({
                 value={searchText}
                 placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
                 type='search'
-                onChange={onSearchBoxInput}
+                onChange={value => onSearchBoxInput(value)}
                 aria-label='text input'
                 className='vgpu-search-box'
               />

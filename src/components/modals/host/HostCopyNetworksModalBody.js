@@ -58,7 +58,7 @@ const HostCopyNetworksModalBody = ({
           <FormSelect
             id='host-copy-networks-select-target-host'
             value={selectedHostId}
-            onChange={(value) => { onHostSelectionChange(value) }}
+            onChange={value => onHostSelectionChange(value)}
             isDisabled={copyDisabled}
           >
             {items.map((option, index) => (

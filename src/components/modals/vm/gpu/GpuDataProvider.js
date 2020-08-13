@@ -201,8 +201,10 @@ const GpuDataProvider = ({children, vmId}) => {
         // handle data loading and error scenarios
         if (fetchError) {
           getPluginApi().showToast(webadminToastTypes.danger, msg.vmManageGpuDataError())
-          return React.cloneElement(child, { show: false })
-        } else if (fetchInProgress || !data) {
+          return null
+        }
+
+        if (fetchInProgress || !data) {
           return React.cloneElement(child, { isLoading: true })
         }
 

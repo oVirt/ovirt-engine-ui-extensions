@@ -76,7 +76,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
 
   const createParentRow = (gpu) => {
     const isOpen = openRows.get(gpu.cardName)
-    const isSelected = selectedGpus.get(gpu.cardName)
+    const isSelected = !!selectedGpus[gpu.cardName]
     return {
       isOpen: isOpen === true,
       selected: isSelected === undefined ? gpu.selected : isSelected,

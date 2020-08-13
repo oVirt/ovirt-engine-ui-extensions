@@ -1,33 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import getPluginApi from '../../../plugin-api'
-import DataProvider from '../../helper/DataProvider'
-import { webadminToastTypes } from '../../../constants'
-import config from '../../../plugin-config'
-import { engineGet, enginePost } from '../../../utils/fetch'
-import { msg } from '../../../intl-messages'
+import getPluginApi from '_/plugin-api'
+import DataProvider from '_/components/helper/DataProvider'
+import { webadminToastTypes } from '_/constants'
+import config from '_/plugin-config'
+import { engineGet, enginePost } from '_/utils/fetch'
+import { msg } from '_/intl-messages'
 
-const fetchTargetHostsFakeData = {
-  host: [
-    { id: 'src123', name: 'src-host-1', cluster: { id: 'xyz789' } },
-    { id: 'dst111', name: 'dest-host-1', cluster: { id: 'xyz789' } },
-    { id: 'dst222', name: 'dest-host-2', cluster: { id: 'xyz789' } },
-    { id: 'dst333', name: 'dest-host-3', cluster: { id: 'xyz789' } }
-  ]
-}
+const fetchTargetHostsFakeData = [
+  { id: 'dst111', name: 'dest-host-1', cluster: { id: 'xyz789' } },
+  { id: 'dst222', name: 'dest-host-2', cluster: { id: 'xyz789' } },
+  { id: 'dst333', name: 'dest-host-3', cluster: { id: 'xyz789' } }
+]
 
 /**
- * Fetch valid target hosts
- * @returns all hosts in same cluster as source host except source host
+ * Fetch valid target hosts in the same cluster as source host, excluding the source host.
  */
 async function fetchTargetHosts (sourceHostId) {
-  const json = (config.useFakeData && fetchTargetHostsFakeData) ||
-    await engineGet('api/hosts')
-  let allHosts = Array.isArray(json.host) ? json.host : []
+  if (config.useFakeData) {
+    return fetchTargetHostsFakeData
+  }
+
+  const apiHosts = await engineGet('api/hosts')
+  const allHosts = Array.isArray(apiHosts.host) ? apiHosts.host : []
+
   const sourceHost = allHosts.find(host => host.id === sourceHostId)
-  return allHosts
-    .filter(host => host.id !== sourceHostId)
-    .filter(host => host.cluster.id === sourceHost.cluster.id)
+  return !sourceHost
+    ? []
+    : allHosts.filter(host => host.id !== sourceHost.id && host.cluster.id === sourceHost.cluster.id)
 }
 
 /**
