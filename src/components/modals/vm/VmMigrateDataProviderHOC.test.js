@@ -2,11 +2,20 @@ import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { configure, mount, shallow } from 'enzyme'
 import EnzymeAdapter from 'enzyme-adapter-react-16'
+import { engineGet } from '_/utils/fetch'
 import withTargetHosts from './VmMigrateDataProvider'
-import { engineGet } from '../../../utils/fetch'
-import {respondToUrl} from './VmMigrateDataProviderHook.test'
 
-jest.mock('../../../utils/fetch')
+jest.mock('_/utils/fetch')
+
+const respondToUrl = function ({hosts, hostsWithAffinity}) {
+  return (url) => {
+    if (url.includes('check_vms_in_affinity_closure=false')) {
+      return hosts
+    } else {
+      return hostsWithAffinity
+    }
+  }
+}
 
 const Foo = (props) => {
   return (
@@ -20,7 +29,7 @@ const ConnectedFoo = withTargetHosts(Foo)
 configure({ adapter: new EnzymeAdapter() })
 
 describe('Vm Migrate Data Provider HOC', () => {
-  it('shoult report isLoading at start up', () => {
+  it('should report isLoading at start up', () => {
     const wrapper = shallow(<ConnectedFoo vmIds={['A', 'B']} />)
     const expected = {
       isLoading: true,

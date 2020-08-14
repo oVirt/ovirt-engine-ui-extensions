@@ -10,7 +10,6 @@ function showVmMigrateModal (upVms) {
       appendTo={container}
       onClose={destroyModal}
     />
-
   ))
 }
 

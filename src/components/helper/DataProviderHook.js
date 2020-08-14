@@ -76,5 +76,6 @@ export function useDataProvider ({fetchData, parameters = [], trigger, enabled =
   }), [
     data,
     fetchError,
-    fetchInProgress])
+    fetchInProgress
+  ])
 }

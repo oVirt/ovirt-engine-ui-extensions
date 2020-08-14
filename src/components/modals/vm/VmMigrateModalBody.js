@@ -32,11 +32,11 @@ export const selectItemShape = {
 }
 
 const VmMigrateModalBody = ({
-  suggestAffinity,
   selectedHostId,
   targetHostItems = [],
   migrateVmsInAffinity = false,
   vmNames = [],
+  suggestAffinity,
   onHostSelectionChange = () => {},
   onMigrateVmsInAffinityChange = () => {}
 }) => {

@@ -1,10 +1,10 @@
 import { act, renderHook, cleanup } from '@testing-library/react-hooks'
+import { engineGet } from '_/utils/fetch'
 import { useVmMigrateDataProvider } from './VmMigrateDataProvider'
-import { engineGet } from '../../../utils/fetch'
 
-jest.mock('../../../utils/fetch')
+jest.mock('_/utils/fetch')
 
-export const respondToUrl = function ({hosts, hostsWithAffinity}) {
+const respondToUrl = function ({hosts, hostsWithAffinity}) {
   return (url) => {
     if (url.includes('check_vms_in_affinity_closure=false')) {
       return hosts
@@ -106,7 +106,7 @@ describe('Vm Migrate Data Provider Hook', () => {
     const [affinity, vmIds] = [false, ['A_id']]
     const { result, waitForNextUpdate } = renderHook(() => useVmMigrateDataProvider(affinity, vmIds))
     await waitForNextUpdate()
-    expect(result.current.error).toEqual(new Error('some server error'))
+    expect(result.current.fetchError).toEqual(new Error('some server error'))
     expect(result.current.suggestAffinity).toBe(false)
   })
 
@@ -115,7 +115,7 @@ describe('Vm Migrate Data Provider Hook', () => {
     const [affinity, vmIds] = [false, ['A_id']]
     const { result, waitForNextUpdate } = renderHook(() => useVmMigrateDataProvider(affinity, vmIds))
     await waitForNextUpdate()
-    expect(result.current.error).toEqual(new Error('VmMigrateDataProvider: Failed to fetch VMs'))
+    expect(result.current.fetchError).toEqual(new Error('VmMigrateDataProvider: Failed to fetch VMs'))
   })
 
   it('fails to load hosts due to incorrect response', async () => {
@@ -129,7 +129,7 @@ describe('Vm Migrate Data Provider Hook', () => {
     const [affinity, vmIds] = [false, ['A_id']]
     const { result, waitForNextUpdate } = renderHook(() => useVmMigrateDataProvider(affinity, vmIds))
     await waitForNextUpdate()
-    expect(result.current.error).toEqual(new Error('VmMigrateDataProvider: Failed to fetch target hosts'))
+    expect(result.current.fetchError).toEqual(new Error('VmMigrateDataProvider: Failed to fetch target hosts'))
     expect(result.current.suggestAffinity).toBe(false)
   })
 

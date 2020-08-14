@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import getPluginApi from '../../../plugin-api'
-import { webadminToastTypes } from '../../../constants'
-import config from '../../../plugin-config'
-import { engineGet, enginePost } from '../../../utils/fetch'
-import { randomId } from '../../../utils/random'
-import { msg } from '../../../intl-messages'
-import { useDataProvider } from '../../helper/DataProviderHook'
+import config from '_/plugin-config'
+import getPluginApi from '_/plugin-api'
+import { webadminToastTypes } from '_/constants'
+import { msg } from '_/intl-messages'
+import { randomId } from '_/utils/random'
+import { engineGet, enginePost } from '_/utils/fetch'
+import { useDataProvider } from '_/components/helper/DataProviderHook'
 
 function randomVms (vmCount) {
   return Array.from(Array(vmCount), (element, index) => ({
@@ -45,7 +45,7 @@ const fetchTargetHostsFakeData = (function * () {
 /**
  * Fetch Engine VMs based on their IDs.
  */
-export async function fetchVms (vmIds) {
+async function fetchVms (vmIds) {
   const json = (config.useFakeData && fetchVmsFakeData) ||
     await engineGet(`api/vms/?search=id=${vmIds.join(' OR id=')}`)
 
@@ -59,7 +59,7 @@ export async function fetchVms (vmIds) {
 /**
  * Resolve migration target hosts for the given VMs.
  */
-export async function fetchTargetHosts (vms, checkVmAffinity) {
+async function fetchTargetHosts (vms, checkVmAffinity) {
   if (!vms) {
     return []
   }
@@ -81,7 +81,7 @@ export async function fetchTargetHosts (vms, checkVmAffinity) {
     throw new Error('VmMigrateDataProvider: Failed to fetch target hosts')
   }
 
-  let targetHosts = json.host || []
+  const targetHosts = json.host || []
 
   // If all VMs are currently running on the same host (currentHostIds.length === 1),
   // this particular host cannot be used as a migration target to any of the selected
@@ -125,62 +125,67 @@ function migrateToHost (targetHostId, migrateVmsInAffinity, vms) {
 
 export function useVmMigrateDataProvider (checkVmAffinity, vmIds) {
   const memoIds = useMemo(() => ([vmIds]), [...vmIds])
+
   const vms = useDataProvider({ fetchData: fetchVms, parameters: memoIds })
   const hosts = useDataProvider({ fetchData: fetchTargetHosts, parameters: [vms.data, false], trigger: checkVmAffinity })
   const hostsWithAffinity = useDataProvider({ fetchData: fetchTargetHosts, parameters: [vms.data, true], trigger: checkVmAffinity })
 
-  const error = vms.fetchError ||
-    (checkVmAffinity && hostsWithAffinity.fetchError) ||
-     (!checkVmAffinity && hosts.fetchError)
+  const fetchError =
+    vms.fetchError || (checkVmAffinity ? hostsWithAffinity.fetchError : hosts.fetchError)
+  const fetchInProgress =
+    vms.fetchInProgress || (checkVmAffinity ? hostsWithAffinity.fetchInProgress : hosts.fetchInProgress)
+
   const targetHosts = checkVmAffinity ? hostsWithAffinity.data : hosts.data
   const dataLoaded = !!vms.data && !!targetHosts
-  const targetHostItems = (targetHosts || []).map(host => ({
+
+  const vmNames = !vms.data ? [] : vms.data.map(vm => vm.name)
+  const targetHostItems = !targetHosts ? [] : targetHosts.map(host => ({
     value: host.id,
     text: host.name
   }))
-  const vmNames = (vms.data || []).map(vm => vm.name)
 
   const suggestAffinity = !hostsWithAffinity.fetchError && !hosts.fetchError &&
     !!hosts.data && !!hostsWithAffinity.data &&
     !hosts.data.length && !!hostsWithAffinity.data.length
 
   return useMemo(() => ({
+    vms: vms.data,
     vmNames,
     targetHostItems,
-    error,
+    suggestAffinity,
     dataLoaded,
-    vms: vms.data,
-    suggestAffinity
+    fetchError,
+    fetchInProgress
   }), [
-    error,
-    dataLoaded,
     vms.data,
     targetHosts,
-    suggestAffinity
+    suggestAffinity,
+    dataLoaded,
+    fetchError,
+    fetchInProgress
   ])
 }
 
 const withTargetHosts = (WrappedComponent) => {
-  const enhancedComponent = (props) => {
-    // state
-    const {vmIds, ...otherProps} = props
+  const enhancedComponent = ({ vmIds, ...otherProps }) => {
     const [checkVmAffinity, setCheckVmAffinity] = useState(false)
+
     const {
+      vms,
       vmNames,
       targetHostItems,
-      error,
+      suggestAffinity,
       dataLoaded,
-      vms,
-      suggestAffinity
+      fetchError
     } = useVmMigrateDataProvider(checkVmAffinity, vmIds)
 
     useEffect(() => {
-      if (error) {
+      if (fetchError) {
         getPluginApi().showToast(webadminToastTypes.danger, msg.migrateVmDataError())
       }
-    }, [error])
+    }, [fetchError])
 
-    if (error) {
+    if (fetchError) {
       return null
     }
 

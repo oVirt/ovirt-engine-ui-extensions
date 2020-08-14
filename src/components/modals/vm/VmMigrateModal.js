@@ -9,10 +9,10 @@ import withTargetHosts from './VmMigrateDataProvider'
 import './vm-migrate.css'
 
 const VmMigrateModal = ({
-  suggestAffinity = false,
   isLoading = false,
   vmNames = [],
   targetHostItems = [],
+  suggestAffinity = false,
   onMigrateToHost = () => {},
   onRefreshHosts = () => {},
   onClose = () => {},
