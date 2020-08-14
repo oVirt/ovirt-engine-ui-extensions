@@ -9,7 +9,7 @@ Source: @TAR_FILE@
 BuildArch: noarch
 
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.30-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.33-1
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-cluster-upgrade >= 1.1.12
@@ -67,6 +67,14 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Fri Aug 14 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.3-1
+- Use em unit for sizing icons of the dashboard dialog
+- Display blank card instead of N/A for cluster stats on the dashboard dialog
+- Fix the cluster upgrade dialog tooltips by assuring that the container node is positioned relatively
+- Add a suggestion info text for enabling affinity check when migrating a VM on Migrate VM dialog
+- Update lodash dependency
+- Update modal code to control order of css includes, so that branding changes remain intact when a modal is open
+
 * Tue Jul 7 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.2-1
 - update jquery to 3.5.1 due to HeatMap tooltip break that caused dashboard loading failure
 - fix the copy host networks functionality so that networks will be copied to single target host and not multiple hosts
