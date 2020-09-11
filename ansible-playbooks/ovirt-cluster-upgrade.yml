@@ -5,4 +5,6 @@
   gather_facts: false
 
   roles:
-    - ovirt.cluster-upgrade
+    - cluster_upgrade
+  collections:
+    - ovirt.ovirt
