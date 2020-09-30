@@ -16,6 +16,8 @@ import { msg } from '_/intl-messages'
 import FieldLevelHelp from '_/components/helper/FieldLevelHelp'
 import VmList from './VmList'
 
+import { stringCompare } from '_/utils/compare'
+
 const NO_HOST_AVAILABLE_HOST_ITEMS = [{
   text: msg.migrateVmNoAvailableHost(),
   value: '__NO_HOST__'
@@ -43,7 +45,7 @@ const VmMigrateModalBody = ({
   const migrationDisabled = targetHostItems.length === 0
   const items = migrationDisabled
     ? NO_HOST_AVAILABLE_HOST_ITEMS
-    : [ AUTO_SELECT_ITEM, ...targetHostItems ]
+    : [ AUTO_SELECT_ITEM, ...targetHostItems.sort((a, b) => stringCompare(a.text, b.text)) ]
 
   return (
     <React.Fragment>
