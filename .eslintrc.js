@@ -11,8 +11,11 @@ module.exports = {
     '__DEV__': false
   },
   'plugins': [
+    'react-hooks'
   ],
   'rules': {
-    'no-multi-spaces': [ 'error', { 'ignoreEOLComments': true } ]
+    'no-multi-spaces': [ 'error', { 'ignoreEOLComments': true } ],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn'
   }
 }

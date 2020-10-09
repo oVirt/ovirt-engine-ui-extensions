@@ -167,7 +167,7 @@ export function useVmMigrateDataProvider (checkVmAffinity, vmIds) {
 }
 
 const withTargetHosts = (WrappedComponent) => {
-  const enhancedComponent = ({ vmIds, ...otherProps }) => {
+  const EnhancedComponent = ({ vmIds, ...otherProps }) => {
     const [checkVmAffinity, setCheckVmAffinity] = useState(false)
 
     const {
@@ -201,10 +201,10 @@ const withTargetHosts = (WrappedComponent) => {
         onMigrateToHost={(hostId, migrateVmsInAffinity) => migrateToHost(hostId, migrateVmsInAffinity, vms)}
       />)
   }
-  enhancedComponent.propTypes = {
+  EnhancedComponent.propTypes = {
     vmIds: PropTypes.arrayOf(PropTypes.string).isRequired
   }
-  return enhancedComponent
+  return EnhancedComponent
 }
 
 export default withTargetHosts
