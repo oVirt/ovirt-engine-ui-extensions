@@ -49,14 +49,6 @@ const VmMigrateModal = ({
 
   const modalActionButtons = [
     <Button
-      key='vm-migrate-cancel-button'
-      ouiaId='vm-migrate-cancel-button'
-      variant='link'
-      onClick={close}
-    >
-      {msg.cancelButton()}
-    </Button>,
-    <Button
       key='vm-migrate-migrate-button'
       ouiaId='vm-migrate-migrate-button'
       variant='primary'
@@ -64,6 +56,14 @@ const VmMigrateModal = ({
       isDisabled={targetHostItems.length === 0}
     >
       {msg.migrateVmButton()}
+    </Button>,
+    <Button
+      key='vm-migrate-cancel-button'
+      ouiaId='vm-migrate-cancel-button'
+      variant='link'
+      onClick={close}
+    >
+      {msg.cancelButton()}
     </Button>
   ]
 

@@ -39,14 +39,6 @@ const HostCopyNetworksModal = ({
 
   const modalActionButtons = [
     <Button
-      key='host-copy-networks-cancel-button'
-      ouiaId='host-copy-networks-cancel-button'
-      variant='link'
-      onClick={close}
-    >
-      {msg.cancelButton()}
-    </Button>,
-    <Button
       key='host-copy-networks-copy-button'
       ouiaId='host-copy-networks-copy-button'
       variant='primary'
@@ -54,6 +46,14 @@ const HostCopyNetworksModal = ({
       isDisabled={targetHostItems.length === 0 || hostId === CHOOSE_MSG.value}
     >
       {msg.hostCopyNetworksButton()}
+    </Button>,
+    <Button
+      key='host-copy-networks-cancel-button'
+      ouiaId='host-copy-networks-cancel-button'
+      variant='link'
+      onClick={close}
+    >
+      {msg.cancelButton()}
     </Button>
   ]
 

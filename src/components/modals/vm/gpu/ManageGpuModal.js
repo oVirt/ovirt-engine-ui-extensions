@@ -66,19 +66,19 @@ const ManageGpuModal = ({
       onClose={close}
       actions={[
         <Button
-          key='manage-gpu-cancel-button'
-          variant='link'
-          onClick={close}
-        >
-          {msg.cancelButton()}
-        </Button>,
-        <Button
           key='manage-gpu-select-button'
           variant='primary'
           onClick={onSelect}
           isDisabled={gpus.length === 0}
         >
           {msg.saveButton()}
+        </Button>,
+        <Button
+          key='manage-gpu-cancel-button'
+          variant='link'
+          onClick={close}
+        >
+          {msg.cancelButton()}
         </Button>
       ]}
     >

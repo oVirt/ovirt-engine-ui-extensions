@@ -53,19 +53,19 @@ const VmExportModal = ({
 
   const modalActions = [
     <Button
-      key='vm-export-modal-cancel-button'
-      variant='link'
-      onClick={close}
-    >
-      {msg.cancelButton()}
-    </Button>,
-    <Button
       key='vm-export-modal-export-button'
       variant='primary'
       onClick={doExportVm}
       isDisabled={!storageDomains || storageDomains.length === 0 || exportVmName.length === 0}
     >
       {msg.exportVmButton()}
+    </Button>,
+    <Button
+      key='vm-export-modal-cancel-button'
+      variant='link'
+      onClick={close}
+    >
+      {msg.cancelButton()}
     </Button>
   ]
 
