@@ -7,7 +7,6 @@
     "type": "git",
     "url": "git://gerrit.ovirt.org/ovirt-engine-ui-extensions"
   },
-  "zanataLocales": "de,es,fr,it,ja,ko,pt-BR,zh-CN,cs",
   "scripts": {
     "prebuild": "yarn test",
     "build": "NODE_ENV=production webpack --config webpack.prod.js",
@@ -16,8 +15,8 @@
     "dev:analyze": "NODE_ENV=development Q=1 webpack --progress --config webpack.dev.js --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
     "dev:watch": "yarn dev --watch",
     "intl:extract": "node zanata/extract-translations.js && rip json2pot 'extra/messages/**/*.json' -o 'extra/messages/messages.pot'",
-    "intl:push-all": "cd zanata && zanata-cli push --push-type source --locales $npm_package_zanataLocales",
-    "intl:pull-all": "cd zanata && zanata-cli pull --pull-type trans --locales $npm_package_zanataLocales",
+    "intl:push": "zanata/zanata-push.sh",
+    "intl:pull": "zanata/zanata-pull.sh",
     "intl:apply": "rip po2json 'extra/messages/po/messages.*.po' -m 'extra/messages/**/*.json' -o 'src/intl/translations.json'",
     "intl:normalize": "node zanata/normalize-translations.js",
     "intl:report": "node zanata/report.js",

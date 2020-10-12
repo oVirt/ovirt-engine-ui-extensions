@@ -104,13 +104,7 @@ added, changed or deleted will be shown as such in the Zanata UI. Here is the se
 push the changes:
 
  % yarn intl:extract
- % yarn intl:push-all
-
-Alternatively, use the explicit `zanata-cli` command to control which locale you want to push:
-
- % yarn intl:extract
- % cd intl
- % zanata-cli push --push-type source --locales de,es,fr,it,ja,ko,pt-BR,zh-CN
+ % yarn intl:push
 
 ==== Pull updated translations from Zanata
 
@@ -120,16 +114,7 @@ files get converted into a single JSON file containing translations for all loca
 file needs to be normalized for git diff sanity.
 
  % yarn intl:extract
- % yarn intl:pull-all
- % yarn intl:apply
- % yarn intl:normalize
-
-Alternatively, use the explicit `zanata-cli` command to control which locales you want to pull:
-
- % yarn intl:extract
- % cd intl
- % zanata-cli pull --pull-type trans --locales de,es,fr,it,ja,ko,pt-BR,zh-CN
- % cd ..
+ % yarn intl:pull
  % yarn intl:apply
  % yarn intl:normalize
 
