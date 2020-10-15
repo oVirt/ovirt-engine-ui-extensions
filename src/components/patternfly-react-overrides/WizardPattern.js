@@ -127,9 +127,6 @@ const WizardPattern = ({
         />
       </Wizard.Body>
       <Wizard.Footer>
-        <Button bsStyle='default' className='btn-cancel' onClick={onHideClick} id={`${id}-action-cancel`}>
-          {cancelText}
-        </Button>
         <Button
           bsStyle='default'
           onClick={onBackClick}
@@ -154,6 +151,9 @@ const WizardPattern = ({
               <Icon type='fa' name='angle-right' />
             </React.Fragment>
           )}
+        </Button>
+        <Button bsStyle='default' className='btn-cancel' onClick={onHideClick} id={`${id}-action-cancel`}>
+          {cancelText}
         </Button>
       </Wizard.Footer>
       {children}
