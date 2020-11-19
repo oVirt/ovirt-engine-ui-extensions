@@ -4,26 +4,21 @@ import appInit from './services/app-init'
 import { addPlaces } from './integrations/places'
 import { addButtons } from './integrations/buttons'
 
+// ** patternfly3-react
 import 'patternfly-react/dist/css/patternfly-react.css'
-/*
-    PatternFly 4
-    ------------
 
-    PF4 itself has multiple ways to import the CSS (or the scss versions) to consider:
-      1. all in one (`patternfly.css`)
-      2. all in one but without global style reset, to aid in compat with PF3 (`patternfly-no-reset.css`)
-      3. base and then components and layouts as needed (`patternfly-base.css` and others)
-
-    patternfly4-react handles things differently.  Via the react-style package, the components
-    load (and unload) their CSS on demand.  Cool!  PF4-react also includes a `base.css` to load
-    that is a modified version of pf4's #3 option.  This is also cool but with a big downside
-    as the style resets still occur.  react-core doesn't provide a `base-no-reset.css` that would
-    be ideal.  So...for now...instead of updating @patternfly/patternfly and @patternfly/react-core
-    with everything that would be needed to do `base-no-reset.css`, we will do the PF4 #2 import
-    option and let the components double up the styles.  This is probably the safest thing to
-    do right now (4-Nov-2019).
- */
+// ** patternfly4 (no reset version so it doesn't conflict with PF3, but it includes
+//                 more than is needed for pf4-react)
 import '@patternfly/patternfly/patternfly-no-reset.css'
+
+/*
+  NOTE: Once https://github.com/patternfly/patternfly-react/pull/5166 is merged and
+        released, we can use this import of PF4-react instead
+ */
+// ** patternfly4-react (no reset version so it doesn't break PF3)
+// import '@patternfly/react-core/dist/style/base-no-reset.css'
+
+// ** overrides
 import '../static/css/plugin-pf4-overrides.css'
 
 // register event handlers

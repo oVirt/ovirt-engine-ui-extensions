@@ -4,7 +4,7 @@ import { msg } from '_/intl-messages'
 import { formatNumber0D } from '_/utils/intl'
 import { inventoryStatus as inventoryStatusDataShape } from './dataShapes'
 
-import { Card, CardHeader, CardBody, Tooltip } from '@patternfly/react-core'
+import { Card, CardTitle, CardBody, Tooltip } from '@patternfly/react-core'
 import {
   EnterpriseIcon, ClusterIcon, ScreenIcon, StorageDomainIcon, VolumeIcon,
   VirtualMachineIcon, BellIcon, QuestionCircleIcon, ErrorCircleOIcon, WarningTriangleIcon,
@@ -65,7 +65,7 @@ const AggregateStatusCard = ({
 
   return (
     <Card className='aggregate-status-card' isHoverable>
-      <CardHeader>
+      <CardTitle>
         <a href='#' onClick={event => { event.preventDefault(); onTotalCountClick() }}>
           {HEADER_ICON[mainIconClass]}
           {' '}
@@ -73,7 +73,7 @@ const AggregateStatusCard = ({
           {' '}
           <span className='aggregate-status-title'>{title}</span>
         </a>
-      </CardHeader>
+      </CardTitle>
       <CardBody>
         <p className='aggregate-status-notifications'>
           {statuses.map(statusItem => (

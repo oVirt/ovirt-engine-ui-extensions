@@ -5,14 +5,14 @@ import { msg } from '_/intl-messages'
 import { applySearch } from '_/utils/webadmin-search'
 import { dashboardDataShape, heatMapDataArray as heatMapDataShape } from './dataShapes'
 
-import { Card, CardHeader, CardBody, Grid, GridItem, Stack, StackItem } from '@patternfly/react-core'
+import { Card, CardTitle, CardBody, Grid, GridItem, Stack, StackItem } from '@patternfly/react-core'
 import HeightMatching from '_/components/helper/HeightMatching'
 import HeatMap from '_/components/patternfly/HeatMap'
 import HeatMapLegend from '_/components/patternfly/HeatMapLegend'
 
 const HeatMapCards = ({ heatMapData, showGluster = false }) => (
   <HeightMatching selector='.heatmap-cards .heatmap-chart'>
-    <Grid className='heatmap-cards' gutter='sm' sm={12} md={4}>
+    <Grid className='heatmap-cards' hasGutter sm={12} md={4}>
       <GridItem sm={12} md={showGluster ? 4 : 8}>
         <ClusterUtilizationCards cpu={heatMapData.cpu} memory={heatMapData.memory} />
       </GridItem>
@@ -35,13 +35,13 @@ HeatMapCards.propTypes = {
 
 const ClusterUtilizationCards = ({ cpu, memory }) => (
   <Card>
-    <CardHeader>
+    <CardTitle>
       {msg.dashboardClusterUtilizationHeading()}
-    </CardHeader>
+    </CardTitle>
     <CardBody>
       <Stack>
         <StackItem className='heatmap-chart' isFilled>
-          <Grid gutter='sm' span={6}>
+          <Grid hasGutter span={6}>
             <GridItem>
               <div className='heatmap-chart-title'>{msg.cpuTitle()}</div>
               <HeatMap
@@ -85,9 +85,9 @@ ClusterUtilizationCards.propTypes = {
 
 const StorageUtilizationCard = ({ storage }) => (
   <Card>
-    <CardHeader>
+    <CardTitle>
       {msg.dashboardStorageUtilizationHeading()}
-    </CardHeader>
+    </CardTitle>
     <CardBody>
       <Stack>
         <StackItem className='heatmap-chart' isFilled>
@@ -117,9 +117,9 @@ StorageUtilizationCard.propTypes = {
 
 const GlusterUtilizationCard = ({ vdoSavings }) => (
   <Card>
-    <CardHeader>
+    <CardTitle>
       {msg.dashboardVdoSavingsHeading()}
-    </CardHeader>
+    </CardTitle>
     <CardBody>
       <Stack>
         <StackItem className='heatmap-chart' isFilled>

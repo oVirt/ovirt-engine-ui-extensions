@@ -7,7 +7,7 @@ import { formatPercent0D, formatNumber1D } from '_/utils/intl'
 import { round } from '_/utils/round'
 import { convertValue } from '_/utils/unit-conversion'
 
-import { Flex, FlexItem, FlexModifiers, Tooltip } from '@patternfly/react-core'
+import { Flex, FlexItem, Tooltip } from '@patternfly/react-core'
 import AreaChart from '_/components/patternfly/AreaChart'
 import DonutChart from '_/components/patternfly/DonutChart'
 import UtilizationDialog from './UtilizationDialog'
@@ -42,13 +42,11 @@ const UtilizationTrendCard = ({
       {/* summary */}
       <div className='current-values'>
         <Flex
-          breakpointMods={[
-            { modifier: FlexModifiers['space-items-sm'] },
-            { modifier: FlexModifiers['nowrap'] }
-          ]}
+          spaceItems={{ default: 'spaceItemsSm' }}
+          flexWrap={{ default: 'nowrap' }}
         >
           <FlexItem
-            breakpointMods={[{ modifier: FlexModifiers['align-self-center'] }]}
+            alignSelf={{ default: 'alignSelfCenter' }}
             className='current-value'
           >
             {showValueAsPercentage ? formatPercent0D(available / 100) : formatNumber1D(summaryAvailable)}

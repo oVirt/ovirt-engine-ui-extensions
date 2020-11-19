@@ -31,10 +31,14 @@
     height: 380px;
 }
 
-.vgpu-detail-table > * > tr > :first-child {
-    padding-left: 0px;
+.vgpu-table th.pf-c-table__sort {
+    padding-top: var(--pf-c-table-cell--PaddingTop);
+    padding-right: var(--pf-c-table-cell--PaddingRight);
+    padding-bottom: var(--pf-c-table-cell--PaddingBottom);
+    padding-left: var(--pf-c-table-cell--PaddingLeft);
 }
 
-.vgpu-detail-table > * > tr > :last-child {
-    padding-right: 20px;
+.vgpu-detail-table {
+    --pf-c-table--nested--first-last-child--PaddingLeft: var(--pf-global--spacer--xl);
+    --pf-c-table--nested--first-last-child--PaddingRight: var(--pf-global--spacer--xl);
 }

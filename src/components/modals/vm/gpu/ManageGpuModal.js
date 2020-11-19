@@ -60,7 +60,7 @@ const ManageGpuModal = ({
   return (
     <PluginApiModal
       className='vgpu-modal'
-      isLarge
+      variant='large'
       title={msg.vmManageGpuDialogTitle()}
       isOpen={isOpen}
       onClose={close}

@@ -26,7 +26,7 @@ const StorageDomainList = ({
       value={selectedStorageDomain}
       id='storage-domain-list'
       onChange={value => onChange(value)}
-      isValid={!storageDomainsEmpty}
+      validated={storageDomainsEmpty ? 'error' : 'default'}
     >
       {storageDomains.map((storageDomain, index) => (
         <FormSelectOption
@@ -93,7 +93,7 @@ const VmExportModalBody = ({
               name='exportVmName'
               value={exportVmName}
               onChange={value => onExportVmNameChange(value)}
-              isValid={exportVmName.length > 0}
+              validated={exportVmName.length > 0 ? 'default' : 'error'}
             />
           </FormGroup>
           <FormGroup

@@ -12,7 +12,7 @@ const PluginApiModal = ({
   modalId = `pluginApiModal-${uniqueId()}`,
   isOpen,
   onClose = () => {},
-  ...rest
+  ...restForModal
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -40,11 +40,6 @@ const PluginApiModal = ({
       }
     }
   }, [ isOpen ])
-
-  // only pass down extra props to Modal that Modal explicitly knows about
-  const restForModal = Object.fromEntries(Object.entries(rest).filter(
-    ([key, value]) => Modal.propTypes.hasOwnProperty(key)
-  ))
 
   return (
     <Modal

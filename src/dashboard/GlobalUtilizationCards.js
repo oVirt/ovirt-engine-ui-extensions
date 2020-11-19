@@ -5,7 +5,7 @@ import * as C from '_/constants'
 import { formatNumber1D } from '_/utils/intl'
 import { convertValue } from '_/utils/unit-conversion'
 
-import { Card, CardHeader, CardBody, Grid, GridItem } from '@patternfly/react-core'
+import { Card, CardTitle, CardBody, Grid, GridItem } from '@patternfly/react-core'
 import HeightMatching from '_/components/helper/HeightMatching'
 import UtilizationTrendCard from './UtilizationTrendCard'
 
@@ -20,12 +20,12 @@ const storageUtilizationFooterLabel = (used, total, unit) => {
 
 const GlobalUtilizationCards = ({ globalUtilization }) => (
   <Card className='global-utilization-cards'>
-    <CardHeader>
+    <CardTitle>
       {msg.dashboardGlobalUtilizationHeading()}
-    </CardHeader>
+    </CardTitle>
     <CardBody>
       <HeightMatching selector='.utilization-trend-card .overcommit-text'>
-        <Grid gutter='md' sm={12} md={4}>
+        <Grid hasGutter sm={12} md={4}>
           <GridItem>
             <UtilizationTrendCard
               data={globalUtilization.cpu}

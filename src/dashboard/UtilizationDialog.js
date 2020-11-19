@@ -5,7 +5,7 @@ import { searchPrefixes, searchFields, webadminPlaces } from '_/constants'
 import { msg } from '_/intl-messages'
 import { applySearch } from '_/utils/webadmin-search'
 
-import { Title, TitleLevel, BaseSizes } from '@patternfly/react-core'
+import { Title } from '@patternfly/react-core'
 import PluginApiModal from '_/components/modals/PluginApiModal'
 import ObjectUtilizationList from './ObjectUtilizationList'
 
@@ -25,8 +25,9 @@ const UtilizationDialog = ({
     onClose={onClose}
     title={title}
     className='overutilization-dialog'
+    aria-label={`utilization dialog ${title}`}
     header={(
-      <Title headingLevel={TitleLevel.h1} size={BaseSizes['xl']}>
+      <Title headingLevel='h1' size='xl'>
         {title}
       </Title>
     )}

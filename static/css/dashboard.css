@@ -12,8 +12,11 @@ body, .containers-dashboard {
   /* dashboard CSS variables */
   --dashboard-gutter: var(--pf-global--spacer--sm);
   --dashboard-aggregate-status-header-FontSize: 14px;
+  --dashboard-aggregate-status-header-FontWeight: var(--pf-globale--FontWeight--normal);
   --dashboard-aggregate-status-notifications-FontSize: calc(var(--pf-global--FontSize--lg) + 10px);
+
   --dashboard-cards-header-FontSize: 16px;
+  --dashboard-cards-header-FontWeight: var(--pf-globale--FontWeight--normal);
 
   --dashboard-chart-title-FontSize: var(--pf-global--FontSize--lg);
   --dashboard-chart-title-FontWeight: var(--pf-globale--FontWeight--normal);
@@ -40,14 +43,15 @@ body, .containers-dashboard {
   --pf-c-card--child--PaddingLeft: 0.75rem;
   --pf-c-card--child--PaddingRight: 0.75rem;
   --pf-c-card--child--PaddingBottom: 0.75rem;
+
+  --pf-c-card__title--FontWeight: var(--dashboard-aggregate-status-header-FontWeight);
 }
 .aggregate-status-card a {
   color: #363636;
 }
-.aggregate-status-card .pf-c-card__header {
+.aggregate-status-card .pf-c-card__title {
   text-align: center;
-
-  --pf-c-title--m-md--FontSize: var(--dashboard-aggregate-status-header-FontSize);
+  font-size: var(--dashboard-aggregate-status-header-FontSize);
 }
 .aggregate-status-card .aggregate-status-count {
   font-size: var(--pf-global--FontSize--xl);
@@ -96,8 +100,9 @@ body, .containers-dashboard {
 
 
 /* GlobalUtilizationCards */
-.global-utilization-cards .pf-c-card__header {
-  --pf-c-title--m-md--FontSize: var(--dashboard-cards-header-FontSize);
+.global-utilization-cards .pf-c-card__title {
+  font-size: var(--dashboard-cards-header-FontSize);
+  font-weight: var(--dashboard-cards-header-FontWeight);
 }
 
 
@@ -197,13 +202,14 @@ body, .containers-dashboard {
 
 /* Heat Map Cards */
 .heatmap-cards {
-  --pf-l-grid--m-gutter--GridGap: var(--dashboard-gutter); /* Needed since gutter='sm' on Grid defaults to a large gutter */
+  --pf-l-grid--m-gutter--GridGap: var(--dashboard-gutter);
 }
-.heatmap-cards .pf-c-card__header {
-  --pf-c-title--m-md--FontSize: var(--dashboard-cards-header-FontSize);
+.heatmap-cards .pf-c-card__title {
+  font-size: var(--dashboard-cards-header-FontSize);
+  font-weight: var(--dashboard-cards-header-FontWeight);
 }
 .heatmap-cards .heatmap-chart .pf-l-grid {
-  --pf-l-grid--m-gutter--GridGap: var(--dashboard-gutter); /* Needed since gutter='sm' on Grid defaults to a large gutter */
+  --pf-l-grid--m-gutter--GridGap: var(--dashboard-gutter);
 }
 
 .heatmap-chart .heatmap-chart-title {

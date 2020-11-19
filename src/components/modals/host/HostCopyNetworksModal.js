@@ -59,7 +59,7 @@ const HostCopyNetworksModal = ({
 
   return (
     <PluginApiModal
-      isLarge
+      variant='large'
       title={msg.hostCopyNetworksDialogTitle()}
       isOpen={isOpen}
       onClose={close}

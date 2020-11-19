@@ -71,7 +71,7 @@ const VmExportModal = ({
 
   return (
     <PluginApiModal
-      isLarge
+      variant='large'
       title={msg.exportVmTitle()}
       isOpen={isOpen}
       onClose={close}

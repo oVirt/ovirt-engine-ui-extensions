@@ -14,7 +14,7 @@ class HeatMap extends React.Component {
     this._generateHeatMap(this.props)
   }
 
-  componentWillReceiveProps (newProps) {
+  componentDidUpdate (newProps) {
     this._updateHeatMap(newProps)
   }
 

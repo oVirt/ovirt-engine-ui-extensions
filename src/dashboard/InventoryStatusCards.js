@@ -5,25 +5,20 @@ import { msg } from '_/intl-messages'
 import { applySearch } from '_/utils/webadmin-search'
 import { dashboardDataShape } from './dataShapes'
 
-import { Flex, FlexItem, FlexModifiers } from '@patternfly/react-core'
+import { Flex, FlexItem } from '@patternfly/react-core'
 import HeightMatching from '_/components/helper/HeightMatching'
 import AggregateStatusCard from './AggregateStatusCard'
 
-const FlexItem1 = ({ children, breakpointMods = [], ...rest }) => (
+const FlexItem1 = ({ children, ...rest }) => (
   <FlexItem
-    breakpointMods={[
-      { modifier: FlexModifiers['flex-1'] },
-      ...breakpointMods
-    ]}
+    flex={{ default: 'flex_1' }}
     {...rest}
   >
     {children}
   </FlexItem>
 )
-
 FlexItem1.propTypes = {
-  children: PropTypes.node.isRequired,
-  breakpointMods: Flex.propTypes.breakpointMods
+  children: PropTypes.node.isRequired
 }
 
 const InventoryStatusCards = ({ inventory }) => {
@@ -32,16 +27,15 @@ const InventoryStatusCards = ({ inventory }) => {
   return (
     <HeightMatching
       selector={[
-        '.aggregate-status-card .pf-c-card__header',
+        '.aggregate-status-card .pf-c-card__title',
         '.aggregate-status-card .pf-c-card__body'
       ]}
     >
       <Flex
-        breakpointMods={[
-          { modifier: FlexModifiers['space-items-sm'] },
-          { modifier: FlexModifiers['grow'] },
-          { modifier: FlexModifiers['nowrap'] }
-        ]}
+        alignItems={{ default: 'alignItemsStretch' }}
+        flexWrap={{ default: 'nowrap' }}
+        grow={{ default: 'grow' }}
+        spaceItems={{ default: 'spaceItemsSm' }}
       >
 
         <FlexItem1>

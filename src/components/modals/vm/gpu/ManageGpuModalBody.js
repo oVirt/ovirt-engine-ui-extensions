@@ -9,10 +9,7 @@ import { Bullseye,
   StackItem,
   Switch,
   TextInput,
-  Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
+  Title
 } from '@patternfly/react-core'
 import { SearchIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
@@ -41,7 +38,7 @@ const ManageGpuModalBody = ({
       <Bullseye>
         <EmptyState variant={EmptyStateVariant.large}>
           <EmptyStateIcon icon={SearchIcon} />
-          <Title size='lg'>{msg.vmManageGpuEmptyStateTitle()}</Title>
+          <Title headingLevel='h5' size='lg'>{msg.vmManageGpuEmptyStateTitle()}</Title>
           <EmptyStateBody>{msg.vmManageGpuEmptyStateBody()}</EmptyStateBody>
         </EmptyState>
       </Bullseye>
@@ -54,7 +51,7 @@ const ManageGpuModalBody = ({
     gpu.host.toLowerCase().includes(searchText.toLowerCase()))
 
   return (
-    <Stack gutter='sm'>
+    <Stack hasGutter>
       <StackItem>
         <span className='vgpu-modal-description'>
           {msg.vmManageGpuBodyDescription()}
@@ -92,20 +89,14 @@ const ManageGpuModalBody = ({
         }
       </StackItem>
       <StackItem>
-        <Toolbar>
-          <ToolbarGroup className='vgpu-search-box'>
-            <ToolbarItem className='vgpu-search-box'>
-              <TextInput
-                value={searchText}
-                placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
-                type='search'
-                onChange={value => onSearchBoxInput(value)}
-                aria-label='text input'
-                className='vgpu-search-box'
-              />
-            </ToolbarItem>
-          </ToolbarGroup>
-        </Toolbar>
+        <TextInput
+          value={searchText}
+          placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
+          type='search'
+          onChange={value => onSearchBoxInput(value)}
+          aria-label='text input'
+          className='vgpu-search-box'
+        />
       </StackItem>
       <StackItem className='vgpu-table-wrapper'>
         <GpuTable

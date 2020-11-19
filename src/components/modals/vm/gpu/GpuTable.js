@@ -101,7 +101,8 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
         {
           title: (
             <GpuTableRowDetail gpus={gpus} />
-          )
+          ),
+          props: { colSpan: columns.length + 2 } // +1 for collapse, +1 for select
         }
       ]
     }
@@ -115,9 +116,9 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     parentRows.sort(compareRows)
     parentRows = sortBy.direction === SortByDirection.asc ? parentRows : parentRows.reverse()
 
-    let allRows = []
+    const allRows = []
     parentRows.forEach(parentRow => {
-      let parentIndex = allRows.length
+      const parentIndex = allRows.length
       allRows.push(parentRow)
       allRows.push(createChildRow(cardNameToGpus.get(parentRow.gpu.cardName), parentIndex))
     })
@@ -148,6 +149,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   return (
     <Table
       aria-label='Simple Table'
+      className='vgpu-table'
       cells={columns}
       rows={createRows(createCardNameToGpusMap(gpus))}
       onSelect={onSelect}

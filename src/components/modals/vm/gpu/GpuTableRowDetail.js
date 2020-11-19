@@ -4,21 +4,18 @@ import {
   Table,
   TableBody,
   TableHeader,
-  TableVariant
+  TableVariant,
+  nowrap
 } from '@patternfly/react-table'
 import { msg } from '_/intl-messages'
 import { handleNonAvailableValue } from './handleNonAvailableValue'
 
-const cellWidth = (width) => () => ({
-  width: width
-})
-
 const columns = [
   msg.vmManageGpuTableHostName(),
-  { title: msg.vmManageGpuTableVendor(), transforms: [cellWidth(160)] },
-  { title: msg.vmManageGpuTableProduct(), transforms: [cellWidth(180)] },
-  { title: msg.vmManageGpuTableAddress(), transforms: [cellWidth(180)] },
-  { title: msg.vmManageGpuTableAvailableInstances(), transforms: [cellWidth(120)] }
+  msg.vmManageGpuTableVendor(),
+  msg.vmManageGpuTableProduct(),
+  msg.vmManageGpuTableAddress(),
+  { title: msg.vmManageGpuTableAvailableInstances(), transforms: [nowrap] }
 ]
 
 const createRows = (gpus) => {
@@ -42,7 +39,7 @@ const GpuTableRowDetail = ({gpus}) => {
       variant={TableVariant.compact}
       cells={columns}
       rows={createRows(gpus)}
-      className={'vgpu-detail-table'}
+      className='vgpu-detail-table'
     >
       <TableHeader />
       <TableBody />

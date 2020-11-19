@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { dashboardDataShape } from './dataShapes'
 
-import { Stack, StackItem, Flex, FlexItem, FlexModifiers } from '@patternfly/react-core'
+import { Stack, StackItem, Flex, FlexItem } from '@patternfly/react-core'
 import RefreshDataControl from './RefreshDataControl'
 import LastUpdatedLabel from './LastUpdatedLabel'
 import InventoryStatusCards from './InventoryStatusCards'
@@ -19,9 +19,9 @@ const Dashboard = ({ data, lastUpdated, onRefreshData }) => {
   const showGluster = inventory.volume.totalCount > 0
 
   return (
-    <Stack id='global-dashboard' gutter='sm'>
+    <Stack id='global-dashboard' hasGutter>
       <StackItem>
-        <Flex breakpointMods={[ { modifier: FlexModifiers['space-items-sm'] } ]}>
+        <Flex spaceItems={{ default: 'spaceItemsSm' }}>
           <FlexItem>
             <RefreshDataControl onRefresh={onRefreshData} />
           </FlexItem>
