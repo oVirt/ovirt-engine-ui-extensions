@@ -9,6 +9,7 @@ import {
 
 const SpinnerDialog = ({
   container,
+  id = 'spinner-dialog',
   show,
   title,
   message,
@@ -19,6 +20,7 @@ const SpinnerDialog = ({
     container={container}
     show={show}
     onHide={onHide}
+    id={id}
     {...props}
   >
     <Modal.Header>
@@ -41,6 +43,7 @@ const SpinnerDialog = ({
 
 SpinnerDialog.propTypes = {
   container: PropTypes.any,
+  id: PropTypes.string,
   show: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,

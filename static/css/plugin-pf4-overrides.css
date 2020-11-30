@@ -9,12 +9,140 @@
   --pf-global--ZIndex--lg: 1400;
   --pf-global--ZIndex--xl: 1500;
   --pf-global--ZIndex--2xl: 1600;
+
+  /* match PF3 font styles */
+  --pf-global--FontSize--sm: 11px;
+  --pf-global--FontSize--md: 13px;
+  --pf-global--FontSize--lg: 15px;
+  --pf-global--FontSize--xl: 16px;
+
+  --pf-global--FontWeight--normal: 500;
+  --pf-global--FontWeight--semi-bold: 600;
+  --pf-global--FontWeight--bold: 700;
+
+  --pf-global--LineHeight--md: 20px;
+
+  /* match PF3 fonts */
+  --pf-global--FontFamily--heading--sans-serif: "Open Sans", Helvetica, Arial, sans-serif;
+  --pf-global--FontFamily--sans-serif: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
+.pf-c-switch {
+  /* Switch component doesn't render properly with the global LineHeight set in px */
+  --pf-c-switch--LineHeight: 1.5;
+}
+
+/*
+  skip the backdrop blurring, and match PF3's exact color/opacity
+*/
 .pf-c-backdrop {
-  /*
-    skip the backdrop blurring - makes the Modals look very different from PF3 and
-    you can't see anything on the main page with the blur filter turned on
-  */
   --pf-c-backdrop--BackdropFilter: none;
+  --pf-c-backdrop--Color: rgba(0, 0, 0, 0.3);
+}
+
+/*
+  match PF3 modal header, body, and footer margins/paddings/fonts
+ */
+.pf-c-modal-box {
+  --pf-c-modal-box--PaddingTop: 0; /* var(--pf-global--spacer--lg); */
+  --pf-c-modal-box--PaddingRight: 0;
+  --pf-c-modal-box--PaddingBottom: 0;
+  --pf-c-modal-box--PaddingLeft: 0;
+
+  --pf-c-modal-box__body--PaddingTop: 15px;
+  --pf-c-modal-box__body--PaddingRight: 20px;
+  --pf-c-modal-box__body--PaddingLeft: 20px;
+}
+
+.pf-c-modal-box > .pf-c-button {
+  --pf-c-modal-box--c-button--Right: 0;
+  --pf-c-modal-box--c-button--Top: 3px;
+}
+
+.pf-c-modal-box__header {
+  --pf-c-modal-box--c-button--sibling--MarginRight: 0;
+
+  margin: 0;
+  padding: 10px 18px;
+  background-color: #f5f5f5;
+}
+
+.pf-c-modal-box__title {
+  --pf-c-modal-box__title--FontSize: var(--pf-global--FontSize--md);
+  --pf-c-modal-box__title--LineHeight: 1.66666667;
+
+  font-weight: var(--pf-global--FontWeight--bold);
+}
+
+.pf-c-modal-box__body {
+  padding-top: var(--pf-c-modal-box__body--PaddingTop);
+  padding-right: var(--pf-c-modal-box__body--PaddingRight);
+  padding-left: var(--pf-c-modal-box__body--PaddingLeft);
+}
+
+.pf-c-modal-box .pf-c-modal-box__body:last-of-type {
+  padding-bottom: var(--pf-c-modal-box__body--PaddingTop);
+}
+
+.pf-c-modal-box__footer {
+  --pf-c-modal-box__footer--MarginTop: 0;
+
+  padding: 14px 15px 17px 15px;
+}
+
+.pf-c-form {
+  --pf-c-form__label--FontSize: var(--pf-global--FontSize--md);
+}
+
+.pf-c-content {
+  --pf-c-content--FontSize: 12px;
+  --pf-c-content--LineHeight: 1.66666667;
+}
+
+/*
+  align checkbox label with the checkbox itself
+*/
+.pf-c-form .pf-c-form__group .pf-c-check__input input[type=checkbox] {
+  margin-top: 0;
+}
+
+/*
+  better alignment for horizontal form label text to control content
+*/
+.pf-c-form.pf-m-horizontal {
+  /*
+  --pf-c-form__label--PaddingTop: var(--pf-global--spacer--sm);
+  --pf-c-form__label--PaddingTop: 0.5rem;
+  */
+  --pf-c-form__label--PaddingTop: 0;
+
+  /*
+  --pf-c-form-control--PaddingTop: calc(var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm));
+  --pf-c-form--m-horizontal__group-label--md--PaddingTop: var(--pf-global--spacer--sm);
+  --pf-c-form--m-horizontal__group-label--md--PaddingTop: 0.5rem
+  */
+  --pf-c-form--m-horizontal__group-label--md--PaddingTop: var(--pf-global--spacer--form-element);
+}
+
+/*
+  Due to the way `PluginApiModal` loads ui-extensions' PF4 css to webadmin's frame, if
+  the version of PF4 in webadmin is mismatched with the version in ui-extensions, some
+  unintentional overrides may occur.  These rules redefine styles to the ui-extensions
+  current PF4 settings.
+
+  TODO: Remove these if we migrate to a css module (e.g. sass built) approach for pushing css from
+        ui-extensions into webadmin.  They may also be removed if webadmin no longer bundles PF4
+        style sheets.
+*/
+.pf-c-chip {
+  padding: var(--pf-c-chip--PaddingTop) var(--pf-c-chip--PaddingRight) var(--pf-c-chip--PaddingBottom) var(--pf-c-chip--PaddingLeft);
+}
+
+.pf-c-chip.pf-m-overflow {
+  --pf-c-chip--PaddingLeft: 0.5rem;
+}
+
+.pf-c-chip-group__list-item {
+  margin-right: var(--pf-c-chip-group__list-item--MarginRight);
+  margin-bottom: var(--pf-c-chip-group__list-item--MarginBottom);
 }

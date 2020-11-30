@@ -238,6 +238,7 @@ class ClusterUpgradeWizard extends React.Component {
     if (isLoading) {
       return (
         <SpinnerDialog
+          id='clusterUpgradeWizard-spinner'
           show
           container={container}
           title={loadingTitle}

@@ -11,3 +11,9 @@
   margin-left: 0;
 
 }
+
+#clusterUpgradeWizard .modal-header .close,
+#clusterUpgradeWizard-spinner .modal-header .close,
+.message-dialog-pf .modal-header .close {
+  font-size: small;
+}

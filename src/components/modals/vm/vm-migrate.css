@@ -1,18 +1,10 @@
-.pf-c-form.pf-m-horizontal .pf-c-form__group input[type=checkbox] {
-  /*
-    issue: checkbox was displayed lower then the label
-    use case: migrate vm dialog
-  */
-  margin-top: 0;
-}
-
 /*
   vm-list: no bullet icons, align with the form group's label
 */
-.pf-c-form.pf-m-horizontal .pf-c-form__group ul.pf-c-list.vm-list {
+.pf-c-form.pf-m-horizontal .pf-c-form__group-control ul.vm-list {
   list-style-type: none;
 
-  padding-top: calc(var(--pf-c-form__label--PaddingTop) + var(--pf-c-form--m-horizontal__group-label--md--PaddingTop));
+  padding-top: calc(var(--pf-global--spacer--form-element) + 2px);
   padding-left: 0;
 
   line-height: var(--pf-c-form__label--LineHeight);
