@@ -49,6 +49,7 @@ const PluginApiModal = ({
       isOpen={isOpen}
       onClose={onClose}
       appendTo={getWebAdminDocumentBody()}
+      disableFocusTrap
       {...restForModal}
     >
       {children}
