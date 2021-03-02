@@ -422,12 +422,6 @@ const messageDescriptors = {
     description: 'label for the default migration target host dropdown option'
   },
 
-  migrateVmAffinityLabel: {
-    id: 'migrate.vm.affinityLabel',
-    defaultMessage: 'Migrate VMs in affinity',
-    description: 'label for the checkbox used to indicate that all VMs in affinity will be migrated'
-  },
-
   migrateVmAffinityLabelHelp: {
     id: 'migrate.vm.affinityLabelHelp',
     defaultMessage: 'VMs that are not listed below may also be migrated. VMs that are grouped by affinity may have log errors because of multiple migration attempts.',

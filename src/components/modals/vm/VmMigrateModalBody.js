@@ -18,15 +18,7 @@ import VmList from './VmList'
 
 import { stringCompare } from '_/utils/compare'
 
-const NO_HOST_AVAILABLE_HOST_ITEMS = [{
-  text: msg.migrateVmNoAvailableHost(),
-  value: '__NO_HOST__'
-}]
-
-export const AUTO_SELECT_ITEM = {
-  text: msg.migrateVmAutoSelectHost(),
-  value: '_AutoSelect_'
-}
+import { autoSelectItemVal, noHostVal } from '_/constants'
 
 export const selectItemShape = {
   value: PropTypes.string.isRequired,
@@ -43,9 +35,18 @@ const VmMigrateModalBody = ({
   onMigrateVmsInAffinityChange = () => {}
 }) => {
   const migrationDisabled = targetHostItems.length === 0
+  const autoSelectItem = {
+    text: msg.migrateVmAutoSelectHost(),
+    value: autoSelectItemVal
+  }
+  const noHostItems = [{
+    text: msg.migrateVmNoAvailableHost(),
+    value: noHostVal
+  }]
+
   const items = migrationDisabled
-    ? NO_HOST_AVAILABLE_HOST_ITEMS
-    : [ AUTO_SELECT_ITEM, ...targetHostItems.sort((a, b) => stringCompare(a.text, b.text)) ]
+    ? noHostItems
+    : [ autoSelectItem, ...targetHostItems.sort((a, b) => stringCompare(a.text, b.text)) ]
 
   return (
     <React.Fragment>

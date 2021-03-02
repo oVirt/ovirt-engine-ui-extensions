@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
 
 import PluginApiModal from '_/components/modals/PluginApiModal'
+import { autoSelectItemVal } from '_/constants'
 import { Spinner } from 'patternfly-react'
 import { Button } from '@patternfly/react-core'
-import VmMigrateModalBody, { AUTO_SELECT_ITEM, selectItemShape } from './VmMigrateModalBody'
+import VmMigrateModalBody, { selectItemShape } from './VmMigrateModalBody'
 import withTargetHosts from './VmMigrateDataProvider'
 
 import './vm-migrate.css'
@@ -20,7 +21,7 @@ const VmMigrateModal = ({
   onClose = () => {}
 }) => {
   const [isOpen, setOpen] = useState(true)
-  const [hostId, setHostId] = useState(AUTO_SELECT_ITEM.value)
+  const [hostId, setHostId] = useState(autoSelectItemVal)
   const [migrateVmsInAffinity, setMigrateVmsInAffinity] = useState(false)
 
   if (!isOpen) {
@@ -39,7 +40,7 @@ const VmMigrateModal = ({
 
   const onMigrateButtonClick = () => {
     const hostOrNothing =
-      hostId === AUTO_SELECT_ITEM.value
+      hostId === autoSelectItemVal
         ? undefined
         : hostId
 

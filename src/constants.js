@@ -100,3 +100,7 @@ export const storageUnitTable = [
 export const utilizationListGridNameThreshold = 30
 
 export const vmUpStates = ['Up', 'PoweringUp', 'RebootInProgress', 'Paused']
+
+export const autoSelectItemVal = '_AutoSelect_'
+
+export const noHostVal = '__NO_HOST__'

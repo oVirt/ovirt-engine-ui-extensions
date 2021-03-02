@@ -13,9 +13,11 @@ import { msg } from '_/intl-messages'
 
 import FieldLevelHelp from '_/components/helper/FieldLevelHelp'
 
+import { noHostVal } from '_/constants'
+
 const NO_HOST_AVAILABLE_HOST_ITEMS = [{
   text: msg.hostCopyNetworksNoAvailableHost(),
-  value: '__NO_HOST__'
+  value: noHostVal
 }]
 
 export const CHOOSE_MSG = {
