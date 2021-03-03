@@ -13,7 +13,7 @@ const storageUtilizationFooterLabel = (used, total, unit) => {
   const { unit: newUnit, value: newUsed } = convertValue(C.storageUnitTable, unit, used)
   return (
     <div style={{ display: 'inline-block' }}>
-      <strong>{formatNumber1D(newUsed)} {newUnit}</strong> Used
+      <strong>{formatNumber1D(newUsed)} {newUnit}</strong> {msg.used()}
     </div>
   )
 }
