@@ -9,7 +9,7 @@ Source: @TAR_FILE@
 BuildArch: noarch
 
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.37-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.40-1
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-collection >= 1.2.0
@@ -67,6 +67,16 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Mon Mar 8 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.5-1
+- Reorder Cluster Upgrade action buttons
+- Update Zanata tools to use the maven plugin
+- Remove fc30 build from STDCI
+- Upgrade patternfly and patternfly-react for both 3 and 4 versions.
+- Style PF4 modals to match PF3 modals
+- Do not auto-focus modal 'x' close button
+- Fix missing translations for dashboard and for Migrate VM dialog
+- Update bootstrap-select and datatables.net dependencies
+
 * Wed Oct 14 2020 Sharon Gratch <sgratch@redhat.com> - 1.2.4-1
 - Use ansible collection for cluster upgrade
 - Refactor PF4 component modals to use the PF4 modal
