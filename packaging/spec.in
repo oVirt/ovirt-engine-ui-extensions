@@ -9,7 +9,7 @@ Source: @TAR_FILE@
 BuildArch: noarch
 
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.40-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.44-1
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-collection >= 1.2.0
@@ -67,6 +67,9 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Sun Apr 25 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.6-1
+- Update lodash dependency to 4.17.21
+
 * Mon Mar 8 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.5-1
 - Reorder Cluster Upgrade action buttons
 - Update Zanata tools to use the maven plugin
