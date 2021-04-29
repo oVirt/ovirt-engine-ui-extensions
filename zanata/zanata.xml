@@ -2,7 +2,7 @@
 <config xmlns="http://zanata.org/namespace/config/">
     <url>https://zanata.phx.ovirt.org/</url>
     <project>ovirt-engine-ui-extensions</project>
-    <project-version>1.1</project-version>
+    <project-version>1.2</project-version>
     <project-type>gettext</project-type>
 
     <src-dir>../extra/messages</src-dir>
