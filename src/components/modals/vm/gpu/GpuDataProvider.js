@@ -78,9 +78,18 @@ const GpuDataProvider = ({children, vmId}) => {
   const getSelectedMdevs = (customProperties) => {
     let parsedMdevProperties = parseMdevCustomProperty(customProperties)
     if (isNoDisplay(customProperties)) {
-      return parsedMdevProperties.slice(1)
+      parsedMdevProperties = parsedMdevProperties.slice(1)
     }
-    return parsedMdevProperties
+
+    let selectedMdevs = []
+    parsedMdevProperties.forEach(cardName => {
+      if (cardName in selectedMdevs) {
+        selectedMdevs[cardName]++
+      } else {
+        selectedMdevs[cardName] = 1
+      }
+    })
+    return selectedMdevs
   }
 
   const isNoDisplay = (customProperties) => {
@@ -102,17 +111,18 @@ const GpuDataProvider = ({children, vmId}) => {
             hostMDevType.vendor,
             hostMDevType.address,
             mDevType,
-            selectedMdevs.includes(mDevType.name)))
+            selectedMdevs[mDevType.name]))
       })
     })
     return gpus
   }
 
-  const createGpu = (host, product, vendor, address, mDevType, selected) => {
+  const createGpu = (host, product, vendor, address, mDevType, requestedInstances = 0) => {
     const descriptionKeyValues = parseMDevDescription(mDevType.description)
     return {
       cardName: mDevType.name,
       host: host.name,
+      requestedInstances: requestedInstances,
       availableInstances: parseStringToIntSafely(mDevType.available_instances),
       maxInstances: parseStringToIntSafely(descriptionKeyValues.get('max_instance')),
       maxResolution: descriptionKeyValues.get('max_resolution'),
@@ -121,8 +131,7 @@ const GpuDataProvider = ({children, vmId}) => {
       frameRateLimiter: parseStringToIntSafely(descriptionKeyValues.get('frl_config')),
       product: product,
       vendor: vendor,
-      address: address,
-      selected: selected
+      address: address
     }
   }
 
@@ -170,11 +179,20 @@ const GpuDataProvider = ({children, vmId}) => {
       allCustomProperties.push(mdevCustomProperty)
     }
 
-    let uniqueCardNames = [...new Set(selectedGpus.map((gpu) => gpu.cardName))]
-    if (uniqueCardNames.length > 0 && !displayOn) {
-      uniqueCardNames.unshift('nodisplay')
+    let cardNames = []
+
+    selectedGpus.forEach(gpu => {
+      if (!cardNames.includes(gpu.cardName)) {
+        for (var i = 0; i < gpu.requestedInstances; i++) {
+          cardNames.push(gpu.cardName)
+        }
+      }
+    })
+
+    if (cardNames.length > 0 && !displayOn) {
+      cardNames.unshift('nodisplay')
     }
-    mdevCustomProperty.value = uniqueCardNames.join(',')
+    mdevCustomProperty.value = cardNames.join(',')
     if (mdevCustomProperty.value.length === 0) {
       allCustomProperties.pop(mdevCustomProperty)
     }

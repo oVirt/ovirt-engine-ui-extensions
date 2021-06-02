@@ -2,25 +2,26 @@ import {
   Bullseye,
   EmptyState,
   EmptyStateBody,
-  EmptyStateVariant,
   EmptyStateIcon,
+  EmptyStateVariant,
   Title
 } from '@patternfly/react-core'
+import { SearchIcon } from '@patternfly/react-icons'
 import {
   expandable,
   sortable,
+  RowSelectVariant,
   SortByDirection,
   Table,
   TableBody,
   TableHeader
 } from '@patternfly/react-table'
-import { SearchIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { msg } from '_/intl-messages'
 import { stringWithNumberSuffixCompare } from '_/utils/compare'
-import { handleNonAvailableValue } from './handleNonAvailableValue'
 import GpuTableRowDetail from './GpuTableRowDetail'
+import { handleNonAvailableValue } from './handleNonAvailableValue'
 
 const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   const columns = [
@@ -29,7 +30,8 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     msg.vmManageGpuTableFrameRateLimiter(),
     msg.vmManageGpuTableMaxResolution(),
     msg.vmManageGpuTableFrameBuffer(),
-    msg.vmManageGpuTableMaxInstances()
+    msg.vmManageGpuTableMaxInstances(),
+    msg.vmManageGpuTableRequestedInstances()
   ]
 
   const emptyTableRows = [{
@@ -77,16 +79,18 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   const createParentRow = (gpu) => {
     const isOpen = openRows.get(gpu.cardName)
     const isSelected = !!selectedGpus[gpu.cardName]
+    const requestedInstances = +selectedGpus[gpu.cardName] || 0
     return {
       isOpen: isOpen === true,
-      selected: isSelected === undefined ? gpu.selected : isSelected,
+      selected: isSelected,
       cells: [
         gpu.cardName,
         handleNonAvailableValue(gpu.numberOfHeads),
         handleNonAvailableValue(gpu.frameRateLimiter),
         handleNonAvailableValue(gpu.maxResolution),
         handleNonAvailableValue(gpu.frameBuffer),
-        handleNonAvailableValue(gpu.maxInstances)
+        handleNonAvailableValue(gpu.maxInstances),
+        requestedInstances
       ],
       gpu: gpu
     }
@@ -130,11 +134,38 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   }
 
   const onSelect = (_event, isSelected, _rowIndex, rowData) => {
-    onGpuSelectionChange(rowData.gpu.cardName, isSelected)
+    onGpuSelectionChange(rowData.gpu.cardName, +isSelected)
   }
 
   const onCollapse = (_event, _rowIndex, isOpen, rowData) => {
     setOpenRows(openRows => new Map(openRows).set(rowData.gpu.cardName, isOpen))
+  }
+
+  const actionResolver = (rowData, _) => {
+    if (!rowData.gpu) {
+      return
+    }
+
+    return [
+      {
+        title: msg.vmManageGpuAddActionButton(),
+        isDisabled: selectedGpus[rowData.gpu.cardName] >= rowData.gpu.maxInstances,
+        onClick: (_event, _rowId, rowData, _extra) => {
+          onGpuSelectionChange(rowData.gpu.cardName, selectedGpus[rowData.gpu.cardName] + 1)
+        }
+      },
+      {
+        title: msg.vmManageGpuRemoveActionButton(),
+        isDisabled: selectedGpus[rowData.gpu.cardName] <= 0,
+        onClick: (_event, _rowId, rowData, _extra) => {
+          onGpuSelectionChange(rowData.gpu.cardName, selectedGpus[rowData.gpu.cardName] - 1)
+        }
+      }
+    ]
+  }
+
+  const areActionsDisabled = (rowData, _) => {
+    return !rowData.gpu || !selectedGpus[rowData.gpu.cardName]
   }
 
   if (gpus.length === 0) {
@@ -152,11 +183,14 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
       className='vgpu-table'
       cells={columns}
       rows={createRows(createCardNameToGpusMap(gpus))}
+      selectVariant={RowSelectVariant.radio}
       onSelect={onSelect}
       canSelectAll={false}
       onSort={onSort}
       sortBy={sortBy}
       onCollapse={onCollapse}
+      actionResolver={actionResolver}
+      areActionsDisabled={areActionsDisabled}
     >
       <TableHeader />
       <TableBody />
@@ -170,6 +204,7 @@ GpuTable.propTypes = {
       cardName: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
+      requestedInstances: PropTypes.number,
       maxInstances: PropTypes.number,
       maxResolution: PropTypes.string,
       numberOfHeads: PropTypes.number,
@@ -177,8 +212,7 @@ GpuTable.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
-      address: PropTypes.string,
-      selected: PropTypes.bool
+      address: PropTypes.string
     })),
   selectedGpus: PropTypes.any,
   onGpuSelectionChange: PropTypes.func

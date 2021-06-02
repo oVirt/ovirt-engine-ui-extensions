@@ -830,6 +830,18 @@ const messageDescriptors = {
     description: 'label of `Manage vGPU` button in VM Manage vGPU dialog'
   },
 
+  vmManageGpuAddActionButton: {
+    id: 'vm.gpu.addActionLabel',
+    defaultMessage: 'Add instance',
+    description: 'label of `Add instance` action in VM Manage vGPU dialog table row'
+  },
+
+  vmManageGpuRemoveActionButton: {
+    id: 'vm.gpu.removeActionLabel',
+    defaultMessage: 'Remove instance',
+    description: 'label of `Remove instance` action in VM Manage vGPU dialog table row'
+  },
+
   vmManageGpuTableCardName: {
     id: 'vm.gpu.table.cardName',
     defaultMessage: 'Card name',
@@ -846,6 +858,12 @@ const messageDescriptors = {
     id: 'vm.gpu.table.maxInstances',
     defaultMessage: 'Max instances',
     description: 'label of `Max instances` int VM Manage vGPU dialog table'
+  },
+
+  vmManageGpuTableRequestedInstances: {
+    id: 'vm.gpu.table.requestedInstances',
+    defaultMessage: 'Requested instances',
+    description: 'label of `Requested instances` in VM Manage vGPU dialog table'
   },
 
   vmManageGpuTableHostName: {

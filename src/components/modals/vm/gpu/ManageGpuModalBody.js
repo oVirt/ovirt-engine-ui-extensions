@@ -27,12 +27,6 @@ const ManageGpuModalBody = ({
     setSearchText(value)
   }
 
-  const selectedCards = new Set(
-    gpus
-      .filter(gpu => selectedGpus[gpu.cardName] === undefined ? gpu.selected : selectedGpus[gpu.cardName])
-      .map(gpu => gpu.cardName)
-  )
-
   if (gpus.length === 0) {
     return (
       <Bullseye>
@@ -43,6 +37,14 @@ const ManageGpuModalBody = ({
         </EmptyState>
       </Bullseye>
     )
+  }
+
+  const selectedCard = Object.keys(selectedGpus).find(cardName => selectedGpus[cardName] > 0)
+  const selectedCardInstances = []
+  if (selectedCard) {
+    for (var i = 0; i < selectedGpus[selectedCard]; i++) {
+      selectedCardInstances.push(`${selectedCard}_${i}`)
+    }
   }
 
   const filteredGpus =
@@ -73,15 +75,15 @@ const ManageGpuModalBody = ({
         <span className='vgpu-modal-body-label'>
           {msg.vmManageGpuBodySubTitleSelectionsCards()}
         </span>
-        { selectedCards.size === 0 &&
+        { !selectedCard &&
           <span className='vgpu-modal-body-label'>
             {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
           </span>
         }
-        { selectedCards.size > 0 &&
+        { selectedCard &&
           <ChipGroup>
-            {Array.from(selectedCards).sort().map(selectedCard => (
-              <Chip key={selectedCard} onClick={() => onGpuSelectionChange(selectedCard, false)}>
+            {selectedCardInstances.map(selectedCardInstance => (
+              <Chip key={selectedCardInstance} onClick={() => onGpuSelectionChange(selectedCard, selectedGpus[selectedCard] - 1)}>
                 {selectedCard}
               </Chip>
             ))}
@@ -116,6 +118,7 @@ ManageGpuModalBody.propTypes = {
       cardName: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
+      requestedInstances: PropTypes.number,
       maxInstances: PropTypes.number,
       maxResolution: PropTypes.string,
       numberOfHeads: PropTypes.number,
@@ -123,8 +126,7 @@ ManageGpuModalBody.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
-      address: PropTypes.string,
-      selected: PropTypes.bool
+      address: PropTypes.string
     })),
   displayOn: PropTypes.bool,
   selectedGpus: PropTypes.any,

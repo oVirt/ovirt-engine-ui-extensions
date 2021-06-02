@@ -38,6 +38,14 @@
     padding-left: var(--pf-c-table-cell--PaddingLeft);
 }
 
+.vgpu-table th {
+    white-space: normal;
+}
+
+.vgpu-table ul {
+    list-style: none;
+}
+
 .vgpu-detail-table {
     --pf-c-table--nested--first-last-child--PaddingLeft: var(--pf-global--spacer--xl);
     --pf-c-table--nested--first-last-child--PaddingRight: var(--pf-global--spacer--xl);
