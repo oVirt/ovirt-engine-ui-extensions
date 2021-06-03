@@ -784,7 +784,7 @@ const messageDescriptors = {
 
   vmManageGpuBodyDescription: {
     id: 'vm.gpu.body.descrption',
-    defaultMessage: 'Select vGPU(s) that you would like to use with this VM. ',
+    defaultMessage: 'Select vGPU type and the number of instances that you would like to use with this VM.',
     description: 'Manage vGPU dialog body description'
   },
 
@@ -808,19 +808,19 @@ const messageDescriptors = {
 
   vmManageGpuBodySubTitleSelectionsCards: {
     id: 'vm.gpu.body.selections.cards.label',
-    defaultMessage: 'Selected card name(s)',
+    defaultMessage: 'Selected vGPU Type Instances',
     description: 'Manage vGPU dialog body label `Card name(s)`'
   },
 
   vmManageGpuBodySubTitleSelectionsCardsEmpty: {
     id: 'vm.gpu.body.subtitle.selections.cards.empty',
-    defaultMessage: 'No cards are currently selected',
+    defaultMessage: 'No vGPU type selected',
     description: 'Manage vGPU dialog body empty message `Card name(s)`'
   },
 
   vmManageGpuSearchButtonPlaceholder: {
     id: 'vm.gpu.body.search.placeholder',
-    defaultMessage: 'Search for a vGPU device or host',
+    defaultMessage: 'Search for a vGPU type id or host',
     description: 'Manage vGPU dialog search field placeholder'
   },
 
@@ -842,10 +842,16 @@ const messageDescriptors = {
     description: 'label of `Remove instance` action in VM Manage vGPU dialog table row'
   },
 
+  vmManageGpuTableMDevType: {
+    id: 'vm.gpu.table.mDevType',
+    defaultMessage: 'MDev Type',
+    description: 'label of `MDev Type` table column in VM Manage vGPU dialog'
+  },
+
   vmManageGpuTableCardName: {
     id: 'vm.gpu.table.cardName',
-    defaultMessage: 'Card name',
-    description: 'label of `Card name` table column in VM Manage vGPU dialog'
+    defaultMessage: 'Name',
+    description: 'label of `Name` table column in VM Manage vGPU dialog'
   },
 
   vmManageGpuTableMaxResolution: {

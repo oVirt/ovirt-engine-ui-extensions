@@ -8,13 +8,15 @@ import {
 } from '@patternfly/react-core'
 import { SearchIcon } from '@patternfly/react-icons'
 import {
+  cellWidth,
   expandable,
   sortable,
   RowSelectVariant,
   SortByDirection,
   Table,
   TableBody,
-  TableHeader
+  TableHeader,
+  wrappable
 } from '@patternfly/react-table'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -23,15 +25,44 @@ import { stringWithNumberSuffixCompare } from '_/utils/compare'
 import GpuTableRowDetail from './GpuTableRowDetail'
 import { handleNonAvailableValue } from './handleNonAvailableValue'
 
-const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
+const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
   const columns = [
-    { title: msg.vmManageGpuTableCardName(), transforms: [sortable], cellFormatters: [expandable] },
-    msg.vmManageGpuTableNumberOfHeads(),
-    msg.vmManageGpuTableFrameRateLimiter(),
-    msg.vmManageGpuTableMaxResolution(),
-    msg.vmManageGpuTableFrameBuffer(),
-    msg.vmManageGpuTableMaxInstances(),
-    msg.vmManageGpuTableRequestedInstances()
+    {
+      title: msg.vmManageGpuTableMDevType(),
+      transforms: [
+        sortable,
+        cellWidth(15)
+      ],
+      cellFormatters: [expandable]
+    },
+    {
+      title: msg.vmManageGpuTableCardName(),
+      transforms: [cellWidth(15)]
+    },
+    {
+      title: msg.vmManageGpuTableNumberOfHeads(),
+      transforms: [wrappable]
+    },
+    {
+      title: msg.vmManageGpuTableFrameRateLimiter(),
+      transforms: [wrappable, cellWidth(10)]
+    },
+    {
+      title: msg.vmManageGpuTableMaxResolution(),
+      transforms: [wrappable]
+    },
+    {
+      title: msg.vmManageGpuTableFrameBuffer(),
+      transforms: [wrappable]
+    },
+    {
+      title: msg.vmManageGpuTableMaxInstances(),
+      transforms: [wrappable]
+    },
+    {
+      title: msg.vmManageGpuTableRequestedInstances(),
+      transforms: [wrappable]
+    }
   ]
 
   const emptyTableRows = [{
@@ -61,30 +92,31 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     return stringWithNumberSuffixCompare(a.cells[cellIndex], b.cells[cellIndex])
   }
 
-  const createCardNameToGpusMap = (gpus) => {
-    const cardNameToGpus = new Map()
+  const createMDevTypeToGpusMap = (gpus) => {
+    const mDevTypeToGpus = new Map()
 
-    // group gpus by card name
+    // group gpus by id
     gpus.forEach(gpu => {
-      if (cardNameToGpus.get(gpu.cardName) === undefined) {
-        cardNameToGpus.set(gpu.cardName, [])
+      if (mDevTypeToGpus.get(gpu.mDevType) === undefined) {
+        mDevTypeToGpus.set(gpu.mDevType, [])
       }
 
-      cardNameToGpus.get(gpu.cardName).push(gpu)
+      mDevTypeToGpus.get(gpu.mDevType).push(gpu)
     })
 
-    return cardNameToGpus
+    return mDevTypeToGpus
   }
 
   const createParentRow = (gpu) => {
-    const isOpen = openRows.get(gpu.cardName)
-    const isSelected = !!selectedGpus[gpu.cardName]
-    const requestedInstances = +selectedGpus[gpu.cardName] || 0
+    const isOpen = openRows.get(gpu.mDevType)
+    const isSelected = !!selectedMDevTypes[gpu.mDevType]
+    const requestedInstances = +selectedMDevTypes[gpu.mDevType] || 0
     return {
       isOpen: isOpen === true,
       selected: isSelected,
       cells: [
-        gpu.cardName,
+        gpu.mDevType,
+        handleNonAvailableValue(gpu.name),
         handleNonAvailableValue(gpu.numberOfHeads),
         handleNonAvailableValue(gpu.frameRateLimiter),
         handleNonAvailableValue(gpu.maxResolution),
@@ -112,9 +144,9 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     }
   }
 
-  const createRows = (cardNameToGpus) => {
+  const createRows = (mDevTypesToGpus) => {
     let parentRows = []
-    cardNameToGpus.forEach((gpus) => {
+    mDevTypesToGpus.forEach((gpus) => {
       parentRows.push(createParentRow(gpus[0]))
     })
     parentRows.sort(compareRows)
@@ -124,7 +156,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     parentRows.forEach(parentRow => {
       const parentIndex = allRows.length
       allRows.push(parentRow)
-      allRows.push(createChildRow(cardNameToGpus.get(parentRow.gpu.cardName), parentIndex))
+      allRows.push(createChildRow(mDevTypesToGpus.get(parentRow.gpu.mDevType), parentIndex))
     })
     return allRows
   }
@@ -134,11 +166,11 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
   }
 
   const onSelect = (_event, isSelected, _rowIndex, rowData) => {
-    onGpuSelectionChange(rowData.gpu.cardName, +isSelected)
+    onGpuSelectionChange(rowData.gpu.mDevType, +isSelected)
   }
 
   const onCollapse = (_event, _rowIndex, isOpen, rowData) => {
-    setOpenRows(openRows => new Map(openRows).set(rowData.gpu.cardName, isOpen))
+    setOpenRows(openRows => new Map(openRows).set(rowData.gpu.mDevType, isOpen))
   }
 
   const actionResolver = (rowData, _) => {
@@ -149,23 +181,23 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
     return [
       {
         title: msg.vmManageGpuAddActionButton(),
-        isDisabled: selectedGpus[rowData.gpu.cardName] >= rowData.gpu.maxInstances,
+        isDisabled: selectedMDevTypes[rowData.gpu.mDevType] >= rowData.gpu.maxInstances,
         onClick: (_event, _rowId, rowData, _extra) => {
-          onGpuSelectionChange(rowData.gpu.cardName, selectedGpus[rowData.gpu.cardName] + 1)
+          onGpuSelectionChange(rowData.gpu.mDevType, selectedMDevTypes[rowData.gpu.mDevType] + 1)
         }
       },
       {
         title: msg.vmManageGpuRemoveActionButton(),
-        isDisabled: selectedGpus[rowData.gpu.cardName] <= 0,
+        isDisabled: selectedMDevTypes[rowData.gpu.mDevType] <= 0,
         onClick: (_event, _rowId, rowData, _extra) => {
-          onGpuSelectionChange(rowData.gpu.cardName, selectedGpus[rowData.gpu.cardName] - 1)
+          onGpuSelectionChange(rowData.gpu.mDevType, selectedMDevTypes[rowData.gpu.mDevType] - 1)
         }
       }
     ]
   }
 
   const areActionsDisabled = (rowData, _) => {
-    return !rowData.gpu || !selectedGpus[rowData.gpu.cardName]
+    return !rowData.gpu || !selectedMDevTypes[rowData.gpu.mDevType]
   }
 
   if (gpus.length === 0) {
@@ -182,7 +214,7 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
       aria-label='Simple Table'
       className='vgpu-table'
       cells={columns}
-      rows={createRows(createCardNameToGpusMap(gpus))}
+      rows={createRows(createMDevTypeToGpusMap(gpus))}
       selectVariant={RowSelectVariant.radio}
       onSelect={onSelect}
       canSelectAll={false}
@@ -201,7 +233,8 @@ const GpuTable = ({gpus, selectedGpus, onGpuSelectionChange}) => {
 GpuTable.propTypes = {
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
-      cardName: PropTypes.string,
+      mDevType: PropTypes.string,
+      name: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
       requestedInstances: PropTypes.number,
@@ -214,7 +247,7 @@ GpuTable.propTypes = {
       vendor: PropTypes.string,
       address: PropTypes.string
     })),
-  selectedGpus: PropTypes.any,
+  selectedMDevTypes: PropTypes.any,
   onGpuSelectionChange: PropTypes.func
 }
 

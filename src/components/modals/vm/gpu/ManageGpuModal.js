@@ -8,24 +8,23 @@ import { Button } from '@patternfly/react-core'
 import ManageGpuModalBody from './ManageGpuModalBody'
 
 function gpuArrayToSelectedMap (gpus) {
-  const selectedGpus = {}
-  let selectedGpuAlreadyFound = false
+  const mdevTypesToRequestedInstances = {}
+  let selectedMDevTypeAlreadyFound = false
   for (const gpu of gpus) {
-    if (!(gpu.cardName in selectedGpus)) {
-      if (selectedGpuAlreadyFound) {
-        selectedGpus[gpu.cardName] = 0
+    if (!(gpu.mDevType in mdevTypesToRequestedInstances)) {
+      if (selectedMDevTypeAlreadyFound) {
+        mdevTypesToRequestedInstances[gpu.mDevType] = 0
       } else {
-        selectedGpuAlreadyFound = !!gpu.requestedInstances
-        selectedGpus[gpu.cardName] = Math.min(gpu.requestedInstances, gpu.maxInstances)
+        selectedMDevTypeAlreadyFound = !!gpu.requestedInstances
+        mdevTypesToRequestedInstances[gpu.mDevType] = Math.min(gpu.requestedInstances, gpu.maxInstances)
       }
     }
   }
-  return selectedGpus
+  return mdevTypesToRequestedInstances
 }
 
 const ManageGpuModal = ({
   isLoading = false,
-  vmName,
   gpus = [],
   displayOn = true,
   onSelectButtonClick = () => {},
@@ -33,10 +32,10 @@ const ManageGpuModal = ({
 }) => {
   const [ isOpen, setOpen ] = useState(true)
   const [ displayOn_, setDisplayOn_ ] = useState(undefined)
-  const [ selectedGpus, setSelectedGpus ] = useState(gpuArrayToSelectedMap(gpus))
+  const [ selectedMDevTypes, setSelectedMDevTypes ] = useState(gpuArrayToSelectedMap(gpus))
 
   useEffect(() => {
-    setSelectedGpus(gpuArrayToSelectedMap(gpus))
+    setSelectedMDevTypes(gpuArrayToSelectedMap(gpus))
   }, [ gpus ])
 
   const close = () => {
@@ -48,19 +47,19 @@ const ManageGpuModal = ({
     setDisplayOn_(isSelected)
   }
 
-  const onGpuSelectionChange = (cardName, requestedInstances) => {
-    const tmpSelectedGpus = {}
-    for (const selectedGpu in selectedGpus) {
-      tmpSelectedGpus[selectedGpu] = 0
+  const onGpuSelectionChange = (mDevType, requestedInstances) => {
+    const tmpSelectedMDevTypes = {}
+    for (const selectedMDevType in selectedMDevTypes) {
+      tmpSelectedMDevTypes[selectedMDevType] = 0
     }
-    tmpSelectedGpus[cardName] = requestedInstances
-    setSelectedGpus(tmpSelectedGpus)
+    tmpSelectedMDevTypes[mDevType] = requestedInstances
+    setSelectedMDevTypes(tmpSelectedMDevTypes)
   }
 
   const onSelect = () => {
     gpus.forEach(gpu => {
-      if (gpu.cardName in selectedGpus) {
-        gpu.requestedInstances = selectedGpus[gpu.cardName]
+      if (gpu.mDevType in selectedMDevTypes) {
+        gpu.requestedInstances = selectedMDevTypes[gpu.mDevType]
       }
     })
 
@@ -100,7 +99,7 @@ const ManageGpuModal = ({
         <ManageGpuModalBody
           gpus={gpus}
           displayOn={displayOn_ === undefined ? displayOn : displayOn_}
-          selectedGpus={selectedGpus}
+          selectedMDevTypes={selectedMDevTypes}
           onDisplayOnChange={onDisplayOnChange}
           onGpuSelectionChange={onGpuSelectionChange}
         />
@@ -111,10 +110,10 @@ const ManageGpuModal = ({
 
 ManageGpuModal.propTypes = {
   isLoading: PropTypes.bool,
-  vmName: PropTypes.string,
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
-      cardName: PropTypes.string,
+      mDevType: PropTypes.string,
+      name: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
       requestedInstances: PropTypes.number,

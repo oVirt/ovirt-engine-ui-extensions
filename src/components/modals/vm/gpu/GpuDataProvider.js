@@ -82,11 +82,11 @@ const GpuDataProvider = ({children, vmId}) => {
     }
 
     let selectedMdevs = []
-    parsedMdevProperties.forEach(cardName => {
-      if (cardName in selectedMdevs) {
-        selectedMdevs[cardName]++
+    parsedMdevProperties.forEach(mDevType => {
+      if (mDevType in selectedMdevs) {
+        selectedMdevs[mDevType]++
       } else {
-        selectedMdevs[cardName] = 1
+        selectedMdevs[mDevType] = 1
       }
     })
     return selectedMdevs
@@ -117,10 +117,14 @@ const GpuDataProvider = ({children, vmId}) => {
     return gpus
   }
 
+  // See nVidia and kernel docs for explanation of the vGPU and mDev types data
+  // Nvidia: https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#vgpu-information-in-sysfs-file-system
+  // Kernel: https://www.kernel.org/doc/Documentation/vfio-mediated-device.txt
   const createGpu = (host, product, vendor, address, mDevType, requestedInstances = 0) => {
     const descriptionKeyValues = parseMDevDescription(mDevType.description)
     return {
-      cardName: mDevType.name,
+      mDevType: mDevType.name,
+      name: mDevType.human_readable_name,
       host: host.name,
       requestedInstances: requestedInstances,
       availableInstances: parseStringToIntSafely(mDevType.available_instances),
@@ -179,20 +183,20 @@ const GpuDataProvider = ({children, vmId}) => {
       allCustomProperties.push(mdevCustomProperty)
     }
 
-    let cardNames = []
+    let mDevTypes = []
 
     selectedGpus.forEach(gpu => {
-      if (!cardNames.includes(gpu.cardName)) {
+      if (!mDevTypes.includes(gpu.mDevType)) {
         for (var i = 0; i < gpu.requestedInstances; i++) {
-          cardNames.push(gpu.cardName)
+          mDevTypes.push(gpu.mDevType)
         }
       }
     })
 
-    if (cardNames.length > 0 && !displayOn) {
-      cardNames.unshift('nodisplay')
+    if (mDevTypes.length > 0 && !displayOn) {
+      mDevTypes.unshift('nodisplay')
     }
-    mdevCustomProperty.value = cardNames.join(',')
+    mdevCustomProperty.value = mDevTypes.join(',')
     if (mdevCustomProperty.value.length === 0) {
       allCustomProperties.pop(mdevCustomProperty)
     }

@@ -19,7 +19,7 @@ import GpuTable from './GpuTable'
 import './vgpu.css'
 
 const ManageGpuModalBody = ({
-  gpus, displayOn, selectedGpus, onDisplayOnChange, onGpuSelectionChange
+  gpus, displayOn, selectedMDevTypes, onDisplayOnChange, onGpuSelectionChange
 }) => {
   const [searchText, setSearchText] = React.useState('')
 
@@ -39,17 +39,18 @@ const ManageGpuModalBody = ({
     )
   }
 
-  const selectedCard = Object.keys(selectedGpus).find(cardName => selectedGpus[cardName] > 0)
-  const selectedCardInstances = []
-  if (selectedCard) {
-    for (var i = 0; i < selectedGpus[selectedCard]; i++) {
-      selectedCardInstances.push(`${selectedCard}_${i}`)
+  const selectedMDevType = Object.keys(selectedMDevTypes).find(mDevType => selectedMDevTypes[mDevType] > 0)
+
+  const selectedMDevTypeInstances = []
+  if (selectedMDevType) {
+    for (var i = 0; i < selectedMDevTypes[selectedMDevType]; i++) {
+      selectedMDevTypeInstances.push(`${selectedMDevType}_${i}`)
     }
   }
 
   const filteredGpus =
     gpus.filter(gpu => searchText === '' ||
-    gpu.cardName.toLowerCase().includes(searchText.toLowerCase()) ||
+    gpu.mDevType.toLowerCase().includes(searchText.toLowerCase()) ||
     gpu.host.toLowerCase().includes(searchText.toLowerCase()))
 
   return (
@@ -75,16 +76,16 @@ const ManageGpuModalBody = ({
         <span className='vgpu-modal-body-label'>
           {msg.vmManageGpuBodySubTitleSelectionsCards()}
         </span>
-        { !selectedCard &&
+        { !selectedMDevType &&
           <span className='vgpu-modal-body-label'>
             {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
           </span>
         }
-        { selectedCard &&
+        { selectedMDevType &&
           <ChipGroup>
-            {selectedCardInstances.map(selectedCardInstance => (
-              <Chip key={selectedCardInstance} onClick={() => onGpuSelectionChange(selectedCard, selectedGpus[selectedCard] - 1)}>
-                {selectedCard}
+            {selectedMDevTypeInstances.map(selectedMDevTypeInstance => (
+              <Chip key={selectedMDevTypeInstance} onClick={() => onGpuSelectionChange(selectedMDevType, selectedMDevTypes[selectedMDevType] - 1)}>
+                {selectedMDevType}
               </Chip>
             ))}
           </ChipGroup>
@@ -103,7 +104,7 @@ const ManageGpuModalBody = ({
       <StackItem className='vgpu-table-wrapper'>
         <GpuTable
           gpus={filteredGpus}
-          selectedGpus={selectedGpus}
+          selectedMDevTypes={selectedMDevTypes}
           onGpuSelectionChange={onGpuSelectionChange}
           className='vgpu-body-element'
         />
@@ -115,7 +116,8 @@ const ManageGpuModalBody = ({
 ManageGpuModalBody.propTypes = {
   gpus: PropTypes.arrayOf(
     PropTypes.shape({
-      cardName: PropTypes.string,
+      mDevType: PropTypes.string,
+      name: PropTypes.string,
       host: PropTypes.string,
       availableInstances: PropTypes.number,
       requestedInstances: PropTypes.number,
@@ -129,7 +131,7 @@ ManageGpuModalBody.propTypes = {
       address: PropTypes.string
     })),
   displayOn: PropTypes.bool,
-  selectedGpus: PropTypes.any,
+  selectedMDevTypes: PropTypes.any,
   onDisplayOnChange: PropTypes.func,
   onGpuSelectionChange: PropTypes.func
 }

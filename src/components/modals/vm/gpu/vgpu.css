@@ -38,10 +38,6 @@
     padding-left: var(--pf-c-table-cell--PaddingLeft);
 }
 
-.vgpu-table th {
-    white-space: normal;
-}
-
 .vgpu-table ul {
     list-style: none;
 }
