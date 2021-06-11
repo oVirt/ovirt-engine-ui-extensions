@@ -6,6 +6,7 @@ import getPluginApi from '_/plugin-api'
 import { engineGet, enginePut } from '_/utils/fetch'
 import { isNumber } from '_/utils/type-validation'
 import DataProvider from '_/components/helper/DataProvider'
+import { createErrorMessage } from '_/utils/error-message'
 import get from 'lodash/get'
 
 const GpuDataProvider = ({children, vmId}) => {
@@ -202,7 +203,7 @@ const GpuDataProvider = ({children, vmId}) => {
     }
   }
 
-  const saveVm = (displayOn, selectedGpus) => {
+  const saveVm = async (displayOn, selectedGpus) => {
     updateCustomProperties(displayOn, selectedGpus)
     const requestBody = {
       'custom_properties': {
@@ -210,7 +211,13 @@ const GpuDataProvider = ({children, vmId}) => {
       }
     }
 
-    enginePut(`api/vms/${vmId}`, JSON.stringify(requestBody))
+    try {
+      await enginePut(`api/vms/${vmId}`, JSON.stringify(requestBody))
+      getPluginApi().showToast(webadminToastTypes.success, msg.vmManageGpuSaveDataOK())
+    } catch (error) {
+      getPluginApi().logger().severe('Error while saving the VM. ' + createErrorMessage(error))
+      getPluginApi().showToast(webadminToastTypes.danger, msg.vmManageGpuSaveDataError())
+    }
   }
 
   return (

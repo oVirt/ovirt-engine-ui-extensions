@@ -21,6 +21,23 @@ function engineRequestHeaders (extraHeaders = {}) {
   }
 }
 
+async function createResponseErrorMessage (method, response) {
+  const message = `Method: ${method}, url: ${response.url}, status: ${response.status}, status text: ${response.statusText}`
+  try {
+    // if server returned detailed error message, e.g. Vm with given ID does not exists,
+    // it is stored in response.json()
+    const jsonMessage = await response.json()
+
+    if (jsonMessage && jsonMessage.detail) {
+      return `${message}, detailed message: ${jsonMessage.detail}`
+    }
+    return message
+  } catch (_error) {
+    // if there is no detailed error message, e.g. 404: Not found
+    return message
+  }
+}
+
 /**
  * Initiate Engine HTTP `GET` request, expecting JSON response.
  *
@@ -30,12 +47,7 @@ function engineRequestHeaders (extraHeaders = {}) {
  * ```
  */
 export async function engineGet (relativePath, extraHeaders) {
-  const response = await fetch(engineUrl(relativePath), {
-    method: 'GET',
-    headers: engineRequestHeaders(extraHeaders),
-    credentials: 'same-origin'
-  })
-  return response.json()
+  return engineApiRequest('GET', relativePath, null, extraHeaders)
 }
 
 /**
@@ -48,13 +60,7 @@ export async function engineGet (relativePath, extraHeaders) {
  * ```
  */
 export async function enginePost (relativePath, body, extraHeaders) {
-  const response = await fetch(engineUrl(relativePath), {
-    method: 'POST',
-    headers: engineRequestHeaders(extraHeaders),
-    credentials: 'same-origin',
-    body
-  })
-  return response.json()
+  return engineApiRequest('POST', relativePath, body, extraHeaders)
 }
 
 /**
@@ -67,13 +73,25 @@ export async function enginePost (relativePath, body, extraHeaders) {
  * ```
  */
 export async function enginePut (relativePath, body, extraHeaders) {
+  return engineApiRequest('PUT', relativePath, body, extraHeaders)
+}
+
+/**
+ * Initiate Engine HTTP request with the provided method, expecting JSON response.
+ */
+export async function engineApiRequest (method, relativePath, body, extraHeaders) {
   const response = await fetch(engineUrl(relativePath), {
-    method: 'PUT',
+    method: method,
     headers: engineRequestHeaders(extraHeaders),
     credentials: 'same-origin',
     body
   })
-  return response.json()
+
+  if (response.ok) {
+    return response.json()
+  }
+
+  throw new Error('Error while communicating with the engine API. ' + await createResponseErrorMessage(method, response))
 }
 
 /**

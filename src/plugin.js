@@ -3,6 +3,7 @@ import getPluginApi from './plugin-api'
 import appInit from './services/app-init'
 import { addPlaces } from './integrations/places'
 import { addButtons } from './integrations/buttons'
+import { createErrorMessage } from '_/utils/error-message'
 
 // ** patternfly3-react
 import 'patternfly-react/dist/css/patternfly-react.css'
@@ -21,10 +22,21 @@ import '@patternfly/patternfly/patternfly-no-reset.css'
 // ** overrides
 import '../static/css/plugin-pf4-overrides.css'
 
+function addErrorHandler () {
+  window.addEventListener('error', errorEvent => {
+    if (errorEvent.error) {
+      getPluginApi().reportFatalError(createErrorMessage(errorEvent.error, true))
+    } else {
+      getPluginApi().reportFatalError(createErrorMessage(errorEvent, true))
+    }
+  })
+}
+
 // register event handlers
 getPluginApi().register({
 
   UiInit: () => {
+    addErrorHandler()
     addPlaces()
     addButtons()
   }

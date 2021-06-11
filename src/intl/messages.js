@@ -764,6 +764,18 @@ const messageDescriptors = {
     description: 'notification shown when Manage vGPU dialog failed to load its data'
   },
 
+  vmManageGpuSaveDataOK: {
+    id: 'vm.gpu.save.data.ok',
+    defaultMessage: 'VM vGPU data saved successfully',
+    description: 'notification shown when Manage vGPU dialog saved data successfully'
+  },
+
+  vmManageGpuSaveDataError: {
+    id: 'vm.gpu.save.data.error',
+    defaultMessage: 'Error while saving VM vGPU data. See console log for details',
+    description: 'notification shown when Manage vGPU dialog save data operation failed'
+  },
+
   vmManageGpuDialogTitle: {
     id: 'vm.gpu.dialogTitle',
     defaultMessage: 'Manage vGPU',

@@ -52,7 +52,7 @@ const fakeHosts = (clusterId) => Promise.resolve([
 async function fetchCluster (id) {
   const json = await engineGet(`api/clusters/${id}?follow=scheduling_policy`)
 
-  if (json.error || !json.id || json.id !== id) {
+  if (!json.id || json.id !== id) {
     throw new Error(`ClusterUpgradeDataProvider: Failed to fetch cluster ${id}`)
   }
 

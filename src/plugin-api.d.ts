@@ -108,6 +108,30 @@ interface ActionButtonInterface {
 
 }
 
+interface OvirtLogger {
+
+  /**
+   * Logs info message using oVirt logger infrastructure
+   *
+   * @param message Message to be logged.
+   */
+  info(message: string): void;
+
+  /**
+   * Logs warning message using oVirt logger infrastructure
+   *
+   * @param message Message to be logged.
+   */
+  warning(message: string): void;
+
+  /**
+  * Logs severe message using oVirt logger infrastructure
+  *
+  * @param message Message to be logged.
+  */
+  severe(message: string): void;
+}
+
 enum NotificationType {
   Info = 'info',
   Success = 'success',
@@ -445,6 +469,19 @@ interface OvirtPluginApi {
    */
   closeDialog(dialogToken: string): void;
 
+  /**
+   * Returns oVirt logger
+   *
+   */
+  logger(): OvirtLogger;
+
+  /**
+   * Takes the provided error message and displays error popup dialog in
+   * oVirt + logs it on the server to ui.log
+   *
+   * @param errorMessage Error message to be displayed and logged.
+   */
+   reportFatalError(errorMessage: string): void;
 }
 
 declare function getPluginApi(): OvirtPluginApi;

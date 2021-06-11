@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import getPluginApi from '_/plugin-api'
+import { createErrorMessage } from '_/utils/error-message'
 
 class DataProvider extends React.Component {
   constructor (props) {
@@ -32,7 +34,7 @@ class DataProvider extends React.Component {
         this.onFetchSuccess(data)
       })
       .catch(error => {
-        console.error('DataProvider failed to fetch data', error)
+        getPluginApi().logger().severe('DataProvider failed to fetch data. ' + createErrorMessage(error))
         this.onFetchError(error)
       })
   }

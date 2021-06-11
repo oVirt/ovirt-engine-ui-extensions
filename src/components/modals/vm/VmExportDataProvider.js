@@ -76,9 +76,6 @@ async function exportVm (vmId, exportName, sdId, collapseSnapshots) {
     `api/vms/${vmId}/clone`,
     JSON.stringify(requestBody)
   )
-  if (response.status === 'failed') {
-    throw new Error(response.fault.detail)
-  }
 
   return response
 }
