@@ -98,5 +98,11 @@
     "webpack-bundle-analyzer": "^3.5.0",
     "webpack-cli": "^3.3.6",
     "webpack-merge": "^4.2.2"
+  },
+  "resolutions": {
+    "glob-parent": "^5.1.2",
+    "path-parse": "^1.0.7",
+    "ua-parser-js": "^0.7.22",
+    "underscore": "1.13.1"
   }
 }
