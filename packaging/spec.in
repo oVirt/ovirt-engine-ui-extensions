@@ -9,7 +9,7 @@ Source: @TAR_FILE@
 BuildArch: noarch
 
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.44-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.53-1
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-collection >= 1.2.0
@@ -67,6 +67,13 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Wed Jun 23 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.7-1
+- Update zatana.xml to version 1.2
+- Translation update, 17-May-2021
+- Update glob-parent, path-parse, ua-parser-js and underscore libraries dependencies
+- vGPU dialog: add more instances of a card
+- vGPU dialog: add vGPU type name
+
 * Sun Apr 25 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.6-1
 - Update lodash dependency to 4.17.21
 
