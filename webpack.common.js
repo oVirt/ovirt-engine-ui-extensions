@@ -11,8 +11,11 @@ const useFakeData = process.env.FAKE_DATA === 'true'
 const packageInfo = require('./package.json')
 const fetchGitInfo = require('./webpack.gitinfo.js')
 
-// common modules required by all entry points
-const commonModules = ['core-js/stable']
+// common modules required by all entry points, typically polyfills
+//   NOTE: With @babel/preset-env in usage mode and webpack packing, they will take care
+//         of any polyfills needed that derive from `core-js/stable`.  Only include
+//         polyfills in the list that are NOT from `core-js/stable`.
+const commonModules = []
 
 // common webpack configuration applicable to all environments
 // @see: https://github.com/patternfly/patternfly-react-seed/blob/master/webpack.common.js
@@ -30,7 +33,7 @@ async function common () {
     (gitInfo ? ` [git ${gitInfo.headOid}, change-id: ${gitInfo.changeId}, tags: ${gitInfo.headTags}]` : '') +
     (gitInfo && gitInfo.hasChanges ? ` ${JSON.stringify(gitInfo)}` : '')
 
-  // define specific fonts to be embed in CSS via data urls
+  // define specific fonts to embed in CSS via data urls
   let fontsToEmbed
 
   const commonConfig = {
