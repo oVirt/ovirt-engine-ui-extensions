@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import getPluginApi from '../../../plugin-api'
-import DataProvider from '../../helper/DataProvider'
-import config from '../../../plugin-config'
+import getPluginApi from '_/plugin-api'
+import config from '_/plugin-config'
 
-import { webadminToastTypes } from '../../../constants'
-import { engineGet, ansiblePlaybookPost } from '../../../utils/fetch'
-import { msg } from '../../../intl-messages'
+import DataProvider from '_/components/helper/DataProvider'
+
+import { webadminToastTypes } from '_/constants'
+import { engineGet, ansiblePlaybookPost } from '_/utils/fetch'
+import { msg } from '_/intl-messages'
 
 //
 // for FAKE_DATA=true

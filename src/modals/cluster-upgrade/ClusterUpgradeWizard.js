@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { selectProps, propNamesToType } from '../../../utils/react'
+import { selectProps, propNamesToType } from '_/utils/react'
 
 import {
   selectKeys,
@@ -8,8 +8,8 @@ import {
   Icon,
 } from 'patternfly-react'
 
-import MessageDialog from '../../patternfly/MessageDialog'
-import WizardPattern from '../../patternfly-react-overrides/WizardPattern'
+import MessageDialog from '_/components/patternfly/MessageDialog'
+import WizardPattern from '_/components/patternfly-react-overrides/WizardPattern'
 import SelectHosts from './SelectHosts'
 import UpgradeOptions from './UpgradeOptions'
 import UpgradeReview from './UpgradeReview'

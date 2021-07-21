@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { scalarArrayEq } from '../../../utils/equalityCheck'
-import { propNamesToType } from '../../../utils/react'
+import { scalarArrayEq } from '_/utils/equalityCheck'
+import { propNamesToType } from '_/utils/react'
 
 import { Alert, Table } from 'patternfly-react'
 import HostStatusIcon from './HostStatusIcon'

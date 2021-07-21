@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { propNamesToType } from '../../../utils/react'
+import { propNamesToType } from '_/utils/react'
 
 import {
   Grid,
@@ -8,7 +8,7 @@ import {
   FormControl,
   Checkbox,
 } from 'patternfly-react'
-import BaseFormGroup from '../../forms/BaseFormGroup'
+import BaseFormGroup from '_/components/forms/BaseFormGroup'
 
 /**
  * Display the set of options that may be user configured for the cluster upgrade.
