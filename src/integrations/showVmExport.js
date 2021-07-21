@@ -1,8 +1,8 @@
 import React from 'react'
 import { renderComponent } from '_/utils/react-modals'
 
-import VmExportModal from '_/components/modals/vm/VmExportModal'
-import VmExportDataProvider from '_/components/modals/vm/VmExportDataProvider'
+import VmExportModal from '_/modals/vm-export/VmExportModal'
+import VmExportDataProvider from '_/modals/vm-export/VmExportDataProvider'
 
 export function showVmExportModal (vm) {
   renderComponent(
