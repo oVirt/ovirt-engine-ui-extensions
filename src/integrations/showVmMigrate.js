@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderComponent } from '_/utils/react-modals'
 
-import VmMigrateModal from '_/components/modals/vm/VmMigrateModal'
+import VmMigrateModal from '_/modals/vm-migrate/VmMigrateModal'
 
 export function showVmMigrateModal (upVms) {
   renderComponent(
