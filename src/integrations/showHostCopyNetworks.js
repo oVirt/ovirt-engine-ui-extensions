@@ -1,8 +1,8 @@
 import React from 'react'
 import { renderComponent } from '_/utils/react-modals'
 
-import HostCopyNetworksDataProvider from '_/components/modals/host/HostCopyNetworksDataProvider'
-import HostCopyNetworksModal from '_/components/modals/host/HostCopyNetworksModal'
+import HostCopyNetworksDataProvider from '_/modals/host-copy-network/HostCopyNetworksDataProvider'
+import HostCopyNetworksModal from '_/modals/host-copy-network/HostCopyNetworksModal'
 
 export function showHostCopyNetworksModal (sourceHost) {
   renderComponent(
