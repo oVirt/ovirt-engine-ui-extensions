@@ -97,6 +97,7 @@
     "webpack-merge": "^4.2.2"
   },
   "resolutions": {
+    "patternfly/bootstrap-select": "^1.13.6",
     "glob-parent": "^5.1.2",
     "path-parse": "^1.0.7",
     "ua-parser-js": "^0.7.22",
