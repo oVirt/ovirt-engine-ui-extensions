@@ -19,7 +19,7 @@ function addVmManageGpuButton () {
     },
 
     index: 2,
-    id: 'VmManageGpu'
+    id: 'VmManageGpu',
   })
 }
 
@@ -40,7 +40,7 @@ function addVmMigrateButton () {
     },
 
     index: 8,
-    id: 'VmMigrate'
+    id: 'VmMigrate',
   })
 }
 
@@ -61,7 +61,7 @@ function addHostVmMigrateButton () {
     },
 
     index: 5,
-    id: 'HostVmMigrate'
+    id: 'HostVmMigrate',
   })
 }
 
@@ -70,7 +70,7 @@ function addHostVmMigrateButton () {
  */
 function addVmExportButton () {
   getPluginApi().addMenuPlaceActionButton(entityTypes.vm, msg.exportVmButton(), {
-    onClick: function ([ selectedDownVm ]) {
+    onClick: function ([selectedDownVm]) {
       showVmExportModal(selectedDownVm)
     },
 
@@ -84,7 +84,7 @@ function addVmExportButton () {
     },
 
     index: 4,
-    id: 'VmExport'
+    id: 'VmExport',
   })
 }
 
@@ -93,7 +93,7 @@ function addVmExportButton () {
  */
 function addClusterUpgradeButton () {
   getPluginApi().addMenuPlaceActionButton(entityTypes.cluster, msg.clusterUpgradeButton(), {
-    onClick: function ([ selectedCluster ]) {
+    onClick: function ([selectedCluster]) {
       if (selectedCluster.id && selectedCluster.name) {
         showClusterUpgradeWizard(selectedCluster)
       }
@@ -104,7 +104,7 @@ function addClusterUpgradeButton () {
     },
 
     index: 3,
-    id: 'ClusterUpgrade'
+    id: 'ClusterUpgrade',
   })
 }
 
@@ -113,7 +113,7 @@ function addClusterUpgradeButton () {
  */
 function addHostCopyNetworksButton () {
   getPluginApi().addMenuPlaceActionButton(entityTypes.host, msg.hostCopyNetworksButton(), {
-    onClick: function ([ selectedHost ]) {
+    onClick: function ([selectedHost]) {
       if (selectedHost.id && selectedHost.name) {
         showHostCopyNetworksModal(selectedHost)
       }
@@ -124,7 +124,7 @@ function addHostCopyNetworksButton () {
     },
 
     index: 9,
-    id: 'HostCopyNetworksButton'
+    id: 'HostCopyNetworksButton',
   })
 }
 

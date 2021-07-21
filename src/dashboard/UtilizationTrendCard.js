@@ -20,18 +20,18 @@ const UtilizationTrendCard = ({
   showValueAsPercentage = false,
   donutCenterLabel = DonutChart.defaultProps.centerLabel,
   historyTooltipType = AreaChart.defaultProps.tooltipType,
-  utilizationFooterLabel
+  utilizationFooterLabel,
 }) => {
-  const [ showUtilizationDialog, setShowUtilizationDialog ] = useState(false)
+  const [showUtilizationDialog, setShowUtilizationDialog] = useState(false)
 
   const available = total - used
   const thresholds = { enabled: true, warning: 75, error: 90 }
 
   // for non-percentage values summary - scale the available and total unit values together
-  const { unit: summaryUnit, value: [summaryAvailable, summaryTotal] } = convertValue(storageUnitTable, unit, [ available, total ])
+  const { unit: summaryUnit, value: [summaryAvailable, summaryTotal] } = convertValue(storageUnitTable, unit, [available, total])
 
   // for the donut chart - want to adjust the used and total values together so they stay balanced
-  const { unit: newUnit, value: [newUsed, newTotal] } = convertValue(storageUnitTable, unit, [ used, total ])
+  const { unit: newUnit, value: [newUsed, newTotal] } = convertValue(storageUnitTable, unit, [used, total])
 
   return (
     <div className='utilization-trend-card'>
@@ -66,7 +66,7 @@ const UtilizationTrendCard = ({
           <div className='overcommit-text'>
             {msg.dashboardUtilizationCardOverCommit({
               overcommit: round(overcommit),
-              allocated: round(allocated)
+              allocated: round(allocated),
             })}
           </div>
         </Tooltip>
@@ -116,7 +116,7 @@ UtilizationTrendCard.propTypes = {
   showValueAsPercentage: PropTypes.bool,
   donutCenterLabel: DonutChart.propTypes.centerLabel,
   historyTooltipType: AreaChart.propTypes.tooltipType,
-  utilizationFooterLabel: UtilizationDialog.propTypes.utilizationFooterLabel
+  utilizationFooterLabel: UtilizationDialog.propTypes.utilizationFooterLabel,
 }
 
 export default UtilizationTrendCard

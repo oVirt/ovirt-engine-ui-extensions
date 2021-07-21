@@ -3,7 +3,8 @@ import React from 'react'
 // TODO(vs): This is only used by jQuery-based Tooltip component, remove this
 // once that component gets replaced by patternfly-react equivalent component.
 export function cloneElementWithCustomRef (reactElement, customRef, props = {}) {
-  return React.cloneElement(reactElement, Object.assign({}, props, {
+  return React.cloneElement(reactElement, {
+    ...props,
     ref: (e) => {
       // invoke custom callback ref
       customRef(e)
@@ -12,8 +13,8 @@ export function cloneElementWithCustomRef (reactElement, customRef, props = {}) 
       if (typeof reactElement.ref === 'function') {
         reactElement.ref(e)
       }
-    }
-  }))
+    },
+  })
 }
 
 export function propNamesToType (names, propType) {

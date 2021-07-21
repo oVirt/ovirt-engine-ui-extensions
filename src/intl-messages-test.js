@@ -4,8 +4,8 @@ import translatedMessages from './intl/translations.json'
 
 describe('verify the content of [/src/intl/messages.js]', () => {
   describe.each(
-    Object.entries(messageDescriptors).map(([ messageKey, descriptor ]) =>
-      [ messageKey, descriptor.id, descriptor.defaultMessage, descriptor.description ]
+    Object.entries(messageDescriptors).map(([messageKey, descriptor]) =>
+      [messageKey, descriptor.id, descriptor.defaultMessage, descriptor.description]
     )
   )('validate messageDescriptor [%s]', (
     messageKey,
@@ -29,7 +29,7 @@ describe('verify the content of [/src/intl/messages.js]', () => {
 
 expect.extend({
   toBeSubsetOf (received, superset) {
-    let failed = []
+    const failed = []
 
     for (const item of received) {
       if (!superset.includes(item)) {
@@ -39,15 +39,15 @@ expect.extend({
 
     if (failed.length === 0) {
       return {
-        pass: true
+        pass: true,
       }
     } else {
       return {
         pass: false,
-        message: () => `expected has values not part of the set [${failed.join(', ')}]`
+        message: () => `expected has values not part of the set [${failed.join(', ')}]`,
       }
     }
-  }
+  },
 })
 
 function parseIcuArgumentsForMessage (message) {

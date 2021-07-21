@@ -6,7 +6,7 @@ import {
   Grid,
   Form,
   FormControl,
-  Checkbox
+  Checkbox,
 } from 'patternfly-react'
 import BaseFormGroup from '../../forms/BaseFormGroup'
 
@@ -24,17 +24,21 @@ class UpgradeOptions extends React.Component {
   onFieldChange ({ target }) {
     const id = target.id
     const value =
-      target.type === 'checkbox' ? target.checked
-        : target.type === 'number' ? Number.parseInt(target.value, 10)
+      target.type === 'checkbox'
+        ? target.checked
+        : target.type === 'number'
+          ? Number.parseInt(target.value, 10)
           : target.value
 
-    const optionName =
-      id === 'upgrade-options-stop-pinned-vms' ? 'stopPinnedVms'
-        : id === 'upgrade-options-upgrade-timeout' ? 'upgradeTimeoutInMin'
-          : id === 'upgrade-options-check-upgrade' ? 'checkForUpgradesOnHosts'
-            : id === 'upgrade-options-reboot-after' ? 'rebootAfterUpgrade'
-              : id === 'upgrade-options-use-maintenance' ? 'useMaintenanceClusterPolicy'
-                : undefined
+    const idToName = {
+      'upgrade-options-stop-pinned-vms': 'stopPinnedVms',
+      'upgrade-options-upgrade-timeout': 'upgradeTimeoutInMin',
+      'upgrade-options-check-upgrade': 'checkForUpgradesOnHosts',
+      'upgrade-options-reboot-after': 'rebootAfterUpgrade',
+      'upgrade-options-use-maintenance': 'useMaintenanceClusterPolicy',
+    }
+
+    const optionName = idToName[id] || undefined
 
     if (!optionName) {
       throw Error(`Unknown field was changed, id: ${id}`)
@@ -49,7 +53,7 @@ class UpgradeOptions extends React.Component {
       upgradeTimeoutInMin,
       checkForUpgradesOnHosts,
       rebootAfterUpgrade,
-      useMaintenanceClusterPolicy
+      useMaintenanceClusterPolicy,
     } = this.props
 
     return (
@@ -173,7 +177,7 @@ UpgradeOptions.i18nProps = {
   useMaintenancePolicyFieldHelp:
     'If checked the cluster\'s policy will be switched to "maintenance" during' +
     ' the upgrade. If not checked the policy will be unchanged.',
-  useMaintenancePolicyDescription: 'Switch Cluster policy to Cluster Maintenance during upgrade'
+  useMaintenancePolicyDescription: 'Switch Cluster policy to Cluster Maintenance during upgrade',
 }
 
 UpgradeOptions.propTypes = {
@@ -185,7 +189,7 @@ UpgradeOptions.propTypes = {
 
   onChange: PropTypes.func.isRequired,
 
-  ...propNamesToType(UpgradeOptions.i18nProps, PropTypes.string)
+  ...propNamesToType(UpgradeOptions.i18nProps, PropTypes.string),
 }
 
 UpgradeOptions.defaultProps = {
@@ -195,7 +199,7 @@ UpgradeOptions.defaultProps = {
   rebootAfterUpgrade: true,
   useMaintenanceClusterPolicy: true,
 
-  ...UpgradeOptions.i18nProps
+  ...UpgradeOptions.i18nProps,
 }
 
 export default UpgradeOptions

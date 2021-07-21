@@ -49,13 +49,13 @@ const Dashboard = ({ data, lastUpdated, onRefreshData }) => {
 Dashboard.propTypes = {
   data: PropTypes.shape(dashboardDataShape),
   lastUpdated: PropTypes.instanceOf(Date),
-  onRefreshData: PropTypes.func
+  onRefreshData: PropTypes.func,
 }
 
 Dashboard.defaultProps = {
   data: null,
   lastUpdated: new Date(0),
-  onRefreshData () {}
+  onRefreshData () {},
 }
 
 export default Dashboard

@@ -11,7 +11,7 @@ function addDashboardPlace () {
     // make users land on this place by default
     defaultPlace: true,
     // make sure the menu item has the right icon
-    icon: 'fa-tachometer'
+    icon: 'fa-tachometer',
   })
 }
 

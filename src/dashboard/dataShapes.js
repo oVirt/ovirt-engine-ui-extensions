@@ -5,16 +5,16 @@ export const inventoryStatus = PropTypes.shape({
   statuses: PropTypes.arrayOf(
     PropTypes.shape({
       type: PropTypes.string, // should be unique within the array
-      count: PropTypes.number
+      count: PropTypes.number,
     })
-  )
+  ),
 })
 
 export const objectUtilization = PropTypes.shape({
   name: PropTypes.string,
   used: PropTypes.number,
   total: PropTypes.number,
-  trend: PropTypes.oneOf(['up', 'down', 'same'])
+  trend: PropTypes.oneOf(['up', 'down', 'same']),
 })
 
 export const utilizationTrend = PropTypes.shape({
@@ -24,18 +24,18 @@ export const utilizationTrend = PropTypes.shape({
   allocated: PropTypes.number,
   history: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.number,
-    date: PropTypes.instanceOf(Date)
+    date: PropTypes.instanceOf(Date),
   })),
   utilization: PropTypes.shape({
     hosts: PropTypes.arrayOf(objectUtilization),
     storage: PropTypes.arrayOf(objectUtilization),
-    vms: PropTypes.arrayOf(objectUtilization)
-  })
+    vms: PropTypes.arrayOf(objectUtilization),
+  }),
 })
 
 export const heatMapDataArray = PropTypes.arrayOf(PropTypes.shape({
   value: PropTypes.number, // from range <0, 1>
-  name: PropTypes.string
+  name: PropTypes.string,
 }))
 
 export const dashboardDataShape = {
@@ -46,17 +46,17 @@ export const dashboardDataShape = {
     storage: inventoryStatus,
     volume: inventoryStatus,
     vm: inventoryStatus,
-    event: inventoryStatus
+    event: inventoryStatus,
   }),
   globalUtilization: PropTypes.shape({
     cpu: utilizationTrend,
     memory: utilizationTrend,
-    storage: utilizationTrend
+    storage: utilizationTrend,
   }),
   heatMapData: PropTypes.shape({
     cpu: heatMapDataArray,
     memory: heatMapDataArray,
     storage: heatMapDataArray,
-    vdoSavings: heatMapDataArray
-  })
+    vdoSavings: heatMapDataArray,
+  }),
 }

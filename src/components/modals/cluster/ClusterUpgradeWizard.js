@@ -5,7 +5,7 @@ import { selectProps, propNamesToType } from '../../../utils/react'
 import {
   selectKeys,
   noop,
-  Icon
+  Icon,
 } from 'patternfly-react'
 
 import MessageDialog from '../../patternfly/MessageDialog'
@@ -57,8 +57,8 @@ class ClusterUpgradeWizard extends React.Component {
         upgradeTimeoutInMin: 60,
         checkForUpgradesOnHosts: false,
         rebootAfterUpgrade: true,
-        useMaintenanceClusterPolicy: true
-      }
+        useMaintenanceClusterPolicy: true,
+      },
     }
 
     this.open = this.open.bind(this)
@@ -82,7 +82,7 @@ class ClusterUpgradeWizard extends React.Component {
             onChange={this.onHostSelectionChange}
             {...selectProps(this.props, SelectHosts.i18nProps)}
           />
-        )
+        ),
       },
       {
         title: this.props.stepUpgradeOptionsLabel,
@@ -98,7 +98,7 @@ class ClusterUpgradeWizard extends React.Component {
             onChange={this.onOptionsChange}
             {...selectProps(this.props, UpgradeOptions.i18nProps)}
           />
-        )
+        ),
       },
       {
         title: this.props.stepReviewLabel,
@@ -112,8 +112,8 @@ class ClusterUpgradeWizard extends React.Component {
             // migrateVmCount={0}
             {...selectProps(this.props, UpgradeReview.i18nProps)}
           />
-        )
-      }
+        ),
+      },
     ]
   }
 
@@ -152,19 +152,19 @@ class ClusterUpgradeWizard extends React.Component {
     const hasSelection = hostIdsInOrder && hostIdsInOrder.length > 0
 
     this.setState(state => ({
-      selectedHostsInSortOrder: !hasSelection ? [] : hostIdsInOrder.map(hostId => state.mapIdToHost[hostId])
+      selectedHostsInSortOrder: !hasSelection ? [] : hostIdsInOrder.map(hostId => state.mapIdToHost[hostId]),
     }))
     this.wizardSteps[0].isInvalid = !hasSelection
     this.wizardSteps[0].preventExit = !hasSelection
   }
 
   onOptionsChange (option, value) {
-    if (this.state.options.hasOwnProperty(option)) {
+    if (option in this.state.options) {
       this.setState(state => ({
         options: {
           ...state.options,
-          [option]: value
-        }
+          [option]: value,
+        },
       }))
     }
   }
@@ -188,7 +188,7 @@ class ClusterUpgradeWizard extends React.Component {
       useMaintenanceClusterPolicy: options.useMaintenanceClusterPolicy,
       executionTimeoutInMin: Number.isNaN(options.upgradeTimeoutInMin) || options.upgradeTimeoutInMin <= 0
         ? undefined
-        : (selectedHostsInSortOrder.length + 1) * options.upgradeTimeoutInMin
+        : (selectedHostsInSortOrder.length + 1) * options.upgradeTimeoutInMin,
     }
   }
 
@@ -220,12 +220,12 @@ class ClusterUpgradeWizard extends React.Component {
       cancelButtonText,
       backButtonText,
       nextButtonText,
-      upgradeButtonText
+      upgradeButtonText,
     } = this.props
     const {
       activeStepIndex,
       show,
-      confirmedClusterPolicy
+      confirmedClusterPolicy,
     } = this.state
 
     const currentStep = this.wizardSteps[activeStepIndex]
@@ -337,7 +337,7 @@ ClusterUpgradeWizard.i18nProps = {
 
   ...SelectHosts.i18nProps,
   ...UpgradeOptions.i18nProps,
-  ...UpgradeReview.i18nProps
+  ...UpgradeReview.i18nProps,
 }
 
 ClusterUpgradeWizard.propTypes = {
@@ -353,11 +353,11 @@ ClusterUpgradeWizard.propTypes = {
   isLoading: PropTypes.bool,
   ...selectKeys(WizardPattern.propTypes, [
     'container',
-    'onExited'
+    'onExited',
   ]),
 
   // i18n strings
-  ...propNamesToType(ClusterUpgradeWizard.i18nProps, PropTypes.string)
+  ...propNamesToType(ClusterUpgradeWizard.i18nProps, PropTypes.string),
 }
 
 ClusterUpgradeWizard.defaultProps = {
@@ -366,10 +366,10 @@ ClusterUpgradeWizard.defaultProps = {
   show: true,
   isLoading: false,
   ...selectKeys(WizardPattern.defaultProps, [
-    'onExited'
+    'onExited',
   ]),
 
-  ...ClusterUpgradeWizard.i18nProps
+  ...ClusterUpgradeWizard.i18nProps,
 }
 
 export default ClusterUpgradeWizard

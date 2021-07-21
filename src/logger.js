@@ -9,7 +9,7 @@ const BASE_FUNCTIONS = {
   log: window.console.log,
   info: window.console.info,
   warn: window.console.warn,
-  error: window.console.error
+  error: window.console.error,
 }
 
 /*
@@ -24,7 +24,7 @@ export function enhanceOutput (enhancers) {
     log: BASE_FUNCTIONS.log.bind(window.console, ...enhancers.log),
     info: BASE_FUNCTIONS.info.bind(window.console, ...enhancers.info),
     warn: BASE_FUNCTIONS.warn.bind(window.console, ...enhancers.warn),
-    error: BASE_FUNCTIONS.error.bind(window.console, ...enhancers.error)
+    error: BASE_FUNCTIONS.error.bind(window.console, ...enhancers.error),
   }
 }
 
@@ -32,7 +32,7 @@ enhanceOutput({
   log: ['%c debug %c', 'font-weight: bold; background-color: #21409a; color: white;', ''],
   info: ['%c info %c', 'font-weight: bold; background-color: #01acac; color: white;', ''],
   warn: ['%c warn %c', 'font-weight: bold; background-color: #f8a51b; color: white;', ''],
-  error: ['%c error %c', 'font-weight: bold; background-color: #ed403c; color: white;', '']
+  error: ['%c error %c', 'font-weight: bold; background-color: #ed403c; color: white;', ''],
 })
 
 /*
@@ -45,7 +45,7 @@ function attachLoggers (object) {
     log: { get () { return isDebugEnabled ? consoleFunctions.log : NOOP } },
     info: { get () { return isDebugEnabled ? consoleFunctions.info : NOOP } },
     warn: { get () { return isDebugEnabled ? consoleFunctions.warn : NOOP } },
-    error: { get () { return isDebugEnabled ? consoleFunctions.error : NOOP } }
+    error: { get () { return isDebugEnabled ? consoleFunctions.error : NOOP } },
   })
 }
 

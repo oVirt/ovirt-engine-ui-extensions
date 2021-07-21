@@ -11,14 +11,14 @@ import {
   StackItem,
   FormSelect,
   FormSelectOption,
-  FormGroup
+  FormGroup,
 } from '@patternfly/react-core'
 
 const StorageDomainList = ({
   selectedStorageDomain,
   storageDomains,
   onChange,
-  storageDomainsEmpty
+  storageDomainsEmpty,
 }) => {
   return (
     <FormSelect
@@ -43,7 +43,7 @@ StorageDomainList.propTypes = {
   selectedStorageDomain: PropTypes.string,
   storageDomains: PropTypes.array,
   storageDomainsEmpty: PropTypes.bool,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 }
 
 const VmExportModalBody = ({
@@ -55,7 +55,7 @@ const VmExportModalBody = ({
   storageDomains,
   onExportVmNameChange,
   onShouldCollapseSnapshotsChange,
-  onSelectedStorageDomainChange
+  onSelectedStorageDomainChange,
 }) => {
   const storageDomainsEmpty = !storageDomains || storageDomains.length === 0
 
@@ -139,7 +139,7 @@ VmExportModalBody.propTypes = {
   // callbacks
   onExportVmNameChange: PropTypes.func.isRequired,
   onShouldCollapseSnapshotsChange: PropTypes.func.isRequired,
-  onSelectedStorageDomainChange: PropTypes.func.isRequired
+  onSelectedStorageDomainChange: PropTypes.func.isRequired,
 }
 
 export default VmExportModalBody

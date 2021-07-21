@@ -58,18 +58,18 @@ async function exportVm (vmId, exportName, sdId, collapseSnapshots) {
   const validateResponse = await validateThinVm(vmId, sdId)
   if (!validateResponse) {
     throw new Error(
-      msg.exportVmTemplateNotOnStorageDomainError({exportName})
+      msg.exportVmTemplateNotOnStorageDomainError({ exportName })
     )
   }
 
   const requestBody = {
     discard_snapshots: !!collapseSnapshots,
     storage_domain: {
-      id: sdId
+      id: sdId,
     },
     vm: {
-      name: exportName
-    }
+      name: exportName,
+    },
   }
 
   const response = await enginePost(
@@ -108,7 +108,7 @@ const VmExportDataProvider = ({ children, vm }) => {
         // pass relevant data and operations to child component
         return React.cloneElement(child, {
           storageDomains,
-          onExportVm: exportVm
+          onExportVm: exportVm,
         })
       }}
     </DataProvider>
@@ -117,7 +117,7 @@ const VmExportDataProvider = ({ children, vm }) => {
 
 VmExportDataProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  vm: PropTypes.object.isRequired
+  vm: PropTypes.object.isRequired,
 }
 
 export default VmExportDataProvider

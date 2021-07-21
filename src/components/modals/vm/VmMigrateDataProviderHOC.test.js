@@ -7,7 +7,7 @@ import withTargetHosts from './VmMigrateDataProvider'
 
 jest.mock('_/utils/fetch')
 
-const respondToUrl = function ({hosts, hostsWithAffinity}) {
+const respondToUrl = function ({ hosts, hostsWithAffinity }) {
   return (url) => {
     if (url.includes('check_vms_in_affinity_closure=false')) {
       return hosts
@@ -19,9 +19,10 @@ const respondToUrl = function ({hosts, hostsWithAffinity}) {
 
 const Foo = (props) => {
   return (
-    <React.Fragment>
+    <>
       {JSON.stringify(props)}
-    </React.Fragment>)
+    </>
+  )
 }
 
 const ConnectedFoo = withTargetHosts(Foo)
@@ -35,7 +36,7 @@ describe('Vm Migrate Data Provider HOC', () => {
       isLoading: true,
       targetHostItems: [],
       vmNames: [],
-      checkVmAffinity: false
+      checkVmAffinity: false,
     }
     expect(wrapper.props()).toEqual(expect.objectContaining(expected))
   })
@@ -55,34 +56,34 @@ describe('Vm Migrate Data Provider HOC', () => {
   })
 
   it('should render content', async () => {
-    const resultGenerator = (function * () {
-      yield Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
-      yield Promise.resolve({host: [{id: 'B_id', name: 'B_name'}]})
-      yield Promise.resolve({host: [{id: 'B_id', name: 'B_name'}]})
+    const resultGenerator = (function* () {
+      yield Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
+      yield Promise.resolve({ host: [{ id: 'B_id', name: 'B_name' }] })
+      yield Promise.resolve({ host: [{ id: 'B_id', name: 'B_name' }] })
     })()
     let wrapper
     engineGet.mockImplementation(() => resultGenerator.next().value)
     await act(async () => { wrapper = mount(<ConnectedFoo vmIds={['A_id']} />) })
     const expected = {
       isLoading: false,
-      targetHostItems: [{text: 'B_name', value: 'B_id'}],
+      targetHostItems: [{ text: 'B_name', value: 'B_id' }],
       vmNames: ['A_name'],
-      checkVmAffinity: false
+      checkVmAffinity: false,
     }
     wrapper.update()
     expect(wrapper.find(Foo).props()).toEqual(expect.objectContaining(expected))
   })
 
   it('should switch to hosts with affinity after flag is toggled', async () => {
-    const resultGenerator = (function * () {
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+    const resultGenerator = (function* () {
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield respondToUrl({
-        hosts: Promise.resolve({host: [{id: 'B_id', name: 'B_name'}]}),
-        hostsWithAffinity: Promise.resolve({host: [{id: 'C_id', name: 'C_name'}]})
+        hosts: Promise.resolve({ host: [{ id: 'B_id', name: 'B_name' }] }),
+        hostsWithAffinity: Promise.resolve({ host: [{ id: 'C_id', name: 'C_name' }] }),
       })
       yield respondToUrl({
-        hosts: Promise.resolve({host: [{id: 'B_id', name: 'B_name'}]}),
-        hostsWithAffinity: Promise.resolve({host: [{id: 'C_id', name: 'C_name'}]})
+        hosts: Promise.resolve({ host: [{ id: 'B_id', name: 'B_name' }] }),
+        hostsWithAffinity: Promise.resolve({ host: [{ id: 'C_id', name: 'C_name' }] }),
       })
     })()
     let wrapper
@@ -93,9 +94,9 @@ describe('Vm Migrate Data Provider HOC', () => {
 
     expect(wrapper.find(Foo).props()).toEqual(expect.objectContaining({
       isLoading: false,
-      targetHostItems: [{value: 'B_id', text: 'B_name'}],
+      targetHostItems: [{ value: 'B_id', text: 'B_name' }],
       vmNames: ['A_name'],
-      checkVmAffinity: false
+      checkVmAffinity: false,
     }))
 
     const onRefreshHosts = wrapper.find(Foo).prop('onRefreshHosts')
@@ -104,9 +105,9 @@ describe('Vm Migrate Data Provider HOC', () => {
 
     expect(wrapper.find(Foo).props()).toEqual(expect.objectContaining({
       isLoading: false,
-      targetHostItems: [{value: 'C_id', text: 'C_name'}],
+      targetHostItems: [{ value: 'C_id', text: 'C_name' }],
       vmNames: ['A_name'],
-      checkVmAffinity: true
+      checkVmAffinity: true,
     }))
   })
 })

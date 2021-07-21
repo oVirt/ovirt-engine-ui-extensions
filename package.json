@@ -21,7 +21,7 @@
     "intl:report": "node zanata/report.js",
     "intl:sync": "node zanata/sync-messages.js",
     "lint": "eslint . --ext js,jsx",
-    "test": "NODE_ENV=test jest --no-watch",
+    "test": "yarn lint && NODE_ENV=test jest --no-watch",
     "test:watch": "NODE_ENV=test jest --watch"
   },
   "dependencies": {

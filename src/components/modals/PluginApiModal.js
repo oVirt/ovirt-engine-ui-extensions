@@ -39,7 +39,7 @@ const PluginApiModal = ({
         })
       }
     }
-  }, [ isOpen ])
+  }, [isOpen])
 
   return (
     <Modal
@@ -64,7 +64,7 @@ PluginApiModal.propTypes = {
   modalId: PropTypes.string,
 
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 }
 
 export default PluginApiModal

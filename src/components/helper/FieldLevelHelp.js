@@ -6,7 +6,7 @@ import { getWebAdminDocumentBody } from '_/utils/webadmin-dom'
 import './styles.css'
 
 const FieldLevelHelp = ({
-  content
+  content,
 }) => {
   return (
     <div className='field-level-help'>
@@ -22,7 +22,7 @@ const FieldLevelHelp = ({
 }
 
 FieldLevelHelp.propTypes = {
-  content: PropTypes.node.isRequired
+  content: PropTypes.node.isRequired,
 }
 
 export default FieldLevelHelp

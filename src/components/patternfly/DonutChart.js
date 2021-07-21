@@ -13,7 +13,7 @@ const DonutChart = ({
   unit,
   thresholds = { enabled: true, warning: 60, error: 90 },
   centerLabel = 'used',
-  onDataClick = () => {}
+  onDataClick = () => {},
 }) => {
   let donutChartText = ''
   let donutChartSubtitle = ''
@@ -29,7 +29,7 @@ const DonutChart = ({
     donutChartSubtitle = msg.used()
   }
 
-  const colors = [{value: thresholds.error}, {value: thresholds.warning}]
+  const colors = [{ value: thresholds.error }, { value: thresholds.warning }]
 
   const percentUsed = total === 0 ? 0 : used / total
   const usedLabel = msg.dashboardUtilizationCardAmountUsedTooltip({ percent: formatPercent1D(percentUsed) })
@@ -47,7 +47,7 @@ const DonutChart = ({
         events={[{ target: 'data', eventHandlers: { onClick: onDataClick } }]}
         height={200}
         width={200}
-        padding={{top: 15}}
+        padding={{ top: 15 }}
       />
     </div>
   )
@@ -60,10 +60,10 @@ DonutChart.propTypes = {
   thresholds: PropTypes.shape({
     enabled: PropTypes.bool,
     warning: PropTypes.number,
-    error: PropTypes.number
+    error: PropTypes.number,
   }),
   centerLabel: PropTypes.oneOf(['used', 'available', 'percent']),
-  onDataClick: PropTypes.func // (d, element) => void
+  onDataClick: PropTypes.func, // (d, element) => void
 }
 
 export default DonutChart

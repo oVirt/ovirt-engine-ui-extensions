@@ -39,7 +39,7 @@ getPluginApi().register({
     addErrorHandler()
     addPlaces()
     addButtons()
-  }
+  },
 
 })
 

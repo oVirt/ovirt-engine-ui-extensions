@@ -10,7 +10,7 @@ class DataProvider extends React.Component {
       data: null,
       fetchError: null,
       fetchInProgress: false,
-      lastUpdated: null
+      lastUpdated: null,
     }
   }
 
@@ -23,7 +23,7 @@ class DataProvider extends React.Component {
   render () {
     return this.props.children({
       ...this.state,
-      fetchAndUpdateData: () => { this.fetchAndUpdateData() }
+      fetchAndUpdateData: () => { this.fetchAndUpdateData() },
     })
   }
 
@@ -42,7 +42,7 @@ class DataProvider extends React.Component {
   onFetchStart () {
     this.setState({
       fetchError: null,
-      fetchInProgress: true
+      fetchInProgress: true,
     })
   }
 
@@ -51,7 +51,7 @@ class DataProvider extends React.Component {
       data,
       fetchError: null,
       fetchInProgress: false,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     })
   }
 
@@ -60,7 +60,7 @@ class DataProvider extends React.Component {
       data: null,
       fetchError: error,
       fetchInProgress: false,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     })
   }
 }
@@ -68,13 +68,13 @@ class DataProvider extends React.Component {
 DataProvider.propTypes = {
   fetchData: PropTypes.func,
   fetchOnMount: PropTypes.bool,
-  children: PropTypes.func
+  children: PropTypes.func,
 }
 
 DataProvider.defaultProps = {
   fetchData: () => Promise.resolve({}),
   fetchOnMount: true,
-  children: () => null
+  children: () => null,
 }
 
 export default DataProvider

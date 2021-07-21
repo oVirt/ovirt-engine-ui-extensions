@@ -13,7 +13,7 @@ const BaseFormGroup = ({
   validationState,
   labelCols,
   fieldCols,
-  children
+  children,
 }) => {
   // react-bootstrap Overlay content's offset calculation gets messed up when
   // rendered out-of-iframe. To fix this, we use the component's DOM element
@@ -22,20 +22,20 @@ const BaseFormGroup = ({
 
   return (
     <Form.FormGroup
-      style={{position: 'relative'}}
+      style={{ position: 'relative' }}
       controlId={id}
       validationState={validationState}
       ref={componentRef}
     >
       <Grid.Col sm={labelCols} componentClass={Form.ControlLabel}>
         <strong>{label}</strong>
-        {fieldHelp &&
+        {fieldHelp && (
           <FieldLevelHelp
             content={fieldHelp}
             placement={fieldHelpPlacement || 'top'}
             container={() => componentRef.current}
           />
-        }
+        )}
       </Grid.Col>
       <Grid.Col sm={fieldCols}>
         {children}
@@ -54,12 +54,12 @@ BaseFormGroup.propTypes = {
   validationState: BsFormGroup.propTypes.validationState,
   labelCols: PropTypes.number,
   fieldCols: PropTypes.number,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }
 
 BaseFormGroup.defaultProps = {
   labelCols: 3,
-  fieldCols: 9
+  fieldCols: 9,
 }
 
 export default BaseFormGroup

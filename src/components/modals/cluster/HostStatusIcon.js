@@ -20,26 +20,28 @@ const statusMap = {
   // 'reboot'                   : { type: '', name: '', tooltip: '' },
   // 'unassigned'               : { type: '', name: '', tooltip: '' },
   'up'                       : { type: 'fa', name: 'arrow-circle-o-up', class: 'host-status-icon-green', tooltip: 'Up' },
-  'DEFAULT'                  : { type: 'pf', name: 'unknown' }
+  'DEFAULT'                  : { type: 'pf', name: 'unknown' },
 }
 
 /**
  * Render a Host's status as an Icon
  */
 const HostStatusIcon = ({ status }) => {
-  const entry = statusMap[status] || statusMap['DEFAULT']
+  const entry = statusMap[status] || statusMap.DEFAULT
   const tooltip = entry.tooltip || status
 
-  return <Icon
-    type={entry.type}
-    name={entry.name}
-    title={tooltip}
-    className={`host-status-icon ${entry.class || ''}`}
-  />
+  return (
+    <Icon
+      type={entry.type}
+      name={entry.name}
+      title={tooltip}
+      className={`host-status-icon ${entry.class || ''}`}
+    />
+  )
 }
 
 HostStatusIcon.propTypes = {
-  status: PropTypes.string
+  status: PropTypes.string,
 }
 
 export default HostStatusIcon

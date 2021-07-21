@@ -9,50 +9,50 @@ import DataProvider from '_/components/helper/DataProvider'
 import { createErrorMessage } from '_/utils/error-message'
 import get from 'lodash/get'
 
-const GpuDataProvider = ({children, vmId}) => {
+const GpuDataProvider = ({ children, vmId }) => {
   let allCustomProperties = []
 
   const fetchVm = async () => {
-    return engineGet(`api/vms/` + vmId)
+    return engineGet(`api/vms/${vmId}`)
   }
 
   const fetchCluster = async (clusterId) => {
-    return engineGet(`api/clusters/` + clusterId)
+    return engineGet(`api/clusters/${clusterId}`)
   }
 
   const fetchHosts = async (clusterName) => {
-    return engineGet('api/hosts?search=cluster%3D' + clusterName)
+    return engineGet(`api/hosts?search=cluster%3D${clusterName}`)
   }
 
   const fetchHostDevices = async (hostId) => {
-    return engineGet(`api/hosts/` + hostId + '/devices')
+    return engineGet(`api/hosts/${hostId}/devices`)
   }
 
   const fetchHostsMDevTypes = async (hostsEnvelope) => {
     if (!hostsEnvelope || !hostsEnvelope.host) {
       return []
     }
-    let hostDevices = []
-    let hosts = hostsEnvelope.host
+    const hostDevices = []
+    const hosts = hostsEnvelope.host
 
     for (let i = 0; i < hosts.length; i++) {
-      let devices = await fetchHostDevices(hosts[i].id)
+      const devices = await fetchHostDevices(hosts[i].id)
 
       if (!devices || !Array.isArray(devices.host_device)) {
         continue
       }
 
       for (let y = 0; y < devices.host_device.length; y++) {
-        let hostDevice = devices.host_device[y]
+        const hostDevice = devices.host_device[y]
         if (get(hostDevice, ['m_dev_types', 'm_dev_type']) && hostDevice.m_dev_types.m_dev_type.length > 0) {
-          let mdevs = []
+          const mdevs = []
           hostDevice.m_dev_types.m_dev_type.forEach(mDevType => mdevs.push(mDevType))
           hostDevices.push({
             host: hosts[i],
             product: get(hostDevice, ['product', 'name']),
             vendor: get(hostDevice, ['vendor', 'name']),
             address: hostDevice.name,
-            mDevTypes: mdevs
+            mDevTypes: mdevs,
           })
         }
       }
@@ -69,7 +69,7 @@ const GpuDataProvider = ({children, vmId}) => {
   }
 
   const parseMdevCustomProperty = (customProperties) => {
-    let mdevCustomProperty = customProperties.find(property => property.name === 'mdev_type')
+    const mdevCustomProperty = customProperties.find(property => property.name === 'mdev_type')
     if (mdevCustomProperty !== undefined) {
       return mdevCustomProperty.value.split(',')
     }
@@ -82,7 +82,7 @@ const GpuDataProvider = ({children, vmId}) => {
       parsedMdevProperties = parsedMdevProperties.slice(1)
     }
 
-    let selectedMdevs = []
+    const selectedMdevs = []
     parsedMdevProperties.forEach(mDevType => {
       if (mDevType in selectedMdevs) {
         selectedMdevs[mDevType]++
@@ -94,7 +94,7 @@ const GpuDataProvider = ({children, vmId}) => {
   }
 
   const isNoDisplay = (customProperties) => {
-    let parsedMdevProperties = parseMdevCustomProperty(customProperties)
+    const parsedMdevProperties = parseMdevCustomProperty(customProperties)
     if (parsedMdevProperties.length > 0 && parsedMdevProperties[0] === 'nodisplay') {
       return true
     }
@@ -102,7 +102,7 @@ const GpuDataProvider = ({children, vmId}) => {
   }
 
   const createGpus = (hostMDevTypes, selectedMdevs) => {
-    let gpus = []
+    const gpus = []
     hostMDevTypes.forEach(hostMDevType => {
       hostMDevType.mDevTypes.forEach(mDevType => {
         gpus.push(
@@ -136,7 +136,7 @@ const GpuDataProvider = ({children, vmId}) => {
       frameRateLimiter: parseStringToIntSafely(descriptionKeyValues.get('frl_config')),
       product: product,
       vendor: vendor,
-      address: address
+      address: address,
     }
   }
 
@@ -174,21 +174,21 @@ const GpuDataProvider = ({children, vmId}) => {
     const selectedMdevs = getSelectedMdevs(allCustomProperties)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
     const noDisplay = isNoDisplay(allCustomProperties)
-    return {gpus: gpus, noDisplay: noDisplay}
+    return { gpus: gpus, noDisplay: noDisplay }
   }
 
   const updateCustomProperties = (displayOn, selectedGpus) => {
     let mdevCustomProperty = allCustomProperties.find(property => property.name === 'mdev_type')
     if (mdevCustomProperty === undefined) {
-      mdevCustomProperty = {name: 'mdev_type'}
+      mdevCustomProperty = { name: 'mdev_type' }
       allCustomProperties.push(mdevCustomProperty)
     }
 
-    let mDevTypes = []
+    const mDevTypes = []
 
     selectedGpus.forEach(gpu => {
       if (!mDevTypes.includes(gpu.mDevType)) {
-        for (var i = 0; i < gpu.requestedInstances; i++) {
+        for (let i = 0; i < gpu.requestedInstances; i++) {
           mDevTypes.push(gpu.mDevType)
         }
       }
@@ -207,8 +207,8 @@ const GpuDataProvider = ({children, vmId}) => {
     updateCustomProperties(displayOn, selectedGpus)
     const requestBody = {
       'custom_properties': {
-        'custom_property': allCustomProperties
-      }
+        'custom_property': allCustomProperties,
+      },
     }
 
     try {
@@ -241,7 +241,7 @@ const GpuDataProvider = ({children, vmId}) => {
         return React.cloneElement(child, {
           gpus: data.gpus,
           displayOn: !data.noDisplay,
-          onSelectButtonClick: saveVm
+          onSelectButtonClick: saveVm,
         })
       }}
 
@@ -251,7 +251,7 @@ const GpuDataProvider = ({children, vmId}) => {
 
 GpuDataProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  vmId: PropTypes.string.isRequired
+  vmId: PropTypes.string.isRequired,
 }
 
 export default GpuDataProvider

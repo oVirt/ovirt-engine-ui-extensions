@@ -34,7 +34,7 @@ class HeatMap extends React.Component {
       containerWidth,
       containerHeight,
       numberOfBlocks: data.length,
-      maxBlockSize
+      maxBlockSize,
     })
 
     const numberOfRows = (blockSize === 0) ? 0 : Math.floor(containerHeight / blockSize)
@@ -72,7 +72,7 @@ class HeatMap extends React.Component {
       container: 'body',
       title () {
         return data[$(this).attr('data-index')].name
-      }
+      },
     })
   }
 
@@ -112,29 +112,29 @@ class HeatMap extends React.Component {
 HeatMap.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.number, // from range <0, 1>
-    name: PropTypes.string
+    name: PropTypes.string,
   })).isRequired,
   thresholds: PropTypes.shape({
     domain: PropTypes.arrayOf(PropTypes.number), // threshold scale domain
-    colors: PropTypes.arrayOf(PropTypes.string)  // threshold scale color range
+    colors: PropTypes.arrayOf(PropTypes.string), // threshold scale color range
   }),
   maxBlockSize: PropTypes.number,
   blockPadding: PropTypes.number,
   containerStyle: PropTypes.object,
-  onBlockClick: PropTypes.func // (dataItem:object) => void
+  onBlockClick: PropTypes.func, // (dataItem:object) => void
 }
 
 HeatMap.defaultProps = {
   thresholds: {
     domain: [0.7, 0.8, 0.9],
-    colors: ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000']
+    colors: ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000'],
   },
   maxBlockSize: 50,
   blockPadding: 1,
   containerStyle: {
-    height: 100
+    height: 100,
   },
-  onBlockClick () {}
+  onBlockClick () {},
 }
 
 export default HeatMap

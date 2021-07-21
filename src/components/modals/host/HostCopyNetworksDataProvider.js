@@ -10,7 +10,7 @@ import { msg } from '_/intl-messages'
 const fetchTargetHostsFakeData = [
   { id: 'dst111', name: 'dest-host-1', cluster: { id: 'xyz789' } },
   { id: 'dst222', name: 'dest-host-2', cluster: { id: 'xyz789' } },
-  { id: 'dst333', name: 'dest-host-3', cluster: { id: 'xyz789' } }
+  { id: 'dst333', name: 'dest-host-3', cluster: { id: 'xyz789' } },
 ]
 
 /**
@@ -44,7 +44,7 @@ function copyNetworksToHost (sourceHostId, targetHostId) {
     return
   }
 
-  requestBody['source_host'] = { id: sourceHostId }
+  requestBody.source_host = { id: sourceHostId }
   if (targetHostId) {
     enginePost(`api/hosts/${targetHostId}/copyhostnetworks`, JSON.stringify(requestBody))
   }
@@ -68,10 +68,10 @@ const HostCopyNetworksDataProvider = ({ sourceHostId, children }) => {
           hostNames: targetHosts.map(host => host.name),
           targetHostItems: targetHosts.map(host => ({
             value: host.id,
-            text: host.name
+            text: host.name,
           })),
           onRefreshHosts: () => { fetchAndUpdateData() },
-          onCopyNetworksToHost: (targetHostId) => copyNetworksToHost(sourceHostId, targetHostId)
+          onCopyNetworksToHost: (targetHostId) => copyNetworksToHost(sourceHostId, targetHostId),
         })
       }}
     </DataProvider>
@@ -80,7 +80,7 @@ const HostCopyNetworksDataProvider = ({ sourceHostId, children }) => {
 
 HostCopyNetworksDataProvider.propTypes = {
   sourceHostId: PropTypes.string.isRequired,
-  children: PropTypes.func.isRequired
+  children: PropTypes.func.isRequired,
 }
 
 export default HostCopyNetworksDataProvider

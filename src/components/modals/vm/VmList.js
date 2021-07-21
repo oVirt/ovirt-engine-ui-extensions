@@ -6,7 +6,7 @@ const VmList = ({
   vmNames = [],
   showAllThreshold = 10,
   showAllLabel = 'Show all Virtual Machines',
-  showLessLabel = 'Show less Virtual Machines'
+  showLessLabel = 'Show less Virtual Machines',
 }) => {
   const [showAll, setShowAll] = useState(false)
 
@@ -14,7 +14,7 @@ const VmList = ({
   const showLink = vmNames.length > showAllThreshold
 
   return (
-    <React.Fragment>
+    <>
       <List className='vm-list'>
         {vmNamesToShow.map(name => (
           <ListItem key={name}>{name}</ListItem>
@@ -29,7 +29,7 @@ const VmList = ({
           {showAll ? showLessLabel : showAllLabel}
         </a>
       )}
-    </React.Fragment>
+    </>
   )
 }
 
@@ -37,7 +37,7 @@ VmList.propTypes = {
   vmNames: PropTypes.arrayOf(PropTypes.string),
   showAllThreshold: PropTypes.number,
   showAllLabel: PropTypes.string,
-  showLessLabel: PropTypes.string
+  showLessLabel: PropTypes.string,
 }
 
 export default VmList

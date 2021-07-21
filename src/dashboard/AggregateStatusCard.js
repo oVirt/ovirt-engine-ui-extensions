@@ -8,7 +8,7 @@ import { Card, CardTitle, CardBody, Tooltip } from '@patternfly/react-core'
 import {
   EnterpriseIcon, ClusterIcon, ScreenIcon, StorageDomainIcon, VolumeIcon,
   VirtualMachineIcon, BellIcon, QuestionCircleIcon, ErrorCircleOIcon, WarningTriangleIcon,
-  FlagIcon, OkIcon, ArrowAltCircleUpIcon, ArrowAltCircleDownIcon
+  FlagIcon, OkIcon, ArrowAltCircleUpIcon, ArrowAltCircleDownIcon,
 } from '@patternfly/react-icons'
 
 /* eslint-disable key-spacing */
@@ -19,30 +19,30 @@ const HEADER_ICON = {
   'storage-domain' : <StorageDomainIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
   'volume'         : <VolumeIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
   'virtual-machine': <VirtualMachineIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
-  'bell'           : <BellIcon height='1.1em' width='1.1em' className='aggregate-status-count' />
+  'bell'           : <BellIcon height='1.1em' width='1.1em' className='aggregate-status-count' />,
 }
 
 const STATUS_TYPE = {
   up: {
     text: msg.dashboardStatusTypeUp(),
-    iconClass: <ArrowAltCircleUpIcon style={{height: '15px'}} />
+    iconClass: <ArrowAltCircleUpIcon style={{ height: '15px' }} />,
   },
   down: {
     text: msg.dashboardStatusTypeDown(),
-    iconClass: <ArrowAltCircleDownIcon style={{height: '15px'}} />
+    iconClass: <ArrowAltCircleDownIcon style={{ height: '15px' }} />,
   },
   error: {
     text: msg.dashboardStatusTypeError(),
-    iconClass: <ErrorCircleOIcon style={{color: 'var(--pf-global--danger-color--100)', height: '15px'}} />
+    iconClass: <ErrorCircleOIcon style={{ color: 'var(--pf-global--danger-color--100)', height: '15px' }} />,
   },
   warning: {
     text: msg.dashboardStatusTypeWarning(),
-    iconClass: <WarningTriangleIcon style={{color: 'var(--pf-global--warning-color--100)', height: '15px'}} />
+    iconClass: <WarningTriangleIcon style={{ color: 'var(--pf-global--warning-color--100)', height: '15px' }} />,
   },
   alert: {
     text: msg.dashboardStatusTypeAlert(),
-    iconClass: <FlagIcon style={{height: '15px'}} />
-  }
+    iconClass: <FlagIcon style={{ height: '15px' }} />,
+  },
 }
 
 const AggregateStatusCard = ({
@@ -52,7 +52,7 @@ const AggregateStatusCard = ({
   noStatusText = '',
   noStatusIconClass = 'ok',
   onTotalCountClick = () => {},
-  onStatusCountClick = () => {}
+  onStatusCountClick = () => {},
 }) => {
   const statusTypeToText =
     (statusType) => STATUS_TYPE[statusType] ? STATUS_TYPE[statusType].text : msg.dashboardStatusTypeUnknown()
@@ -82,7 +82,8 @@ const AggregateStatusCard = ({
                 <a href='#' onClick={event => {
                   event.preventDefault()
                   onStatusCountClick(statusItem)
-                }}>
+                }}
+                >
                   {statusTypeToIconClass(statusItem.type)}
                   {formatNumber0D(statusItem.count)}
                 </a>
@@ -90,12 +91,12 @@ const AggregateStatusCard = ({
             </span>
           ))}
 
-          {statuses.length === 0 &&
+          {statuses.length === 0 && (
             <span className='aggregate-status-notification'>
               {noStatusIconClass && <OkIcon />}
               {noStatusText}
             </span>
-          }
+          )}
         </p>
       </CardBody>
     </Card>
@@ -108,8 +109,8 @@ AggregateStatusCard.propTypes = {
   mainIconClass: PropTypes.string.isRequired,
   noStatusText: PropTypes.string,
   noStatusIconClass: PropTypes.string,
-  onTotalCountClick: PropTypes.func,     // () => void
-  onStatusCountClick: PropTypes.func     // (statusItem:object) => void
+  onTotalCountClick: PropTypes.func, // () => void
+  onStatusCountClick: PropTypes.func, // (statusItem:object) => void
 }
 
 export default AggregateStatusCard

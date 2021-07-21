@@ -30,7 +30,7 @@ const HeatMapCards = ({ heatMapData, showGluster = false }) => (
 
 HeatMapCards.propTypes = {
   heatMapData: dashboardDataShape.heatMapData,
-  showGluster: PropTypes.bool
+  showGluster: PropTypes.bool,
 }
 
 const ClusterUtilizationCards = ({ cpu, memory }) => (
@@ -50,7 +50,7 @@ const ClusterUtilizationCards = ({ cpu, memory }) => (
                 onBlockClick={dataItem => {
                   applySearch(C.webadminPlaces.host, C.searchPrefixes.host, [{
                     name: C.searchFields.cluster,
-                    values: [dataItem.name]
+                    values: [dataItem.name],
                   }])
                 }}
               />
@@ -63,7 +63,7 @@ const ClusterUtilizationCards = ({ cpu, memory }) => (
                 onBlockClick={dataItem => {
                   applySearch(C.webadminPlaces.host, C.searchPrefixes.host, [{
                     name: C.searchFields.cluster,
-                    values: [dataItem.name]
+                    values: [dataItem.name],
                   }])
                 }}
               />
@@ -80,7 +80,7 @@ const ClusterUtilizationCards = ({ cpu, memory }) => (
 
 ClusterUtilizationCards.propTypes = {
   cpu: heatMapDataShape,
-  memory: heatMapDataShape
+  memory: heatMapDataShape,
 }
 
 const StorageUtilizationCard = ({ storage }) => (
@@ -98,7 +98,7 @@ const StorageUtilizationCard = ({ storage }) => (
             onBlockClick={dataItem => {
               applySearch(C.webadminPlaces.storage, C.searchPrefixes.storage, [{
                 name: C.searchFields.name,
-                values: [dataItem.name]
+                values: [dataItem.name],
               }])
             }}
           />
@@ -112,7 +112,7 @@ const StorageUtilizationCard = ({ storage }) => (
 )
 
 StorageUtilizationCard.propTypes = {
-  storage: heatMapDataShape
+  storage: heatMapDataShape,
 }
 
 const GlusterUtilizationCard = ({ vdoSavings }) => (
@@ -130,7 +130,7 @@ const GlusterUtilizationCard = ({ vdoSavings }) => (
             onBlockClick={dataItem => {
               applySearch(C.webadminPlaces.vdoSavings, C.searchPrefixes.vdoSavings, [{
                 name: C.searchFields.name,
-                values: [dataItem.name]
+                values: [dataItem.name],
               }])
             }}
           />
@@ -144,7 +144,7 @@ const GlusterUtilizationCard = ({ vdoSavings }) => (
 )
 
 GlusterUtilizationCard.propTypes = {
-  vdoSavings: heatMapDataShape
+  vdoSavings: heatMapDataShape,
 }
 
 export default HeatMapCards

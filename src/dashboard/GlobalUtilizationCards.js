@@ -67,7 +67,7 @@ const GlobalUtilizationCards = ({ globalUtilization }) => (
 )
 
 GlobalUtilizationCards.propTypes = {
-  globalUtilization: dashboardDataShape.globalUtilization
+  globalUtilization: dashboardDataShape.globalUtilization,
 }
 
 export default GlobalUtilizationCards

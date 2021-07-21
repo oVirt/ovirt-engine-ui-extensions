@@ -63,8 +63,8 @@ function transformData (data) {
         utilization: {
           hosts: [],
           storage: [],
-          vms: []
-        }
+          vms: [],
+        },
       }
       return
     }
@@ -138,7 +138,7 @@ const DashboardDataProvider = ({ children, loading, error }) => (
       return React.cloneElement(child, {
         data,
         lastUpdated,
-        onRefreshData: fetchAndUpdateData
+        onRefreshData: fetchAndUpdateData,
       })
     }}
 
@@ -148,7 +148,7 @@ const DashboardDataProvider = ({ children, loading, error }) => (
 DashboardDataProvider.propTypes = {
   children: PropTypes.element.isRequired,
   loading: PropTypes.element.isRequired,
-  error: PropTypes.element.isRequired
+  error: PropTypes.element.isRequired,
 }
 
 export default DashboardDataProvider

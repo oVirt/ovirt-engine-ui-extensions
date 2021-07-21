@@ -5,7 +5,7 @@ const chalk = require('chalk')
 
 const translatedFilename = [
   'src/intl/translations.json',
-  '../src/intl/translations.json'
+  '../src/intl/translations.json',
 ].find(filename => fs.existsSync(filename))
 const translatedMessages = JSON.parse(fs.readFileSync(translatedFilename, 'utf8'))
 
@@ -28,7 +28,7 @@ console.log()
 console.log(chalk`looking for keys that share English text in {green ${translatedFilename}}, they need to be expanded`)
 const baseFilename = [
   'extra/messages/src/messages.json',
-  '../extra/messages/src/messages.json'
+  '../extra/messages/src/messages.json',
 ].find(filename => fs.existsSync(filename))
 const baseMessages = JSON.parse(fs.readFileSync(baseFilename, 'utf8'))
 
@@ -66,7 +66,7 @@ console.log()
 console.log(chalk`normalizing translations in {green ${translatedFilename}}`)
 const pretty = stringify(translatedMessages, {
   space: '  ',
-  cmp: (a, b) => { return a.key > b.key ? 1 : -1 }
+  cmp: (a, b) => { return a.key > b.key ? 1 : -1 },
 })
 
 fs.writeFileSync(translatedFilename, pretty, 'utf8')

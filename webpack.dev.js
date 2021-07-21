@@ -19,32 +19,32 @@ async function dev () {
         {
           test: /\.css$/,
           include: cssToExtract = [
-            path.resolve(__dirname, 'node_modules')
+            path.resolve(__dirname, 'node_modules'),
           ],
           use: [
             MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true
-              }
-            }
-          ]
+                sourceMap: true,
+              },
+            },
+          ],
         },
         {
           test: /\.css$/,
           exclude: cssToExtract,
-          use: ['style-loader', 'css-loader']
-        }
-      ]
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
     },
 
     plugins: [
       new MiniCssExtractPlugin({
         filename: 'css/[name].css',
-        chunkFilename: 'css/[name].chunk.css'
-      })
-    ]
+        chunkFilename: 'css/[name].chunk.css',
+      }),
+    ],
   })
 
   if (!process.env.Q) {

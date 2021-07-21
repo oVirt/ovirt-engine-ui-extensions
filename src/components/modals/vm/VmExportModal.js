@@ -18,18 +18,18 @@ const VmExportModal = ({
   vm,
   storageDomains = [],
   onExportVm = () => {},
-  onClose = () => {}
+  onClose = () => {},
 }) => {
-  const [ isOpen, setOpen ] = useState(true)
-  const [ exportVmName, setExportVmName ] = useState(vm.name + '-export')
-  const [ error, setError ] = useState('')
-  const [ shouldCollapseSnapshots, setShouldCollapseSnapshots ] = useState(false)
-  const [ selectedStorageDomain, setSelectedStorageDomain ] = useState(selectFirstId(storageDomains))
+  const [isOpen, setOpen] = useState(true)
+  const [exportVmName, setExportVmName] = useState(vm.name + '-export')
+  const [error, setError] = useState('')
+  const [shouldCollapseSnapshots, setShouldCollapseSnapshots] = useState(false)
+  const [selectedStorageDomain, setSelectedStorageDomain] = useState(selectFirstId(storageDomains))
 
   // auto-select the first storage domain if the storageDomains change
   useEffect(() => {
     setSelectedStorageDomain(selectFirstId(storageDomains))
-  }, [ storageDomains ])
+  }, [storageDomains])
 
   if (!isOpen) {
     return null
@@ -66,7 +66,7 @@ const VmExportModal = ({
       onClick={close}
     >
       {msg.cancelButton()}
-    </Button>
+    </Button>,
   ]
 
   return (
@@ -104,7 +104,7 @@ VmExportModal.propTypes = {
   onExportVm: PropTypes.func,
 
   // modal props
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 }
 
 export default VmExportModal

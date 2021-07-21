@@ -23,29 +23,29 @@ async function prod () {
           include: cssToExtract = [
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'static'),
-            path.resolve(__dirname, 'node_modules')
+            path.resolve(__dirname, 'node_modules'),
           ],
           use: [
             MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
               options: {
-                sourceMap: true
-              }
-            }
-          ]
+                sourceMap: true,
+              },
+            },
+          ],
         },
         {
           test: /\.css$/,
           exclude: cssToExtract,
-          use: ['style-loader', 'css-loader']
-        }
-      ]
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
     },
 
     output: {
       filename: 'js/[name].[chunkhash:8].js',
-      chunkFilename: 'js/[name].[chunkhash:8].chunk.js'
+      chunkFilename: 'js/[name].[chunkhash:8].chunk.js',
     },
 
     optimization: {
@@ -53,25 +53,25 @@ async function prod () {
         new TerserPlugin({ // minify JS with source maps
           cache: true,
           parallel: true,
-          sourceMap: true
+          sourceMap: true,
         }),
         new OptimizeCSSAssetsPlugin({ // minify CSS with source maps
           cssProcessorOptions: {
             map: {
               inline: false,
-              annotation: true
-            }
-          }
-        })
-      ]
+              annotation: true,
+            },
+          },
+        }),
+      ],
     },
 
     plugins: [
       new MiniCssExtractPlugin({
         filename: 'css/[name].[contenthash:8].css',
-        chunkFilename: 'css/[name].[contenthash:8].chunk.css'
-      })
-    ]
+        chunkFilename: 'css/[name].[contenthash:8].chunk.css',
+      }),
+    ],
   })
 
   if (!process.env.Q) {

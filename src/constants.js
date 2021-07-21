@@ -14,7 +14,7 @@ export const supportedLocales = [
   'ja-JP',
   'ko-KR',
   'pt-BR',
-  'zh-CN'
+  'zh-CN',
 ]
 
 // per ECMA-402, undefined means "runtime's default time zone"
@@ -23,7 +23,7 @@ export const defaultTimeZone = undefined
 // per ECMA-402, browsers only need to support undefined and 'UTC' so that's what is expected
 export const supportedTimeZones = [
   undefined,
-  'UTC'
+  'UTC',
 ]
 
 export const dashboardPlaceToken = 'dashboard-main'
@@ -36,7 +36,7 @@ export const searchPrefixes = {
   vm: 'Vms',
   event: 'Events',
   volume: 'Volumes',
-  vdoSavings: 'Storage Savings'
+  vdoSavings: 'Storage Savings',
 }
 
 export const searchFields = {
@@ -44,7 +44,7 @@ export const searchFields = {
   status: 'status',
   severity: 'severity',
   time: 'time',
-  cluster: 'cluster'
+  cluster: 'cluster',
 }
 
 export const webadminPlaces = {
@@ -55,31 +55,31 @@ export const webadminPlaces = {
   vm: 'vms',
   event: 'events',
   volume: 'volumes',
-  vdoSavings: 'vdoSavings'
+  vdoSavings: 'vdoSavings',
 }
 
 export const webadminToastTypes = { // plugin-api: NotificationType
   info: 'info',
   success: 'success',
   warning: 'warning',
-  danger: 'danger'
+  danger: 'danger',
 }
 
 export const entityTypes = {
   cluster: 'Cluster',
   host: 'Host',
   vm: 'VirtualMachine',
-  hostDevices: 'HostDevice'
+  hostDevices: 'HostDevice',
 }
 
 export const heatMapThresholds = {
   domain: [0.65, 0.75, 0.9],
-  colors: ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000']
+  colors: ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000'],
 }
 
 export const heatMapVDOThresholds = {
   domain: [0.30, 0.60, 0.80],
-  colors: ['#005C66', '#007BBA', '#00B9E4', '#6EC664']
+  colors: ['#005C66', '#007BBA', '#00B9E4', '#6EC664'],
 }
 
 export const heatMapLegendLabels = ['< 65%', '65-75%', '75-90%', '> 90%']
@@ -93,7 +93,7 @@ export const storageUnitTable = [
   { unit: 'GiB', factor: 1024 },
   { unit: 'MiB', factor: 1024 },
   { unit: 'KiB', factor: 1024 },
-  { unit: 'B', factor: 1024 }
+  { unit: 'B', factor: 1024 },
 ]
 
 // number of characters before giving more space to bar chart labels

@@ -17,7 +17,7 @@ function engineRequestHeaders (extraHeaders = {}) {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${getPluginApi().ssoToken()}`,
-    ...extraHeaders
+    ...extraHeaders,
   }
 }
 
@@ -84,7 +84,7 @@ export async function engineApiRequest (method, relativePath, body, extraHeaders
     method: method,
     headers: engineRequestHeaders(extraHeaders),
     credentials: 'same-origin',
-    body
+    body,
   })
 
   if (response.ok) {
@@ -112,10 +112,10 @@ export async function ansiblePlaybookPost (playbook, variables = '', executionTi
   const response = await fetch(engineUrl(`services/ansible?playbook=${playbook}${executionTimeoutParameter}`), {
     method: 'POST',
     headers: engineRequestHeaders({
-      'Content-Type': 'text/plain'
+      'Content-Type': 'text/plain',
     }),
     credentials: 'same-origin',
-    body: variables
+    body: variables,
   })
 
   if (response.status !== 200) {

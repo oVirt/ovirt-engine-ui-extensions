@@ -33,19 +33,19 @@ const pluginConfigs = {
    *
    * @readonly
    */
-  clusterUpgradePlaybook
+  clusterUpgradePlaybook,
 
 }
 
 Object.defineProperties(pluginConfigs, {
   'useFakeData': {
     get () { return useFakeData },
-    enumerable: true
+    enumerable: true,
   },
   'clusterUpgradePlaybook': {
     get () { return clusterUpgradePlaybook },
-    enumerable: true
-  }
+    enumerable: true,
+  },
 })
 
 function testDefined (obj, key) {

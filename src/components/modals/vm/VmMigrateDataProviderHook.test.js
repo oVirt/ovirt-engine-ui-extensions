@@ -4,7 +4,7 @@ import { useVmMigrateDataProvider } from './VmMigrateDataProvider'
 
 jest.mock('_/utils/fetch')
 
-const respondToUrl = function ({hosts, hostsWithAffinity}) {
+const respondToUrl = function ({ hosts, hostsWithAffinity }) {
   return (url) => {
     if (url.includes('check_vms_in_affinity_closure=false')) {
       return hosts
@@ -27,21 +27,21 @@ describe('Vm Migrate Data Provider Hook', () => {
   })
 
   it('should load only vms', async () => {
-    engineGet.mockImplementation(() => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]}))
+    engineGet.mockImplementation(() => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] }))
     const [affinity, vmIds] = [false, ['A_id']]
     const { result, waitForNextUpdate } = renderHook(() => useVmMigrateDataProvider(affinity, vmIds))
     await waitForNextUpdate()
-    expect(result.current.vms).toEqual([{name: 'A_name', id: 'A_id'}])
+    expect(result.current.vms).toEqual([{ name: 'A_name', id: 'A_id' }])
     expect(result.current.suggestAffinity).toBe(false)
   })
 
   it('should load vms and hosts', async () => {
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       const respond = respondToUrl({
-        hosts: Promise.resolve({host: [{name: 'B_name', id: 'B_id'}]}),
-        hostsWithAffinity: Promise.resolve({host: [{name: 'C_name', id: 'C_id'}]})
+        hosts: Promise.resolve({ host: [{ name: 'B_name', id: 'B_id' }] }),
+        hostsWithAffinity: Promise.resolve({ host: [{ name: 'C_name', id: 'C_id' }] }),
       })
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield respond
       yield respond
     })()
@@ -52,18 +52,18 @@ describe('Vm Migrate Data Provider Hook', () => {
 
     await waitForNextUpdate()
 
-    expect(result.current.vms).toEqual([{name: 'A_name', id: 'A_id'}])
-    expect(result.current.targetHostItems).toEqual([{text: 'B_name', value: 'B_id'}])
+    expect(result.current.vms).toEqual([{ name: 'A_name', id: 'A_id' }])
+    expect(result.current.targetHostItems).toEqual([{ text: 'B_name', value: 'B_id' }])
     expect(result.current.suggestAffinity).toBe(false)
   })
 
   it('should load when no hosts are available', async () => {
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       const respond = respondToUrl({
         hosts: Promise.resolve({}),
-        hostsWithAffinity: Promise.resolve({})
+        hostsWithAffinity: Promise.resolve({}),
       })
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield respond
       yield respond
     })()
@@ -74,18 +74,18 @@ describe('Vm Migrate Data Provider Hook', () => {
 
     await waitForNextUpdate()
 
-    expect(result.current.vms).toEqual([{name: 'A_name', id: 'A_id'}])
+    expect(result.current.vms).toEqual([{ name: 'A_name', id: 'A_id' }])
     expect(result.current.targetHostItems).toEqual([])
     expect(result.current.suggestAffinity).toBe(false)
   })
 
   it('should load vms and hosts with affinity', async () => {
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       const respond = respondToUrl({
-        hosts: Promise.resolve({host: [{name: 'B_name', id: 'B_id'}]}),
-        hostsWithAffinity: Promise.resolve({host: [{name: 'C_name', id: 'C_id'}]})
+        hosts: Promise.resolve({ host: [{ name: 'B_name', id: 'B_id' }] }),
+        hostsWithAffinity: Promise.resolve({ host: [{ name: 'C_name', id: 'C_id' }] }),
       })
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield respond
       yield respond
     })()
@@ -96,8 +96,8 @@ describe('Vm Migrate Data Provider Hook', () => {
 
     await waitForNextUpdate()
 
-    expect(result.current.vms).toEqual([{name: 'A_name', id: 'A_id'}])
-    expect(result.current.targetHostItems).toEqual([{text: 'C_name', value: 'C_id'}])
+    expect(result.current.vms).toEqual([{ name: 'A_name', id: 'A_id' }])
+    expect(result.current.targetHostItems).toEqual([{ text: 'C_name', value: 'C_id' }])
     expect(result.current.suggestAffinity).toBe(false)
   })
 
@@ -111,7 +111,7 @@ describe('Vm Migrate Data Provider Hook', () => {
   })
 
   it('fails to load virtual machines due to incorrect response', async () => {
-    engineGet.mockImplementation(() => Promise.resolve({data: 'some incorrect data'}))
+    engineGet.mockImplementation(() => Promise.resolve({ data: 'some incorrect data' }))
     const [affinity, vmIds] = [false, ['A_id']]
     const { result, waitForNextUpdate } = renderHook(() => useVmMigrateDataProvider(affinity, vmIds))
     await waitForNextUpdate()
@@ -119,10 +119,10 @@ describe('Vm Migrate Data Provider Hook', () => {
   })
 
   it('fails to load hosts due to incorrect response', async () => {
-    const resultGenerator = (function * () {
-      yield Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
-      yield Promise.resolve({host: 'some incorrect data'})
-      yield Promise.resolve({host: 'some incorrect data'})
+    const resultGenerator = (function* () {
+      yield Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
+      yield Promise.resolve({ host: 'some incorrect data' })
+      yield Promise.resolve({ host: 'some incorrect data' })
     })()
 
     engineGet.mockImplementation(() => resultGenerator.next().value)
@@ -134,12 +134,12 @@ describe('Vm Migrate Data Provider Hook', () => {
   })
 
   it('should switch to hosts with affinity without re-fetch', async () => {
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       const respond = respondToUrl({
-        hosts: Promise.resolve({host: [{name: 'B_name', id: 'B_id'}]}),
-        hostsWithAffinity: Promise.resolve({host: [{name: 'C_name', id: 'C_id'}]})
+        hosts: Promise.resolve({ host: [{ name: 'B_name', id: 'B_id' }] }),
+        hostsWithAffinity: Promise.resolve({ host: [{ name: 'C_name', id: 'C_id' }] }),
       })
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield respond
       yield respond
     })()
@@ -151,20 +151,20 @@ describe('Vm Migrate Data Provider Hook', () => {
 
     await waitForNextUpdate()
 
-    expect(result.current.vms).toEqual([{name: 'A_name', id: 'A_id'}])
-    expect(result.current.targetHostItems).toEqual([{text: 'B_name', value: 'B_id'}])
+    expect(result.current.vms).toEqual([{ name: 'A_name', id: 'A_id' }])
+    expect(result.current.targetHostItems).toEqual([{ text: 'B_name', value: 'B_id' }])
 
     affinity = true
     await rerender()
 
-    expect(result.current.targetHostItems).toEqual([{text: 'C_name', value: 'C_id'}])
+    expect(result.current.targetHostItems).toEqual([{ text: 'C_name', value: 'C_id' }])
   })
 
   it('should re-fetch hosts with affinity after first failure', async () => {
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       const respondFirst = respondToUrl({
-        hosts: Promise.resolve({host: [{name: 'B_name', id: 'B_id'}]}),
-        hostsWithAffinity: undefined
+        hosts: Promise.resolve({ host: [{ name: 'B_name', id: 'B_id' }] }),
+        hostsWithAffinity: undefined,
       })
       const passOrThrow = (promise) => {
         if (promise) {
@@ -172,10 +172,10 @@ describe('Vm Migrate Data Provider Hook', () => {
         }
         throw new Error('1st call failed')
       }
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield (url) => passOrThrow(respondFirst(url))
       yield (url) => passOrThrow(respondFirst(url))
-      yield () => Promise.resolve({host: [{name: 'C_name', id: 'C_id'}]})
+      yield () => Promise.resolve({ host: [{ name: 'C_name', id: 'C_id' }] })
     })()
 
     engineGet.mockImplementation((url) => resultGenerator.next().value(url))
@@ -185,8 +185,8 @@ describe('Vm Migrate Data Provider Hook', () => {
 
     await waitForNextUpdate()
 
-    expect(result.current.vms).toEqual([{name: 'A_name', id: 'A_id'}])
-    expect(result.current.targetHostItems).toEqual([{text: 'B_name', value: 'B_id'}])
+    expect(result.current.vms).toEqual([{ name: 'A_name', id: 'A_id' }])
+    expect(result.current.targetHostItems).toEqual([{ text: 'B_name', value: 'B_id' }])
     expect(result.current.suggestAffinity).toBe(false)
 
     affinity = true
@@ -194,17 +194,17 @@ describe('Vm Migrate Data Provider Hook', () => {
       await rerender()
     })
 
-    expect(result.current.targetHostItems).toEqual([{text: 'C_name', value: 'C_id'}])
+    expect(result.current.targetHostItems).toEqual([{ text: 'C_name', value: 'C_id' }])
     expect(result.current.suggestAffinity).toBe(false)
   })
 
   it('should suggest enabling affinity when no hosts available and there are hosts with affinity', async () => {
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       const respond = respondToUrl({
         hosts: Promise.resolve({}),
-        hostsWithAffinity: Promise.resolve({host: [{name: 'C_name', id: 'C_id'}]})
+        hostsWithAffinity: Promise.resolve({ host: [{ name: 'C_name', id: 'C_id' }] }),
       })
-      yield () => Promise.resolve({vm: [{name: 'A_name', id: 'A_id'}]})
+      yield () => Promise.resolve({ vm: [{ name: 'A_name', id: 'A_id' }] })
       yield respond
       yield respond
     })()

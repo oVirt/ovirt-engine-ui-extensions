@@ -13,7 +13,7 @@ const HostCopyNetworksModal = ({
   targetHostItems = [],
   onCopyNetworksToHost = () => {},
   onRefreshHosts = () => {},
-  onClose = () => {}
+  onClose = () => {},
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [hostId, setHostId] = useState(CHOOSE_MSG.value)
@@ -54,7 +54,7 @@ const HostCopyNetworksModal = ({
       onClick={close}
     >
       {msg.cancelButton()}
-    </Button>
+    </Button>,
   ]
 
   return (
@@ -88,7 +88,7 @@ HostCopyNetworksModal.propTypes = {
   onRefreshHosts: PropTypes.func,
 
   // modal props
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 }
 
 export default HostCopyNetworksModal

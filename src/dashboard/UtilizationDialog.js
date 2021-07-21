@@ -18,7 +18,7 @@ const UtilizationDialog = ({
   storage,
   vms,
   unit,
-  thresholds
+  thresholds,
 }) => (
   <PluginApiModal
     isOpen={show}
@@ -32,11 +32,11 @@ const UtilizationDialog = ({
       </Title>
     )}
   >
-    {hosts &&
+    {hosts && (
       <ObjectUtilizationList
         title={
           msg.dashboardUtilizationCardDialogHostListTitle({
-            hostCount: hosts.length
+            hostCount: hosts.length,
           })
         }
         data={hosts}
@@ -47,17 +47,17 @@ const UtilizationDialog = ({
         onObjectNameClick={dataItem => {
           applySearch(webadminPlaces.host, searchPrefixes.host, [{
             name: searchFields.name,
-            values: [dataItem.name]
+            values: [dataItem.name],
           }])
         }}
       />
-    }
+    )}
 
-    {storage &&
+    {storage && (
       <ObjectUtilizationList
         title={
           msg.dashboardUtilizationCardDialogStorageListTitle({
-            storageCount: storage.length
+            storageCount: storage.length,
           })
         }
         data={storage}
@@ -68,17 +68,17 @@ const UtilizationDialog = ({
         onObjectNameClick={dataItem => {
           applySearch(webadminPlaces.storage, searchPrefixes.storage, [{
             name: searchFields.name,
-            values: [dataItem.name]
+            values: [dataItem.name],
           }])
         }}
       />
-    }
+    )}
 
-    {vms &&
+    {vms && (
       <ObjectUtilizationList
         title={
           msg.dashboardUtilizationCardDialogVmListTitle({
-            vmCount: vms.length
+            vmCount: vms.length,
           })
         }
         data={vms}
@@ -89,11 +89,11 @@ const UtilizationDialog = ({
         onObjectNameClick={dataItem => {
           applySearch(webadminPlaces.vm, searchPrefixes.vm, [{
             name: searchFields.name,
-            values: [dataItem.name]
+            values: [dataItem.name],
           }])
         }}
       />
-    }
+    )}
   </PluginApiModal>
 )
 
@@ -106,7 +106,7 @@ UtilizationDialog.propTypes = {
   storage: PropTypes.arrayOf(objectUtilizationShape),
   vms: PropTypes.arrayOf(objectUtilizationShape),
   unit: PropTypes.string.isRequired,
-  thresholds: ObjectUtilizationList.propTypes.thresholds.isRequired
+  thresholds: ObjectUtilizationList.propTypes.thresholds.isRequired,
 }
 
 export default UtilizationDialog

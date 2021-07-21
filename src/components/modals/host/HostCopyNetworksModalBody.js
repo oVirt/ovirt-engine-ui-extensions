@@ -6,7 +6,7 @@ import {
   Form,
   FormGroup,
   FormSelect,
-  FormSelectOption
+  FormSelectOption,
 } from '@patternfly/react-core'
 
 import { msg } from '_/intl-messages'
@@ -17,32 +17,32 @@ import { noHostVal } from '_/constants'
 
 const NO_HOST_AVAILABLE_HOST_ITEMS = [{
   text: msg.hostCopyNetworksNoAvailableHost(),
-  value: noHostVal
+  value: noHostVal,
 }]
 
 export const CHOOSE_MSG = {
   text: msg.hostCopyNetworksSelectHost(),
-  value: '_None_'
+  value: '_None_',
 }
 
 export const selectItemShape = {
   value: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
 }
 
 const HostCopyNetworksModalBody = ({
   selectedHostId,
   targetHostItems = [],
   hostNames = [],
-  onHostSelectionChange = () => {}
+  onHostSelectionChange = () => {},
 }) => {
   const copyDisabled = targetHostItems.length === 0
   const items = copyDisabled
     ? NO_HOST_AVAILABLE_HOST_ITEMS
-    : [ CHOOSE_MSG, ...targetHostItems ]
+    : [CHOOSE_MSG, ...targetHostItems]
 
   return (
-    <React.Fragment>
+    <>
       <TextContent>
         <Text>{msg.hostCopyNetworksInfoLabel() }</Text>
       </TextContent>
@@ -50,12 +50,12 @@ const HostCopyNetworksModalBody = ({
       <Form isHorizontal>
         <FormGroup
           fieldId='host-copy-networks-select-target-host'
-          label={
+          label={(
             <div>
               {msg.hostCopyNetworksSelectHostLabel()}
               <FieldLevelHelp content={msg.hostCopyNetworksSelectHostFieldHelp()} />
             </div>
-          }
+          )}
         >
           <FormSelect
             id='host-copy-networks-select-target-host'
@@ -69,7 +69,7 @@ const HostCopyNetworksModalBody = ({
           </FormSelect>
         </FormGroup>
       </Form>
-    </React.Fragment>
+    </>
   )
 }
 
@@ -77,7 +77,7 @@ HostCopyNetworksModalBody.propTypes = {
   selectedHostId: PropTypes.string,
   targetHostItems: PropTypes.arrayOf(PropTypes.shape(selectItemShape)),
   hostNames: PropTypes.arrayOf(PropTypes.string),
-  onHostSelectionChange: PropTypes.func
+  onHostSelectionChange: PropTypes.func,
 }
 
 export default HostCopyNetworksModalBody

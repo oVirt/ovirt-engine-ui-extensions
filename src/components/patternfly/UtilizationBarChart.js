@@ -13,7 +13,7 @@ const UtilizationBarChart = ({
   unit,
   thresholds = { enabled: true, warning: 60, error: 90 },
   footerLabel = 'actual',
-  footerLabelWidth
+  footerLabelWidth,
 }) => {
   const percentUsed = Math.round(used / total * 100)
 
@@ -24,12 +24,12 @@ const UtilizationBarChart = ({
     ? classNames({
       'bar-chart-success': (percentUsed < thresholds.warning),
       'bar-chart-warning': (percentUsed >= thresholds.warning && percentUsed <= thresholds.error),
-      'bar-chart-danger': (percentUsed > thresholds.error)
+      'bar-chart-danger': (percentUsed > thresholds.error),
     })
     : ''
 
   return (
-    <React.Fragment>
+    <>
       <div className='bar-chart'>
         <Progress
           size={ProgressSize.lg}
@@ -39,22 +39,22 @@ const UtilizationBarChart = ({
           height={30}
         />
       </div>
-      { footerLabel === 'actual' &&
+      { footerLabel === 'actual' && (
         <div className='bar-chart-label' style={{ maxWidth: footerLabelWidth }}>
           <strong>{formatNumber1D(used)} {unit}</strong> {msg.used()}
         </div>
-      }
-      { footerLabel === 'percent' &&
+      )}
+      { footerLabel === 'percent' && (
         <div className='bar-chart-label' style={{ maxWidth: footerLabelWidth }}>
           <strong>{formatNumber0D(percentUsed)}%</strong> {msg.used()}
         </div>
-      }
-      { typeof footerLabel === 'function' &&
+      )}
+      { typeof footerLabel === 'function' && (
         <div className='bar-chart-label' style={{ maxWidth: footerLabelWidth }}>
           {footerLabel(used, total, unit)}
         </div>
-      }
-    </React.Fragment>
+      )}
+    </>
   )
 }
 
@@ -65,13 +65,13 @@ UtilizationBarChart.propTypes = {
   thresholds: PropTypes.shape({
     enabled: PropTypes.bool,
     warning: PropTypes.number,
-    error: PropTypes.number
+    error: PropTypes.number,
   }),
   footerLabel: PropTypes.oneOfType([
     PropTypes.oneOf(['actual', 'percent']),
-    PropTypes.func // (used:number, total:number, unit:string) => void
+    PropTypes.func, // (used:number, total:number, unit:string) => void
   ]),
-  footerLabelWidth: PropTypes.string // used with 'inline' layout
+  footerLabelWidth: PropTypes.string, // used with 'inline' layout
 }
 
 export default UtilizationBarChart

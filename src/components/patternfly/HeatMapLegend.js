@@ -27,12 +27,12 @@ const HeatMapLegend = ({ colors, labels }) => {
 
 HeatMapLegend.propTypes = {
   colors: PropTypes.arrayOf(PropTypes.string),
-  labels: PropTypes.arrayOf(PropTypes.string)
+  labels: PropTypes.arrayOf(PropTypes.string),
 }
 
 HeatMapLegend.defaultProps = {
   colors: HeatMap.defaultProps.thresholds.colors,
-  labels: ['< 70%', '70-80%', '80-90%', '> 90%']
+  labels: ['< 70%', '70-80%', '80-90%', '> 90%'],
 }
 
 export default HeatMapLegend

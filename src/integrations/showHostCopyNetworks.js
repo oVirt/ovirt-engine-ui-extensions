@@ -8,7 +8,7 @@ export function showHostCopyNetworksModal (sourceHost) {
   renderComponent(
     ({ unmountComponent }) => (
       <HostCopyNetworksDataProvider sourceHostId={sourceHost.id}>
-        {({ isLoading, hostNames, targetHostItems, onRefreshHosts, onCopyNetworksToHost }) =>
+        {({ isLoading, hostNames, targetHostItems, onRefreshHosts, onCopyNetworksToHost }) => (
           <HostCopyNetworksModal
             isLoading={isLoading}
             hostNames={hostNames}
@@ -17,7 +17,7 @@ export function showHostCopyNetworksModal (sourceHost) {
             onCopyNetworksToHost={onCopyNetworksToHost}
             onRefreshHosts={onRefreshHosts}
           />
-        }
+        )}
       </HostCopyNetworksDataProvider>
     ),
     'host-copy-networks-modal'

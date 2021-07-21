@@ -55,15 +55,15 @@ const customIntlMessageFormatStyles = {
       style: 'decimal',
       minimumIntegerDigits: 1,
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     },
     '0.0': {
       style: 'decimal',
       minimumIntegerDigits: 1,
       minimumFractionDigits: 1,
-      maximumFractionDigits: 1
-    }
-  }
+      maximumFractionDigits: 1,
+    },
+  },
 }
 
 export function formatMessage (id, defaultMessage, values = {}) {
@@ -81,12 +81,12 @@ export function formatMessage (id, defaultMessage, values = {}) {
 }
 
 export function formatPercent (num, digits = 0) {
-  const fmt = new Intl.NumberFormat([ locale, defaultLocale ], {
+  const fmt = new Intl.NumberFormat([locale, defaultLocale], {
     style: 'percent',
     minimumIntegerDigits: 1,
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
-    useGrouping: false
+    useGrouping: false,
   })
   return fmt.format(num)
 }
@@ -100,12 +100,12 @@ export function formatPercent1D (num) {
 }
 
 export function formatNumber (num, digits = 0) {
-  const fmt = new Intl.NumberFormat([ locale, defaultLocale ], {
+  const fmt = new Intl.NumberFormat([locale, defaultLocale], {
     style: 'decimal',
     minimumIntegerDigits: 1,
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
-    useGrouping: false
+    useGrouping: false,
   })
   return fmt.format(num)
 }
@@ -125,11 +125,11 @@ export function formatNumber1D (num) {
  * @returns {string} locale specific formatted month, day and year
  */
 export function formatDate (date) {
-  const fmt = new Intl.DateTimeFormat([ locale, defaultLocale ], {
+  const fmt = new Intl.DateTimeFormat([locale, defaultLocale], {
     month: 'numeric',
     day: 'numeric',
     year: 'numeric',
-    timeZone: timeZone
+    timeZone: timeZone,
   })
   return fmt.format(date)
 }
@@ -143,7 +143,7 @@ export function formatDate (date) {
  * and time zone name
  */
 export function formatDateTime (date) {
-  const fmt = new Intl.DateTimeFormat([ locale, defaultLocale ], {
+  const fmt = new Intl.DateTimeFormat([locale, defaultLocale], {
     month: 'numeric',
     day: 'numeric',
     year: 'numeric',
@@ -151,7 +151,7 @@ export function formatDateTime (date) {
     minute: 'numeric',
     second: 'numeric',
     timeZoneName: 'short',
-    timeZone: timeZone
+    timeZone: timeZone,
   })
   return fmt.format(date)
 }

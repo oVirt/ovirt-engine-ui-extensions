@@ -1,4 +1,5 @@
-import { Bullseye,
+import {
+  Bullseye,
   Chip,
   ChipGroup,
   EmptyState,
@@ -9,7 +10,7 @@ import { Bullseye,
   StackItem,
   Switch,
   TextInput,
-  Title
+  Title,
 } from '@patternfly/react-core'
 import { SearchIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
@@ -19,7 +20,7 @@ import GpuTable from './GpuTable'
 import './vgpu.css'
 
 const ManageGpuModalBody = ({
-  gpus, displayOn, selectedMDevTypes, onDisplayOnChange, onGpuSelectionChange
+  gpus, displayOn, selectedMDevTypes, onDisplayOnChange, onGpuSelectionChange,
 }) => {
   const [searchText, setSearchText] = React.useState('')
 
@@ -43,7 +44,7 @@ const ManageGpuModalBody = ({
 
   const selectedMDevTypeInstances = []
   if (selectedMDevType) {
-    for (var i = 0; i < selectedMDevTypes[selectedMDevType]; i++) {
+    for (let i = 0; i < selectedMDevTypes[selectedMDevType]; i++) {
       selectedMDevTypeInstances.push(`${selectedMDevType}_${i}`)
     }
   }
@@ -76,12 +77,12 @@ const ManageGpuModalBody = ({
         <span className='vgpu-modal-body-label'>
           {msg.vmManageGpuBodySubTitleSelectionsCards()}
         </span>
-        { !selectedMDevType &&
+        { !selectedMDevType && (
           <span className='vgpu-modal-body-label'>
             {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
           </span>
-        }
-        { selectedMDevType &&
+        )}
+        { selectedMDevType && (
           <ChipGroup>
             {selectedMDevTypeInstances.map(selectedMDevTypeInstance => (
               <Chip key={selectedMDevTypeInstance} onClick={() => onGpuSelectionChange(selectedMDevType, selectedMDevTypes[selectedMDevType] - 1)}>
@@ -89,7 +90,7 @@ const ManageGpuModalBody = ({
               </Chip>
             ))}
           </ChipGroup>
-        }
+        )}
       </StackItem>
       <StackItem>
         <TextInput
@@ -128,12 +129,12 @@ ManageGpuModalBody.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
-      address: PropTypes.string
+      address: PropTypes.string,
     })),
   displayOn: PropTypes.bool,
   selectedMDevTypes: PropTypes.any,
   onDisplayOnChange: PropTypes.func,
-  onGpuSelectionChange: PropTypes.func
+  onGpuSelectionChange: PropTypes.func,
 }
 
 export default ManageGpuModalBody

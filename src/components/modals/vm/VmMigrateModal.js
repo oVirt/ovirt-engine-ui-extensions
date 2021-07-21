@@ -18,7 +18,7 @@ const VmMigrateModal = ({
   suggestAffinity = false,
   onMigrateToHost = () => {},
   onRefreshHosts = () => {},
-  onClose = () => {}
+  onClose = () => {},
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [hostId, setHostId] = useState(autoSelectItemVal)
@@ -65,7 +65,7 @@ const VmMigrateModal = ({
       onClick={close}
     >
       {msg.cancelButton()}
-    </Button>
+    </Button>,
   ]
 
   return (
@@ -104,7 +104,7 @@ VmMigrateModal.propTypes = {
   onRefreshHosts: PropTypes.func,
 
   // modal props
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 }
 
 export default withTargetHosts(VmMigrateModal)

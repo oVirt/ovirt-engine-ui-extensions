@@ -48,20 +48,22 @@ const MessageDialog = ({
       </div>
     </Modal.Body>
     <Modal.Footer>
-      {!footer ? (
-        <React.Fragment>
-          {secondaryActionButtonContent && (
-            <Button bsStyle={secondaryActionButtonBsStyle} onClick={secondaryAction}>
-              {secondaryActionButtonContent}
+      {!footer
+        ? (
+          <>
+            {secondaryActionButtonContent && (
+              <Button bsStyle={secondaryActionButtonBsStyle} onClick={secondaryAction}>
+                {secondaryActionButtonContent}
+              </Button>
+            )}
+            <Button autoFocus bsStyle={primaryActionButtonBsStyle} onClick={primaryAction}>
+              {primaryActionButtonContent}
             </Button>
-          )}
-          <Button autoFocus bsStyle={primaryActionButtonBsStyle} onClick={primaryAction}>
-            {primaryActionButtonContent}
-          </Button>
-        </React.Fragment>
-      ) : (
-        footer
-      )}
+          </>
+        )
+        : (
+          footer
+        )}
     </Modal.Footer>
   </Modal>
 )
@@ -120,7 +122,7 @@ MessageDialog.propTypes = {
   /** Gives the modal an accessible name by referring to the element that provides the dialog title. Must be unique, as this sets an id */
   accessibleName: PropTypes.string,
   /** Gives the modal an accessible description by referring to the modal content that describes the primary message or purpose of the dialog. Not used if there is no static text that describes the modal. Must be unique, as this sets an id */
-  accessibleDescription: PropTypes.string
+  accessibleDescription: PropTypes.string,
 }
 
 MessageDialog.defaultProps = {
@@ -138,7 +140,7 @@ MessageDialog.defaultProps = {
   footer: null,
   enforceFocus: true,
   accessibleName: '',
-  accessibleDescription: ''
+  accessibleDescription: '',
 }
 
 export default MessageDialog

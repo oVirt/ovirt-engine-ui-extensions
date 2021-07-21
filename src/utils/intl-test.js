@@ -13,7 +13,7 @@ function checkLocale (locale, localeJanuaryName) {
 const isAvailable = {
   'it-IT': checkLocale('it-IT', 'gennaio'),
   'de-DE': checkLocale('de-DE', 'Januar'),
-  'fr-FR': checkLocale('fr-FR', 'janvier')
+  'fr-FR': checkLocale('fr-FR', 'janvier'),
 }
 console.info(`Based on locale data detection, specific locales to be tested: [${Object.keys(isAvailable).filter(key => isAvailable[key]).join(', ')}]`)
 
@@ -138,7 +138,7 @@ function extractTimeZoneName (locale, timeZone) {
     hour12: false,
     minute: '2-digit',
     timeZoneName: 'short',
-    timeZone: timeZone
+    timeZone: timeZone,
   })
   let tzName = dtf.format()
   tzName = tzName.substr(tzName.indexOf(' ')).trim()
@@ -245,11 +245,11 @@ describe('MessageFormat custom number styles', function () {
 
   const localeTests = [
     { locale: 'de-DE', groupSeparator: '.', decimalSeparator: ',' },
-    { locale: 'fr-FR', groupSeparator: '\u202F' /* narrow no-break space */, decimalSeparator: ',' }
+    { locale: 'fr-FR', groupSeparator: '\u202F' /* narrow no-break space */, decimalSeparator: ',' },
   ]
 
   localeTests.forEach(test => {
-    let { locale: l, groupSeparator: g, decimalSeparator: d } = test
+    const { locale: l, groupSeparator: g, decimalSeparator: d } = test
     if (!isAvailable[l]) {
       return
     }

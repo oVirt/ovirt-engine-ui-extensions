@@ -24,7 +24,7 @@ async function common () {
   const rpmInfo = process.env.RPM_PACKAGE_NAME && {
     packageName: process.env.RPM_PACKAGE_NAME,
     packageVersion: process.env.RPM_PACKAGE_VERSION,
-    packageRelease: process.env.RPM_PACKAGE_RELEASE
+    packageRelease: process.env.RPM_PACKAGE_RELEASE,
   }
 
   const banner =
@@ -45,8 +45,8 @@ async function common () {
           test: /\.(js|jsx)$/,
           include: path.resolve(__dirname, 'src'),
           use: {
-            loader: 'babel-loader' // options from __.babelrc.js__
-          }
+            loader: 'babel-loader', // options from __.babelrc.js__
+          },
         },
 
         // inline base64 URLs for <= 8k images, direct URLs for the rest
@@ -56,9 +56,9 @@ async function common () {
             loader: 'url-loader',
             options: {
               limit: 8192,
-              name: 'media/[name].[hash:8].[ext]'
-            }
-          }
+              name: 'media/[name].[hash:8].[ext]',
+            },
+          },
         },
 
         // embed the woff2 fonts and any fonts that are used by the PF icons
@@ -67,12 +67,12 @@ async function common () {
         {
           test: fontsToEmbed = [
             /\.woff2(\?v=[0-9].[0-9].[0-9])?$/,
-            /PatternFlyIcons-webfont\.ttf/
+            /PatternFlyIcons-webfont\.ttf/,
           ],
           use: {
             loader: 'url-loader',
-            options: {}
-          }
+            options: {},
+          },
         },
         {
           test: /\.(ttf|eot|svg|woff(?!2))(\?v=[0-9].[0-9].[0-9])?$/,
@@ -80,24 +80,24 @@ async function common () {
           use: {
             loader: 'file-loader',
             options: {
-              name: 'fonts/[name].[hash:8].[ext]'
-            }
-          }
-        }
-      ]
+              name: 'fonts/[name].[hash:8].[ext]',
+            },
+          },
+        },
+      ],
     },
 
     entry: {
       'plugin': [...commonModules, './src/plugin.js'],
-      'dashboard': [...commonModules, './src/dashboard.js']
+      'dashboard': [...commonModules, './src/dashboard.js'],
     },
 
     resolve: {
       alias: {
         'react': path.join(__dirname, 'node_modules', 'react'), // TODO: Still needed?
-        '_': path.join(__dirname, 'src')
+        '_': path.join(__dirname, 'src'),
       },
-      extensions: ['.js', '.jsx', '*']
+      extensions: ['.js', '.jsx', '*'],
     },
 
     output: {
@@ -105,7 +105,7 @@ async function common () {
       path: path.resolve(__dirname, 'dist/ui-extensions-resources'),
 
       // UI plugin resources are served through Engine
-      publicPath: '/ovirt-engine/webadmin/plugin/ui-extensions/'
+      publicPath: '/ovirt-engine/webadmin/plugin/ui-extensions/',
     },
 
     optimization: {
@@ -114,34 +114,34 @@ async function common () {
           vendor: {
             name: 'vendor',
             chunks: 'initial',
-            test: /[\\/]node_modules[\\/]/
-          }
-        }
+            test: /[\\/]node_modules[\\/]/,
+          },
+        },
       },
-      runtimeChunk: { name: 'webpack-manifest' }
+      runtimeChunk: { name: 'webpack-manifest' },
     },
 
     plugins: [
       new webpack.ProvidePlugin({
-        jQuery: 'jquery' // Bootstrap's JavaScript implicitly requires jQuery global
+        jQuery: 'jquery', // Bootstrap's JavaScript implicitly requires jQuery global
       }),
 
       new webpack.DefinePlugin({
         'process.env': {
-          NODE_ENV: JSON.stringify(env)
+          NODE_ENV: JSON.stringify(env),
         },
-        '__DEV__': JSON.stringify(env === 'development')
+        '__DEV__': JSON.stringify(env === 'development'),
       }),
 
       new CleanWebpackPlugin({
-        verbose: false
+        verbose: false,
       }),
       new CopyWebpackPlugin([
         {
           from: 'static/ui-extensions.json',
           to: '../',
-          transform: (content) => content.toString().replace('"__FAKE_DATA__"', useFakeData)
-        }
+          transform: (content) => content.toString().replace('"__FAKE_DATA__"', useFakeData),
+        },
       ]),
 
       new HtmlWebpackPlugin({
@@ -149,14 +149,14 @@ async function common () {
         template: 'static/html/plugin.template.ejs',
         extraParams: { gitInfo, rpmInfo },
         inject: true,
-        chunks: ['webpack-manifest', 'vendor', 'plugin']
+        chunks: ['webpack-manifest', 'vendor', 'plugin'],
       }),
       new HtmlWebpackPlugin({
         filename: 'dashboard.html',
         template: 'static/html/dashboard.template.ejs',
         extraParams: { gitInfo, rpmInfo },
         inject: true,
-        chunks: ['webpack-manifest', 'vendor', 'dashboard']
+        chunks: ['webpack-manifest', 'vendor', 'dashboard'],
       }),
       new InlineManifestWebpackPlugin('webpack-manifest'),
 
@@ -168,8 +168,8 @@ async function common () {
       new webpack.HashedModuleIdsPlugin(),
 
       // emit banner comment at the top of each generated chunk
-      new webpack.BannerPlugin({ banner })
-    ]
+      new webpack.BannerPlugin({ banner }),
+    ],
   }
 
   return commonConfig

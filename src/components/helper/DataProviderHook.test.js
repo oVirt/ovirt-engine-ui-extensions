@@ -11,7 +11,7 @@ const createCondition = (returnValue) => {
     return returnValue
   }
   const unblock = () => { blocked = false }
-  return {blockFetchUntilCondition, unblock}
+  return { blockFetchUntilCondition, unblock }
 }
 
 describe('Data Provider Hook', () => {
@@ -19,7 +19,7 @@ describe('Data Provider Hook', () => {
   beforeEach(cleanup)
   it('should report empty state when not triggered', async () => {
     const fetchData = () => Promise.reject(new Error('some server error'))
-    const { result } = renderHook(() => useDataProvider({fetchData, enabled: false}))
+    const { result } = renderHook(() => useDataProvider({ fetchData, enabled: false }))
 
     expect(result.current.fetchError).toBe(false)
     expect(result.current.fetchInProgress).toBe(false)
@@ -28,7 +28,7 @@ describe('Data Provider Hook', () => {
 
   it('should return the same object on re-render', async () => {
     const fetchData = () => Promise.reject(new Error('some server error'))
-    const { result, rerender } = renderHook(() => useDataProvider({fetchData, enabled: false}))
+    const { result, rerender } = renderHook(() => useDataProvider({ fetchData, enabled: false }))
 
     const firstResult = result.current
 
@@ -40,9 +40,9 @@ describe('Data Provider Hook', () => {
   })
 
   it('should report error when fetch failed on re-render', async () => {
-    const {blockFetchUntilCondition, unblock} = createCondition('some data')
+    const { blockFetchUntilCondition, unblock } = createCondition('some data')
     const fetchData = () => blockFetchUntilCondition().then(() => { throw new Error('some server error') })
-    const { result, waitForNextUpdate } = renderHook(() => useDataProvider({fetchData}))
+    const { result, waitForNextUpdate } = renderHook(() => useDataProvider({ fetchData }))
 
     unblock()
     await waitForNextUpdate()
@@ -53,9 +53,9 @@ describe('Data Provider Hook', () => {
   })
 
   it('should retireve data via useEffect when immediate flag is set', async () => {
-    const {blockFetchUntilCondition, unblock} = createCondition('some data')
+    const { blockFetchUntilCondition, unblock } = createCondition('some data')
     const fetchData = () => blockFetchUntilCondition()
-    const { result, waitForNextUpdate } = renderHook(() => useDataProvider({fetchData}))
+    const { result, waitForNextUpdate } = renderHook(() => useDataProvider({ fetchData }))
 
     unblock()
     await waitForNextUpdate()
@@ -66,13 +66,13 @@ describe('Data Provider Hook', () => {
   })
 
   it('should cache data once fetched and skip subsequent fetches on re-render', async () => {
-    const {blockFetchUntilCondition, unblock} = createCondition('1st response')
-    const resultGenerator = (function * () {
+    const { blockFetchUntilCondition, unblock } = createCondition('1st response')
+    const resultGenerator = (function* () {
       yield blockFetchUntilCondition()
       yield Promise.resolve('2nd response')
     }())
     const fetchData = () => resultGenerator.next().value
-    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({fetchData}))
+    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({ fetchData }))
 
     unblock()
     await waitForValueToChange(() => result.current.data)
@@ -91,15 +91,15 @@ describe('Data Provider Hook', () => {
   })
 
   it('should not re-fetch (after first fetch failed) on re-rerender', async () => {
-    const {blockFetchUntilCondition, unblock} = createCondition('1st response')
-    const resultGenerator = (function * () {
+    const { blockFetchUntilCondition, unblock } = createCondition('1st response')
+    const resultGenerator = (function* () {
       yield blockFetchUntilCondition().then(() => {
         throw new Error('1st call failed')
       })
       yield Promise.resolve('2nd response')
     }())
     const fetchData = () => resultGenerator.next().value
-    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({fetchData}))
+    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({ fetchData }))
 
     unblock()
     await waitForValueToChange(() => result.current.fetchError)
@@ -119,15 +119,15 @@ describe('Data Provider Hook', () => {
 
   it('should retrieve data when watched value has changed and first call has failed', async () => {
     let trigger = 'OFF'
-    const {blockFetchUntilCondition, unblock} = createCondition('1st response')
-    const resultGenerator = (function * () {
+    const { blockFetchUntilCondition, unblock } = createCondition('1st response')
+    const resultGenerator = (function* () {
       yield blockFetchUntilCondition().then(() => {
         throw new Error('1st call failed')
       })
       yield Promise.resolve('2nd response')
     }())
     const fetchData = () => resultGenerator.next().value
-    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({fetchData, trigger, parameters: [true]}))
+    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({ fetchData, trigger, parameters: [true] }))
 
     unblock()
     await waitForValueToChange(() => result.current.fetchError)
@@ -149,13 +149,13 @@ describe('Data Provider Hook', () => {
 
   it('should not retrieve data when watched value has changed and first call has succedded', async () => {
     let trigger = 'OFF'
-    const {blockFetchUntilCondition, unblock} = createCondition('1st response')
-    const resultGenerator = (function * () {
+    const { blockFetchUntilCondition, unblock } = createCondition('1st response')
+    const resultGenerator = (function* () {
       yield blockFetchUntilCondition()
       yield Promise.resolve('2nd response')
     }())
     const fetchData = () => resultGenerator.next().value
-    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({fetchData, trigger, parameters: [true]}))
+    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({ fetchData, trigger, parameters: [true] }))
 
     unblock()
     await waitForValueToChange(() => result.current.data)
@@ -177,8 +177,8 @@ describe('Data Provider Hook', () => {
 
   it('should retrieve data when watched value has changed and before both failure and success were reported', async () => {
     let trigger = 'OFF'
-    const {blockFetchUntilCondition, unblock} = createCondition('2nd response')
-    const resultGenerator = (function * () {
+    const { blockFetchUntilCondition, unblock } = createCondition('2nd response')
+    const resultGenerator = (function* () {
       yield Promise.resolve('1st response')
       yield blockFetchUntilCondition().then(() => {
         throw new Error('2nd call failed')
@@ -187,7 +187,7 @@ describe('Data Provider Hook', () => {
     }())
     const fetchData = () => resultGenerator.next().value
     let parameter = 'FIRST'
-    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({fetchData, trigger, parameters: [parameter]}))
+    const { result, rerender, waitForValueToChange } = renderHook(() => useDataProvider({ fetchData, trigger, parameters: [parameter] }))
 
     await waitForValueToChange(() => result.current.data)
 
@@ -216,9 +216,9 @@ describe('Data Provider Hook', () => {
   })
 
   it('should report fetch  in progress', async () => {
-    const {blockFetchUntilCondition, unblock} = createCondition('some data')
+    const { blockFetchUntilCondition, unblock } = createCondition('some data')
     const fetchData = () => blockFetchUntilCondition()
-    const { result, waitForNextUpdate } = renderHook(() => useDataProvider({fetchData}))
+    const { result, waitForNextUpdate } = renderHook(() => useDataProvider({ fetchData }))
 
     expect(result.current.fetchError).toEqual(false)
     // expect(result.current.fetchInProgress).toBe(true)
@@ -233,14 +233,14 @@ describe('Data Provider Hook', () => {
   })
 
   it('should skip 2nd fetch if first in progress', async () => {
-    const {blockFetchUntilCondition, unblock} = createCondition('some data')
+    const { blockFetchUntilCondition, unblock } = createCondition('some data')
 
-    const resultGenerator = (function * () {
+    const resultGenerator = (function* () {
       yield blockFetchUntilCondition()
       yield Promise.resolve('2nd response')
     }())
     const fetchData = () => resultGenerator.next().value
-    const { result, waitForNextUpdate, rerender } = renderHook(() => useDataProvider({fetchData}))
+    const { result, waitForNextUpdate, rerender } = renderHook(() => useDataProvider({ fetchData }))
 
     expect(result.current.fetchError).toEqual(false)
     // expect(result.current.fetchInProgress).toBe(true)

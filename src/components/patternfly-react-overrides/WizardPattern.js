@@ -31,7 +31,7 @@ const WizardPattern = ({
   nextButtonRef,
   bodyHeader,
   container,
-  children
+  children,
 }) => {
   const onFirstStep = activeStepIndex === 0
   const onFinalStep = activeStepIndex === steps.length - 1
@@ -143,14 +143,16 @@ const WizardPattern = ({
           disabled={nextStepUnreachable}
           ref={nextButtonRef}
         >
-          {onFinalStep ? (
-            closeText
-          ) : (
-            <React.Fragment>
-              {nextText}
-              <Icon type='fa' name='angle-right' />
-            </React.Fragment>
-          )}
+          {onFinalStep
+            ? (
+              closeText
+            )
+            : (
+              <>
+                {nextText}
+                <Icon type='fa' name='angle-right' />
+              </>
+            )}
         </Button>
         <Button bsStyle='default' className='btn-cancel' onClick={onHideClick} id={`${id}-action-cancel`}>
           {cancelText}
@@ -185,7 +187,7 @@ WizardPattern.propTypes = {
   nextButtonRef: PropTypes.func,
   bodyHeader: PropTypes.node,
   container: PropTypes.any,
-  children: PropTypes.node
+  children: PropTypes.node,
 }
 
 WizardPattern.defaultProps = {
@@ -209,7 +211,7 @@ WizardPattern.defaultProps = {
   stepButtonsDisabled: false,
   nextButtonRef: noop,
   bodyHeader: null,
-  children: null
+  children: null,
 }
 
 WizardPattern.displayName = 'WizardPattern'

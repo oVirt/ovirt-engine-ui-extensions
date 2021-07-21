@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce'
 class HeightMatching extends React.Component {
   constructor (props) {
     super(props)
-    this._selectors = Array.isArray(props.selector) ? props.selector : [ props.selector ]
+    this._selectors = Array.isArray(props.selector) ? props.selector : [props.selector]
     this._resizeSensors = []
   }
 
@@ -57,7 +57,7 @@ class HeightMatching extends React.Component {
 HeightMatching.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  selector: PropTypes.oneOfType([ PropTypes.string, PropTypes.arrayOf(PropTypes.string) ]).isRequired
+  selector: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired,
 }
 
 export default HeightMatching

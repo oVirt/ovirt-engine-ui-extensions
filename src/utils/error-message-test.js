@@ -53,7 +53,7 @@ describe('error message functions tests', function () {
       message: message,
       fileName: file,
       lineNumber: line,
-      columnNumber: column
+      columnNumber: column,
     }
   }
 
@@ -62,7 +62,7 @@ describe('error message functions tests', function () {
       message: message,
       filename: file,
       lineno: line,
-      colno: column
+      colno: column,
     }
   }
 })

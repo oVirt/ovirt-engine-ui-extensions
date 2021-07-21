@@ -27,13 +27,13 @@ async function tagsPointAt ({ dir, oid }) {
 
 function extractChangeId ({ message }) {
   const re = /change-id: (I[a-z0-9]+)/i
-  const [ , changeId ] = re.exec(message) || []
+  const [, changeId] = re.exec(message) || []
   return changeId
 }
 
 async function fetchGitInfo ({ ref, dir = '.' } = {}) {
   try {
-    const [ head ] = await git.log({ dir, depth: 1, ref })
+    const [head] = await git.log({ dir, depth: 1, ref })
     const tagsPointAtHead = await tagsPointAt({ dir, oid: head.oid })
     const changeId = extractChangeId(head)
 
@@ -46,7 +46,7 @@ async function fetchGitInfo ({ ref, dir = '.' } = {}) {
         staged: file[3] === 2 || file[3] === 3 || (file[1] === 1 && file[2] === 0 && file[3] === 0),
         modified: file[1] === 1 && file[2] === 2,
         deleted: file[1] === 1 && file[2] === 0,
-        added: file[1] === 0 && file[2] === 2 && file[3] !== 0
+        added: file[1] === 0 && file[2] === 2 && file[3] !== 0,
       })
       return fs
     }, [])
@@ -62,7 +62,7 @@ async function fetchGitInfo ({ ref, dir = '.' } = {}) {
       staged: fileStatus.filter(status => status.staged).length,
       added: fileStatus.filter(status => status.added).length,
       modified: fileStatus.filter(status => status.modified).length,
-      deleted: fileStatus.filter(status => status.deleted).length
+      deleted: fileStatus.filter(status => status.deleted).length,
     }
     return gitInfo
   } catch (e) {

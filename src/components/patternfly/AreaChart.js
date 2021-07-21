@@ -8,7 +8,7 @@ import {
   ChartArea,
   ChartGroup,
   ChartTooltip,
-  ChartVoronoiContainer
+  ChartVoronoiContainer,
 } from '@patternfly/react-charts'
 
 import './styles.css'
@@ -30,9 +30,10 @@ function formatTooltip (tooltipType, total, unit, { date, value }) {
     case 'percentPerDate':
       return `${formatDateTime(date)}\n${labelPercentUsed}`
 
-    case 'valuePerDate':
+    case 'valuePerDate': {
       const { unit: newUnit, value: newUsed } = convertValue(storageUnitTable, unit, value)
       return `${formatDateTime(date)}\n${formatNumber1D(newUsed)} ${newUnit}`
+    }
 
     default:
       return `${formatNumber1D(value)} ${unit}`
@@ -43,7 +44,7 @@ const AreaChart = ({
   data,
   total,
   unit,
-  tooltipType = 'default'
+  tooltipType = 'default',
 }) => {
   const chartData = data.map((item, index) => ({ ...item, x: index, y: item.value }))
 
@@ -65,11 +66,11 @@ const AreaChart = ({
 AreaChart.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.number,
-    date: PropTypes.instanceOf(Date)
+    date: PropTypes.instanceOf(Date),
   })).isRequired,
   total: PropTypes.number.isRequired,
   unit: PropTypes.string.isRequired,
-  tooltipType: PropTypes.oneOf(['default', 'percent', 'percentPerDate', 'valuePerDate'])
+  tooltipType: PropTypes.oneOf(['default', 'percent', 'percentPerDate', 'valuePerDate']),
 }
 
 export default AreaChart

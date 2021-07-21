@@ -48,7 +48,7 @@ const updateFromPluginConfig = (resolve, reject) => {
   if (__DEV__) console.log('pluginApi.configObject:', getPluginApi().configObject())
   let {
     useFakeData,
-    clusterUpgradePlaybook
+    clusterUpgradePlaybook,
   } = getPluginApi().configObject() || {}
 
   try {
@@ -67,7 +67,7 @@ const updateFromPluginConfig = (resolve, reject) => {
 
   updateConfig({
     useFakeData,
-    clusterUpgradePlaybook
+    clusterUpgradePlaybook,
   })
   resolve()
 }
@@ -78,7 +78,7 @@ export default {
       Promise.all([
         new Promise(initApplicationLocaleFn),
         new Promise(polyfillIntlFn),
-        new Promise(updateFromPluginConfig)
+        new Promise(updateFromPluginConfig),
       ])
         .then(() => { resolve() })
         .catch(error => {
@@ -86,5 +86,5 @@ export default {
           reject(error)
         })
     })
-  }
+  },
 }

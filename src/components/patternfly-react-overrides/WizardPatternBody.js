@@ -13,7 +13,7 @@ const WizardPatternBody = ({
   goToStep,
   loadingTitle,
   loadingMessage,
-  activeStepStr
+  activeStepStr,
 }) => {
   if (loading) {
     return (
@@ -41,7 +41,7 @@ const WizardPatternBody = ({
       label,
       step: label,
       title,
-      activeStep: activeStepStr
+      activeStep: activeStepStr,
     }
   }
 
@@ -52,7 +52,7 @@ const WizardPatternBody = ({
       step && step.render && step.render(activeStepIndex, step.title)
 
     return (
-      <React.Fragment>
+      <>
         <Wizard.Steps
           steps={steps.map((stepObj, index) => (
             <Wizard.Step
@@ -71,7 +71,7 @@ const WizardPatternBody = ({
             </Wizard.Contents>
           </Wizard.Main>
         </Wizard.Row>
-      </React.Fragment>
+      </>
     )
   }
   return null
@@ -84,7 +84,7 @@ WizardPatternBody.propTypes = {
   steps: PropTypes.arrayOf(PropTypes.shape(wizardStepShape)),
   activeStepIndex: PropTypes.number,
   activeStepStr: PropTypes.string,
-  goToStep: PropTypes.func
+  goToStep: PropTypes.func,
 }
 
 WizardPatternBody.defaultProps = {
@@ -94,7 +94,7 @@ WizardPatternBody.defaultProps = {
   steps: [],
   activeStepIndex: 0,
   activeStepStr: '1',
-  goToStep: noop
+  goToStep: noop,
 }
 
 export default WizardPatternBody

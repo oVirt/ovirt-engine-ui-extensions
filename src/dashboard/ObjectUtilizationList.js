@@ -14,7 +14,7 @@ const ObjectUtilizationList = ({
   emptyListText,
   thresholds,
   utilizationFooterLabel,
-  onObjectNameClick = () => {}
+  onObjectNameClick = () => {},
 }) => {
   const someItemHasNamePastThreshold = data.some(item => {
     return item.name.length > utilizationListGridNameThreshold
@@ -29,11 +29,11 @@ const ObjectUtilizationList = ({
         {title}
       </div>
 
-      {data.length === 0 &&
+      {data.length === 0 && (
         <div className='empty-list'>
           {emptyListText}
         </div>
-      }
+      )}
 
       {data.length > 0 && (
         <div className='list-container'>
@@ -75,7 +75,7 @@ ObjectUtilizationList.propTypes = {
   emptyListText: PropTypes.string.isRequired,
   thresholds: UtilizationBarChart.propTypes.thresholds,
   utilizationFooterLabel: UtilizationBarChart.propTypes.footerLabel,
-  onObjectNameClick: PropTypes.func // (dataItem:object) => void
+  onObjectNameClick: PropTypes.func, // (dataItem:object) => void
 }
 
 export default ObjectUtilizationList

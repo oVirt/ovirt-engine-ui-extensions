@@ -8,7 +8,7 @@ import {
   FormGroup,
   FormHelperText,
   FormSelect,
-  FormSelectOption
+  FormSelectOption,
 } from '@patternfly/react-core'
 
 import { msg } from '_/intl-messages'
@@ -22,7 +22,7 @@ import { autoSelectItemVal, noHostVal } from '_/constants'
 
 export const selectItemShape = {
   value: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
 }
 
 const VmMigrateModalBody = ({
@@ -32,24 +32,24 @@ const VmMigrateModalBody = ({
   vmNames = [],
   suggestAffinity,
   onHostSelectionChange = () => {},
-  onMigrateVmsInAffinityChange = () => {}
+  onMigrateVmsInAffinityChange = () => {},
 }) => {
   const migrationDisabled = targetHostItems.length === 0
   const autoSelectItem = {
     text: msg.migrateVmAutoSelectHost(),
-    value: autoSelectItemVal
+    value: autoSelectItemVal,
   }
   const noHostItems = [{
     text: msg.migrateVmNoAvailableHost(),
-    value: noHostVal
+    value: noHostVal,
   }]
 
   const items = migrationDisabled
     ? noHostItems
-    : [ autoSelectItem, ...targetHostItems.sort((a, b) => stringCompare(a.text, b.text)) ]
+    : [autoSelectItem, ...targetHostItems.sort((a, b) => stringCompare(a.text, b.text))]
 
   return (
-    <React.Fragment>
+    <>
       <TextContent>
         <Text>{msg.migrateVmInfoLabel({ value: vmNames.length }) }</Text>
       </TextContent>
@@ -57,17 +57,17 @@ const VmMigrateModalBody = ({
       <Form isHorizontal>
         <FormGroup
           fieldId='vm-migrate-select-target-host'
-          label={
+          label={(
             <div>
               {msg.migrateVmSelectHostLabel()}
               <FieldLevelHelp content={msg.migrateVmSelectHostFieldHelp()} />
             </div>
-          }
-          helperText={suggestAffinity && !migrateVmsInAffinity &&
+          )}
+          helperText={suggestAffinity && !migrateVmsInAffinity && (
             <FormHelperText isHidden={false}>
               {msg.migrateVmSuggestEnablingAffinity()}
             </FormHelperText>
-          }
+          )}
         >
           <FormSelect
             id='vm-migrate-select-target-host'
@@ -86,12 +86,12 @@ const VmMigrateModalBody = ({
         >
           <Checkbox
             id='vm-migrate-vms-in-affinity'
-            label={
+            label={(
               <div>
                 {msg.migrateVmAffinityCheckbox()}
                 <FieldLevelHelp content={msg.migrateVmAffinityLabelHelp()} />
               </div>
-            }
+            )}
             isChecked={migrateVmsInAffinity}
             onChange={value => onMigrateVmsInAffinityChange(value)}
           />
@@ -99,11 +99,11 @@ const VmMigrateModalBody = ({
 
         <FormGroup
           fieldId='vm-migrate-vm-list'
-          label={
+          label={(
             <div style={{ whiteSpace: 'nowrap' }}>
               {msg.migrateVmListLabel()}
             </div>
-          }
+          )}
         >
           <VmList
             id='vm-migrate-vm-list'
@@ -114,7 +114,7 @@ const VmMigrateModalBody = ({
           />
         </FormGroup>
       </Form>
-    </React.Fragment>
+    </>
   )
 }
 
@@ -126,7 +126,7 @@ VmMigrateModalBody.propTypes = {
   suggestAffinity: PropTypes.bool.isRequired,
 
   onHostSelectionChange: PropTypes.func,
-  onMigrateVmsInAffinityChange: PropTypes.func
+  onMigrateVmsInAffinityChange: PropTypes.func,
 }
 
 export default VmMigrateModalBody

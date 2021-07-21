@@ -18,7 +18,7 @@ const FlexItem1 = ({ children, ...rest }) => (
   </FlexItem>
 )
 FlexItem1.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }
 
 const InventoryStatusCards = ({ inventory }) => {
@@ -28,7 +28,7 @@ const InventoryStatusCards = ({ inventory }) => {
     <HeightMatching
       selector={[
         '.aggregate-status-card .pf-c-card__title',
-        '.aggregate-status-card .pf-c-card__body'
+        '.aggregate-status-card .pf-c-card__body',
       ]}
     >
       <Flex
@@ -49,7 +49,7 @@ const InventoryStatusCards = ({ inventory }) => {
             onStatusCountClick={statusItem => {
               applySearch(C.webadminPlaces.dc, C.searchPrefixes.dc, [{
                 name: C.searchFields.status,
-                values: statusItem.statusValues
+                values: statusItem.statusValues,
               }])
             }}
           />
@@ -79,7 +79,7 @@ const InventoryStatusCards = ({ inventory }) => {
             onStatusCountClick={statusItem => {
               applySearch(C.webadminPlaces.host, C.searchPrefixes.host, [{
                 name: C.searchFields.status,
-                values: statusItem.statusValues
+                values: statusItem.statusValues,
               }])
             }}
           />
@@ -96,13 +96,13 @@ const InventoryStatusCards = ({ inventory }) => {
             onStatusCountClick={statusItem => {
               applySearch(C.webadminPlaces.storage, C.searchPrefixes.storage, [{
                 name: C.searchFields.status,
-                values: statusItem.statusValues
+                values: statusItem.statusValues,
               }])
             }}
           />
         </FlexItem1>
 
-        {showGlusterCard &&
+        {showGlusterCard && (
           <FlexItem1>
             <AggregateStatusCard
               data={inventory.volume}
@@ -114,12 +114,12 @@ const InventoryStatusCards = ({ inventory }) => {
               onStatusCountClick={statusItem => {
                 applySearch(C.webadminPlaces.volume, C.searchPrefixes.volume, [{
                   name: C.searchFields.status,
-                  values: statusItem.statusValues
+                  values: statusItem.statusValues,
                 }])
               }}
             />
           </FlexItem1>
-        }
+        )}
 
         <FlexItem1>
           <AggregateStatusCard
@@ -132,7 +132,7 @@ const InventoryStatusCards = ({ inventory }) => {
             onStatusCountClick={statusItem => {
               applySearch(C.webadminPlaces.vm, C.searchPrefixes.vm, [{
                 name: C.searchFields.status,
-                values: statusItem.statusValues
+                values: statusItem.statusValues,
               }])
             }}
           />
@@ -149,11 +149,11 @@ const InventoryStatusCards = ({ inventory }) => {
             onStatusCountClick={statusItem => {
               applySearch(C.webadminPlaces.event, C.searchPrefixes.event, [{
                 name: C.searchFields.severity,
-                values: statusItem.statusValues
+                values: statusItem.statusValues,
               }, {
                 name: C.searchFields.time,
                 values: statusItem.searchSince ? [statusItem.searchSince] : [],
-                operator: '>'
+                operator: '>',
               }])
             }}
           />
@@ -165,7 +165,7 @@ const InventoryStatusCards = ({ inventory }) => {
 }
 
 InventoryStatusCards.propTypes = {
-  inventory: dashboardDataShape.inventory
+  inventory: dashboardDataShape.inventory,
 }
 
 export default InventoryStatusCards

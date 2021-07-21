@@ -18,7 +18,7 @@ const fakeHost = (clusterId, hostName, status, updateAvailable, active) => ({
   address: `${hostName}.ovirt`,
   status,
   summary: { active, migrating: '0', total: active },
-  update_available: updateAvailable
+  update_available: updateAvailable,
 })
 
 const randomHosts = (clusterId, count) => {
@@ -41,7 +41,7 @@ const fakeHosts = (clusterId) => Promise.resolve([
   fakeHost(clusterId, 'host3', 'down', 'true', '0'),
   fakeHost(clusterId, 'host4', 'up', 'true', '7'),
   fakeHost(clusterId, 'host5', 'down', 'false', '0'),
-  ...randomHosts(clusterId, 2 + (Math.random() * 100 % 20))
+  ...randomHosts(clusterId, 2 + (Math.random() * 100 % 20)),
 ])
 //
 //
@@ -80,7 +80,7 @@ async function fetchClusterHosts (clusterId, clusterName) {
 const sleep = (ms) => {
   console.log(`sleeping for ${ms}ms`)
   return new Promise(resolve => setTimeout(() => {
-    console.log(`sleeping complete!`)
+    console.log('sleeping complete!')
     resolve()
   }, ms))
 }
@@ -91,11 +91,11 @@ const sleep = (ms) => {
 async function fetchData ({ id: clusterId, name: clusterName }) {
   const [
     cluster,
-    hosts
+    hosts,
   ] = await Promise.all([
     fetchCluster(clusterId),
     config.useFakeData ? fakeHosts(clusterId) : fetchClusterHosts(clusterId, clusterName),
-    config.useFakeData ? sleep(5000) : true
+    config.useFakeData ? sleep(5000) : true,
   ])
 
   return { cluster, hosts }
@@ -126,7 +126,7 @@ async function upgradeCluster ({
     host_names: ansiblePayload.hostNames,
     check_upgrade: ansiblePayload.checkForUpgradesOnHosts,
     reboot_after_upgrade: ansiblePayload.rebootAfterUpgrade,
-    use_maintenance_policy: ansiblePayload.useMaintenanceClusterPolicy
+    use_maintenance_policy: ansiblePayload.useMaintenanceClusterPolicy,
   })
   const playbookName = config.clusterUpgradePlaybook
 
@@ -191,7 +191,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => (
         cluster,
         clusterHosts: hosts,
 
-        upgradeCluster: (upgradePayload) => upgradeCluster(upgradePayload)
+        upgradeCluster: (upgradePayload) => upgradeCluster(upgradePayload),
       })
     }}
 
@@ -202,8 +202,8 @@ ClusterUpgradeDataProvider.propTypes = {
   children: PropTypes.element.isRequired,
   cluster: PropTypes.shape({
     id: PropTypes.string,
-    name: PropTypes.string
-  }).isRequired
+    name: PropTypes.string,
+  }).isRequired,
 }
 
 export default ClusterUpgradeDataProvider

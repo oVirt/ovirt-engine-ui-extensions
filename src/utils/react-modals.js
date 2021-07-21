@@ -53,7 +53,7 @@ export const showModal = (modalCreator, modalId = uniqueId()) => {
       value={{
         window: targetWindow,
         modalContainer,
-        destroyModal
+        destroyModal,
       }}
     >
       {modalCreator({ container: modalContainer, destroyModal })}

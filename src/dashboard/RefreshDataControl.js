@@ -8,10 +8,11 @@ const RefreshDataControl = ({ onRefresh }) => {
   return (
     <Tooltip content={msg.dashboardRefreshButtonTooltip()} position='bottom' distance={5}>
       <div className='btn-group'>
-        <button type='button' className='btn btn-default' onClick={event => {
-          event.preventDefault()
-          onRefresh()
-        }}>
+        <button
+          type='button'
+          className='btn btn-default'
+          onClick={event => { event.preventDefault(); onRefresh() }}
+        >
           <i className='fa fa-refresh' />
         </button>
         {/* refresh configuration drop down menu would go here */}
@@ -21,7 +22,7 @@ const RefreshDataControl = ({ onRefresh }) => {
 }
 
 RefreshDataControl.propTypes = {
-  onRefresh: PropTypes.func.isRequired
+  onRefresh: PropTypes.func.isRequired,
 }
 
 export default RefreshDataControl

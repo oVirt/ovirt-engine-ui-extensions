@@ -14,7 +14,7 @@ const LastUpdatedLabel = ({ date }) => {
 }
 
 LastUpdatedLabel.propTypes = {
-  date: PropTypes.instanceOf(Date).isRequired
+  date: PropTypes.instanceOf(Date).isRequired,
 }
 
 export default LastUpdatedLabel

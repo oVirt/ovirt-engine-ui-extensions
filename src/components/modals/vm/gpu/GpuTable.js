@@ -4,7 +4,7 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Title
+  Title,
 } from '@patternfly/react-core'
 import { SearchIcon } from '@patternfly/react-icons'
 import {
@@ -16,7 +16,7 @@ import {
   Table,
   TableBody,
   TableHeader,
-  wrappable
+  wrappable,
 } from '@patternfly/react-table'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -25,44 +25,44 @@ import { stringWithNumberSuffixCompare } from '_/utils/compare'
 import GpuTableRowDetail from './GpuTableRowDetail'
 import { handleNonAvailableValue } from './handleNonAvailableValue'
 
-const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
+const GpuTable = ({ gpus, selectedMDevTypes, onGpuSelectionChange }) => {
   const columns = [
     {
       title: msg.vmManageGpuTableMDevType(),
       transforms: [
         sortable,
-        cellWidth(15)
+        cellWidth(15),
       ],
-      cellFormatters: [expandable]
+      cellFormatters: [expandable],
     },
     {
       title: msg.vmManageGpuTableCardName(),
-      transforms: [cellWidth(15)]
+      transforms: [cellWidth(15)],
     },
     {
       title: msg.vmManageGpuTableNumberOfHeads(),
-      transforms: [wrappable]
+      transforms: [wrappable],
     },
     {
       title: msg.vmManageGpuTableFrameRateLimiter(),
-      transforms: [wrappable, cellWidth(10)]
+      transforms: [wrappable, cellWidth(10)],
     },
     {
       title: msg.vmManageGpuTableMaxResolution(),
-      transforms: [wrappable]
+      transforms: [wrappable],
     },
     {
       title: msg.vmManageGpuTableFrameBuffer(),
-      transforms: [wrappable]
+      transforms: [wrappable],
     },
     {
       title: msg.vmManageGpuTableMaxInstances(),
-      transforms: [wrappable]
+      transforms: [wrappable],
     },
     {
       title: msg.vmManageGpuTableRequestedInstances(),
-      transforms: [wrappable]
-    }
+      transforms: [wrappable],
+    },
   ]
 
   const emptyTableRows = [{
@@ -78,17 +78,17 @@ const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
               <EmptyStateBody>{msg.vmManageGpuTableEmptyStateBody()}</EmptyStateBody>
             </EmptyState>
           </Bullseye>
-        )
-      }
-    ]
+        ),
+      },
+    ],
   }]
 
-  const [sortBy, setSortBy] = React.useState({index: 2, direction: SortByDirection.asc})
+  const [sortBy, setSortBy] = React.useState({ index: 2, direction: SortByDirection.asc })
 
   const [openRows, setOpenRows] = React.useState(new Map())
 
   const compareRows = (a, b) => {
-    let cellIndex = sortBy.index - 2
+    const cellIndex = sortBy.index - 2
     return stringWithNumberSuffixCompare(a.cells[cellIndex], b.cells[cellIndex])
   }
 
@@ -122,9 +122,9 @@ const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
         handleNonAvailableValue(gpu.maxResolution),
         handleNonAvailableValue(gpu.frameBuffer),
         handleNonAvailableValue(gpu.maxInstances),
-        requestedInstances
+        requestedInstances,
       ],
-      gpu: gpu
+      gpu: gpu,
     }
   }
 
@@ -138,9 +138,9 @@ const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
           title: (
             <GpuTableRowDetail gpus={gpus} />
           ),
-          props: { colSpan: columns.length + 2 } // +1 for collapse, +1 for select
-        }
-      ]
+          props: { colSpan: columns.length + 2 }, // +1 for collapse, +1 for select
+        },
+      ],
     }
   }
 
@@ -162,7 +162,7 @@ const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
   }
 
   const onSort = (_event, index, direction) => {
-    setSortBy({index: index, direction: direction})
+    setSortBy({ index: index, direction: direction })
   }
 
   const onSelect = (_event, isSelected, _rowIndex, rowData) => {
@@ -184,15 +184,15 @@ const GpuTable = ({gpus, selectedMDevTypes, onGpuSelectionChange}) => {
         isDisabled: selectedMDevTypes[rowData.gpu.mDevType] >= rowData.gpu.maxInstances,
         onClick: (_event, _rowId, rowData, _extra) => {
           onGpuSelectionChange(rowData.gpu.mDevType, selectedMDevTypes[rowData.gpu.mDevType] + 1)
-        }
+        },
       },
       {
         title: msg.vmManageGpuRemoveActionButton(),
         isDisabled: selectedMDevTypes[rowData.gpu.mDevType] <= 0,
         onClick: (_event, _rowId, rowData, _extra) => {
           onGpuSelectionChange(rowData.gpu.mDevType, selectedMDevTypes[rowData.gpu.mDevType] - 1)
-        }
-      }
+        },
+      },
     ]
   }
 
@@ -245,10 +245,10 @@ GpuTable.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
-      address: PropTypes.string
+      address: PropTypes.string,
     })),
   selectedMDevTypes: PropTypes.any,
-  onGpuSelectionChange: PropTypes.func
+  onGpuSelectionChange: PropTypes.func,
 }
 
 export default GpuTable

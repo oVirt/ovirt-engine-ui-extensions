@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 
-export function useDataProvider ({fetchData, parameters = [], trigger, enabled = true, debugState = false}) {
-  const [{data, fetchError, fetchInProgress}, setState] = useState({
+export function useDataProvider ({ fetchData, parameters = [], trigger, enabled = true, debugState = false }) {
+  const [{ data, fetchError, fetchInProgress }, setState] = useState({
     data: undefined,
     fetchError: false,
-    fetchInProgress: false
+    fetchInProgress: false,
   })
   const prevParams = useRef(null)
   const prevTrigger = useRef(null)
@@ -20,7 +20,7 @@ export function useDataProvider ({fetchData, parameters = [], trigger, enabled =
       trigger,
       data: !!data,
       fetchError,
-      fetchInProgress
+      fetchInProgress,
     }
     console.log(`${msg} in state: ${JSON.stringify(state)}`)
   }
@@ -45,7 +45,7 @@ export function useDataProvider ({fetchData, parameters = [], trigger, enabled =
     setState({
       data: undefined,
       fetchError: false,
-      fetchInProgress: true
+      fetchInProgress: true,
     })
     prevParams.current = params
     prevTrigger.current = trigger
@@ -56,7 +56,7 @@ export function useDataProvider ({fetchData, parameters = [], trigger, enabled =
         setState({
           data,
           fetchError: false,
-          fetchInProgress: false
+          fetchInProgress: false,
         })
       })
       .catch(error => {
@@ -64,7 +64,7 @@ export function useDataProvider ({fetchData, parameters = [], trigger, enabled =
         setState({
           data: undefined,
           fetchError: error,
-          fetchInProgress: false
+          fetchInProgress: false,
         })
       })
   })
@@ -72,10 +72,10 @@ export function useDataProvider ({fetchData, parameters = [], trigger, enabled =
   return useMemo(() => ({
     data,
     fetchError,
-    fetchInProgress
+    fetchInProgress,
   }), [
     data,
     fetchError,
-    fetchInProgress
+    fetchInProgress,
   ])
 }

@@ -5,7 +5,7 @@ import {
   TableBody,
   TableHeader,
   TableVariant,
-  nowrap
+  nowrap,
 } from '@patternfly/react-table'
 import { msg } from '_/intl-messages'
 import { handleNonAvailableValue } from './handleNonAvailableValue'
@@ -15,7 +15,7 @@ const columns = [
   msg.vmManageGpuTableVendor(),
   msg.vmManageGpuTableProduct(),
   msg.vmManageGpuTableAddress(),
-  { title: msg.vmManageGpuTableAvailableInstances(), transforms: [nowrap] }
+  { title: msg.vmManageGpuTableAvailableInstances(), transforms: [nowrap] },
 ]
 
 const createRows = (gpus) => {
@@ -26,13 +26,13 @@ const createRows = (gpus) => {
         handleNonAvailableValue(gpu.vendor),
         handleNonAvailableValue(gpu.product),
         handleNonAvailableValue(gpu.address),
-        handleNonAvailableValue(gpu.availableInstances)
-      ]
+        handleNonAvailableValue(gpu.availableInstances),
+      ],
     }
   })
 }
 
-const GpuTableRowDetail = ({gpus}) => {
+const GpuTableRowDetail = ({ gpus }) => {
   return (
     <Table
       aria-label='Simple Table'
@@ -61,8 +61,8 @@ GpuTableRowDetail.propTypes = {
       product: PropTypes.string,
       vendor: PropTypes.string,
       address: PropTypes.string,
-      selected: PropTypes.bool
-    }))
+      selected: PropTypes.bool,
+    })),
 }
 
 export default GpuTableRowDetail

@@ -21,17 +21,17 @@ export function stringWithNumberSuffixCompare (a, b) {
     return 0
   }
 
-  let aNumberPart = parseInt(a.match(/[0-9]+$/))
-  let aStringPart = a.replace(/[0-9]+$/, '')
-  let bNumberPart = parseInt(b.match(/[0-9]+$/))
-  let bStringPart = b.replace(/[0-9]+$/, '')
+  const aNumberPart = parseInt(a.match(/[0-9]+$/))
+  const aStringPart = a.replace(/[0-9]+$/, '')
+  const bNumberPart = parseInt(b.match(/[0-9]+$/))
+  const bStringPart = b.replace(/[0-9]+$/, '')
 
   if (isNumber(aNumberPart) && isNumber(bNumberPart)) {
     if (aStringPart !== bStringPart) {
       return stringCompare(aStringPart, bStringPart)
     } else {
-      let aNumber = parseInt(aNumberPart, 10)
-      let bNumber = parseInt(bNumberPart, 10)
+      const aNumber = parseInt(aNumberPart, 10)
+      const bNumber = parseInt(bNumberPart, 10)
       return aNumber - bNumber
     }
   } else {

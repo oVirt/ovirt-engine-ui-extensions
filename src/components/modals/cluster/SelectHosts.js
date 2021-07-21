@@ -26,7 +26,7 @@ class SelectHosts extends React.Component {
     this.state = {
       selectedHostIds: SelectHosts.reduceSelectedHosts(props.selectedHosts),
       sortedHosts: props.hosts.slice(0),
-      filter: ''
+      filter: '',
     }
 
     this.onSelectRow = this.onSelectRow.bind(this)
@@ -41,9 +41,9 @@ class SelectHosts extends React.Component {
         column,
         rows: this.state.sortedHosts.map(host => ({
           id: host.id,
-          selected: this.state.selectedHostIds[host.id]
+          selected: this.state.selectedHostIds[host.id],
         })),
-        onSelectAllRows: this.onSelectAllRows
+        onSelectAllRows: this.onSelectAllRows,
       })
 
     // Cell Formatters
@@ -61,45 +61,45 @@ class SelectHosts extends React.Component {
     this.columns = [
       {
         header: {
-          formatters: [headerFormatSelect]
+          formatters: [headerFormatSelect],
         },
         cell: {
-          formatters: [cellFormatSelect]
+          formatters: [cellFormatSelect],
         },
-        property: 'selected'
+        property: 'selected',
       },
       {
         header: {
           label: props.hostTableHeaderStatus,
           formatters: [headerFormatText],
           props: {
-            style: { width: 75, textAlign: 'center' }
-          }
+            style: { width: 75, textAlign: 'center' },
+          },
         },
         cell: { formatters: [cellFormatStatus] },
-        property: 'status'
+        property: 'status',
       },
       {
         header: { label: props.hostTableHeaderName, formatters: [headerFormatText] },
         cell: { formatters: [cellFormatText] },
-        property: 'name'
+        property: 'name',
       },
       {
         header: { label: props.hostTableHeaderHostname, formatters: [headerFormatText] },
         cell: { formatters: [cellFormatText] },
-        property: 'address'
+        property: 'address',
       },
       {
         header: {
           label: props.hostTableHeaderVMs,
           formatters: [headerFormatText],
           props: {
-            style: { width: 140 }
-          }
+            style: { width: 140 },
+          },
         },
         cell: { formatters: [cellFormatVmInfo] },
-        property: 'vmInfo'
-      }
+        property: 'vmInfo',
+      },
     ]
   }
 
@@ -111,14 +111,14 @@ class SelectHosts extends React.Component {
       updates = {
         selectedHostIds: {},
         sortedHosts: hosts.slice(0),
-        filter: ''
+        filter: '',
       }
     }
 
     if (!scalarArrayEq(prevProps.selectedHosts, selectedHosts)) {
       updates = {
         ...updates,
-        selectedHostIds: SelectHosts.reduceSelectedHosts(selectedHosts)
+        selectedHostIds: SelectHosts.reduceSelectedHosts(selectedHosts),
       }
     }
 
@@ -144,40 +144,42 @@ class SelectHosts extends React.Component {
     const { hosts } = this.props
 
     if (!hosts || hosts.length === 0) {
-      return <div className='clusterUpgradeWizard-SelectHosts-NoHosts'>
-
-        <h2>{this.props.noHostsMessage}</h2>
-
-      </div>
+      return (
+        <div className='clusterUpgradeWizard-SelectHosts-NoHosts'>
+          <h2>{this.props.noHostsMessage}</h2>
+        </div>
+      )
     }
 
-    return <div className='clusterUpgradeWizard-SelectHosts'>
-      <Alert type='info' style={{ margin: '0' }}>
-        {this.props.selectHostsMessage}
-      </Alert>
+    return (
+      <div className='clusterUpgradeWizard-SelectHosts'>
+        <Alert type='info' style={{ margin: '0' }}>
+          {this.props.selectHostsMessage}
+        </Alert>
 
-      <div className='tableContainer'>
-        <Table.PfProvider
-          striped
-          bordered
-          hover
-          columns={this.columns}
-        >
-          <Table.Header />
-          <Table.Body
-            rowKey='id'
-            rows={hosts.map(host => ({
-              id: host.id,
-              selected: this.state.selectedHostIds[host.id],
-              status: host.status,
-              name: host.name,
-              address: host.address,
-              vmInfo: host.summary
-            }))}
-          />
-        </Table.PfProvider>
+        <div className='tableContainer'>
+          <Table.PfProvider
+            striped
+            bordered
+            hover
+            columns={this.columns}
+          >
+            <Table.Header />
+            <Table.Body
+              rowKey='id'
+              rows={hosts.map(host => ({
+                id: host.id,
+                selected: this.state.selectedHostIds[host.id],
+                status: host.status,
+                name: host.name,
+                address: host.address,
+                vmInfo: host.summary,
+              }))}
+            />
+          </Table.PfProvider>
+        </div>
       </div>
-    </div>
+    )
   }
 }
 
@@ -192,7 +194,7 @@ SelectHosts.i18nProps = {
   hostTableHeaderStatus: 'Status',
   hostTableHeaderName: 'Name',
   hostTableHeaderHostname: 'Hostname/IP Address',
-  hostTableHeaderVMs: 'Virtual Machines'
+  hostTableHeaderVMs: 'Virtual Machines',
 }
 
 SelectHosts.propTypes = {
@@ -200,14 +202,14 @@ SelectHosts.propTypes = {
   selectedHosts: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func.isRequired,
 
-  ...propNamesToType(SelectHosts.i18nProps, PropTypes.string)
+  ...propNamesToType(SelectHosts.i18nProps, PropTypes.string),
 }
 
 SelectHosts.defaultProps = {
   hosts: [],
   selectedHosts: [],
 
-  ...SelectHosts.i18nProps
+  ...SelectHosts.i18nProps,
 }
 
 export default SelectHosts

@@ -46,14 +46,14 @@ function reportDuplicateValues (englishMessages, translatedMessagesPerLocale) {
             })
             return chalk`{yellow ${localesWithKey.length}}: ${localesWithKey.join(', ')}`
           })
-          .join('\n')
+          .join('\n'),
       ])
     })
 
   return chalk`Multiple value count: {yellow ${report.length}}\n` +
     (report.length === 0
       ? 'No keys with duplicate values!'
-      : table([ ['Text', 'Key', 'Locales With Key', 'Locales w/o Key'], ...report ])
+      : table([['Text', 'Key', 'Locales With Key', 'Locales w/o Key'], ...report])
     )
 }
 
@@ -78,13 +78,13 @@ function reportUntranslatedKeys (englishMessages, translatedMessagesPerLocale) {
         chalk.magenta(`${untranslatedPercent}%`),
         untranslatedPercent > 20.0
           ? chalk.red(`>20% of keys are untranslated [${untranslated[locale].length}/${messagesKeyCount}]`)
-          : untranslated[locale].sort().join('\n')
+          : untranslated[locale].sort().join('\n'),
       ])
     })
 
   return (untranslatedReport.length === 0)
     ? chalk`{green All keys for all locales are translated!}`
-    : table([ ['locale', '% untranslated', 'keys'], ...untranslatedReport ])
+    : table([['locale', '% untranslated', 'keys'], ...untranslatedReport])
 }
 
 function reportCoverage (englishMessages, translatedMessagesPerLocale) {
@@ -98,7 +98,7 @@ function reportCoverage (englishMessages, translatedMessagesPerLocale) {
       report.push([
         chalk.blue(locale),
         `${localKeyCount}/${messagesKeyCount}`,
-        chalk.yellow(`${percent}%`)
+        chalk.yellow(`${percent}%`),
       ])
     }
   )
@@ -107,9 +107,9 @@ function reportCoverage (englishMessages, translatedMessagesPerLocale) {
     columns: {
       '0': {},
       '1': { alignment: 'right' },
-      '2': { alignment: 'right' }
+      '2': { alignment: 'right' },
     },
-    drawHorizontalLine: (index, size) => index === 0 || index === 1 || index === size
+    drawHorizontalLine: (index, size) => index === 0 || index === 1 || index === size,
   })
 }
 
@@ -118,14 +118,14 @@ function reportCoverage (englishMessages, translatedMessagesPerLocale) {
 //
 const filename = [
   'src/intl/translations.json',
-  '../src/intl/translations.json'
+  '../src/intl/translations.json',
 ].find(filename => fs.existsSync(filename))
 
 const translatedMessagesPerLocale = JSON.parse(fs.readFileSync(filename, 'utf8'))
 
 const englishMessages1 = require('../src/intl/messages')
 const englishMessages = {}
-Object.entries(englishMessages1).forEach(([ key, { id, defaultMessage } ]) => {
+Object.entries(englishMessages1).forEach(([key, { id, defaultMessage }]) => {
   englishMessages[id] = defaultMessage
 })
 

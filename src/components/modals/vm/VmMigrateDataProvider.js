@@ -12,7 +12,7 @@ function randomVms (vmCount) {
   return Array.from(Array(vmCount), (element, index) => ({
     id: randomId(),
     name: `random-vm-${index}`,
-    host: { id: 'foo123' }
+    host: { id: 'foo123' },
   }))
 }
 
@@ -23,17 +23,17 @@ const fetchVmsFakeData = {
     // VM without a host => this VM is not running
     { id: 'def456', name: 'test-vm-2' },
     // add some more randomly generated VMs
-    ...randomVms(20)
-  ]
+    ...randomVms(20),
+  ],
 }
 
-const fetchTargetHostsFakeData = (function * () {
+const fetchTargetHostsFakeData = (function* () {
   const firstResponse = {
     host: [
       { id: 'xyz789', name: 'test-host-1' },
       { id: 'foo123', name: 'test-host-2' },
-      { id: 'bar456', name: 'test-host-3' }
-    ]
+      { id: 'bar456', name: 'test-host-3' },
+    ],
   }
   const secondResponse = {}
   while (true) {
@@ -103,10 +103,10 @@ function migrateToHost (targetHostId, migrateVmsInAffinity, vms) {
   const requestBody = { force: true }
 
   if (targetHostId) {
-    requestBody['host'] = { id: targetHostId }
+    requestBody.host = { id: targetHostId }
   }
   if (migrateVmsInAffinity) {
-    requestBody['migrate_vms_in_affinity_closure'] = true
+    requestBody.migrate_vms_in_affinity_closure = true
   }
 
   if (config.useFakeData) {
@@ -139,10 +139,12 @@ export function useVmMigrateDataProvider (checkVmAffinity, vmIds) {
   const dataLoaded = !!vms.data && !!targetHosts
 
   const vmNames = !vms.data ? [] : vms.data.map(vm => vm.name)
-  const targetHostItems = !targetHosts ? [] : targetHosts.map(host => ({
-    value: host.id,
-    text: host.name
-  }))
+  const targetHostItems = !targetHosts
+    ? []
+    : targetHosts.map(host => ({
+      value: host.id,
+      text: host.name,
+    }))
 
   const suggestAffinity = !hostsWithAffinity.fetchError && !hosts.fetchError &&
     !!hosts.data && !!hostsWithAffinity.data &&
@@ -155,14 +157,14 @@ export function useVmMigrateDataProvider (checkVmAffinity, vmIds) {
     suggestAffinity,
     dataLoaded,
     fetchError,
-    fetchInProgress
+    fetchInProgress,
   }), [
     vms.data,
     targetHosts,
     suggestAffinity,
     dataLoaded,
     fetchError,
-    fetchInProgress
+    fetchInProgress,
   ])
 }
 
@@ -176,7 +178,7 @@ const withTargetHosts = (WrappedComponent) => {
       targetHostItems,
       suggestAffinity,
       dataLoaded,
-      fetchError
+      fetchError,
     } = useVmMigrateDataProvider(checkVmAffinity, vmIds)
 
     useEffect(() => {
@@ -199,10 +201,11 @@ const withTargetHosts = (WrappedComponent) => {
         checkVmAffinity={checkVmAffinity}
         onRefreshHosts={(checkVmAffinity) => setCheckVmAffinity(checkVmAffinity)}
         onMigrateToHost={(hostId, migrateVmsInAffinity) => migrateToHost(hostId, migrateVmsInAffinity, vms)}
-      />)
+      />
+    )
   }
   EnhancedComponent.propTypes = {
-    vmIds: PropTypes.arrayOf(PropTypes.string).isRequired
+    vmIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   }
   return EnhancedComponent
 }

@@ -7,7 +7,7 @@ import {
   Card,
   CardTitle, // NOTE: Can't use Card.Title due to https://github.com/patternfly/patternfly-react/issues/2931
   CardBody,
-  Icon
+  Icon,
 } from 'patternfly-react'
 
 const UpgradeReview = ({
@@ -20,7 +20,7 @@ const UpgradeReview = ({
   nonMigratableLabel,
   nonMigratableDescription,
   migrateLabel,
-  migrateDescription
+  migrateDescription,
 }) => {
   const hostLabelFormat = new Format(hostsLabel)
   const nonMigratableLabelFormat = new Format(nonMigratableLabel)
@@ -41,33 +41,33 @@ const UpgradeReview = ({
         </CardBody>
       </Card>
 
-      { nonMigratableVmCount !== undefined &&
-      <Card>
-        <CardTitle>
-          <Icon type='pf' name='virtual-machine' className='circle-icon' />
-          <div className='info-label'>
-            { nonMigratableLabelFormat.format({ count: nonMigratableVmCount }) }
-          </div>
-        </CardTitle>
-        <CardBody>
-          { nonMigratableDescription }
-        </CardBody>
-      </Card>
-      }
+      { nonMigratableVmCount !== undefined && (
+        <Card>
+          <CardTitle>
+            <Icon type='pf' name='virtual-machine' className='circle-icon' />
+            <div className='info-label'>
+              { nonMigratableLabelFormat.format({ count: nonMigratableVmCount }) }
+            </div>
+          </CardTitle>
+          <CardBody>
+            { nonMigratableDescription }
+          </CardBody>
+        </Card>
+      )}
 
-      { migrateVmCount !== undefined &&
-      <Card>
-        <CardTitle>
-          <Icon type='pf' name='virtual-machine' className='circle-icon' />
-          <div className='info-label'>
-            { migrateLabelFormat.format({ count: migrateVmCount }) }
-          </div>
-        </CardTitle>
-        <CardBody>
-          { migrateDescription }
-        </CardBody>
-      </Card>
-      }
+      { migrateVmCount !== undefined && (
+        <Card>
+          <CardTitle>
+            <Icon type='pf' name='virtual-machine' className='circle-icon' />
+            <div className='info-label'>
+              { migrateLabelFormat.format({ count: migrateVmCount }) }
+            </div>
+          </CardTitle>
+          <CardBody>
+            { migrateDescription }
+          </CardBody>
+        </Card>
+      )}
 
     </div>
   )
@@ -79,7 +79,7 @@ UpgradeReview.i18nProps = {
   nonMigratableLabel: '{count,number} Pinned VMs',
   nonMigratableDescription: 'Will be stopped before Cluster upgrade',
   migrateLabel: '{count,number} VMs',
-  migrateDescription: 'Will be migrated to a new Host before Cluster upgrade'
+  migrateDescription: 'Will be migrated to a new Host before Cluster upgrade',
 }
 
 UpgradeReview.propTypes = {
@@ -87,11 +87,11 @@ UpgradeReview.propTypes = {
   nonMigratableVmCount: PropTypes.number,
   migrateVmCount: PropTypes.number,
 
-  ...propNamesToType(UpgradeReview.i18nProps, PropTypes.string)
+  ...propNamesToType(UpgradeReview.i18nProps, PropTypes.string),
 }
 
 UpgradeReview.defaultProps = {
-  ...UpgradeReview.i18nProps
+  ...UpgradeReview.i18nProps,
 }
 
 export default UpgradeReview

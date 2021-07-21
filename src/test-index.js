@@ -17,7 +17,7 @@ beforeEach(() => {
     'showToast',
     'engineBaseUrl',
     'currentLocale',
-    'currentTimeZone' // TODO(vs) this API function isn't currently available
+    'currentTimeZone', // TODO(vs) this API function isn't currently available
   ].forEach(apiMethod => {
     pluginApiStubs[apiMethod] = jest.fn().mockName(apiMethod)
   })

@@ -28,15 +28,15 @@ const ManageGpuModal = ({
   gpus = [],
   displayOn = true,
   onSelectButtonClick = () => {},
-  onClose = () => {}
+  onClose = () => {},
 }) => {
-  const [ isOpen, setOpen ] = useState(true)
-  const [ displayOn_, setDisplayOn_ ] = useState(undefined)
-  const [ selectedMDevTypes, setSelectedMDevTypes ] = useState(gpuArrayToSelectedMap(gpus))
+  const [isOpen, setOpen] = useState(true)
+  const [displayOn_, setDisplayOn_] = useState(undefined)
+  const [selectedMDevTypes, setSelectedMDevTypes] = useState(gpuArrayToSelectedMap(gpus))
 
   useEffect(() => {
     setSelectedMDevTypes(gpuArrayToSelectedMap(gpus))
-  }, [ gpus ])
+  }, [gpus])
 
   const close = () => {
     setOpen(false)
@@ -92,7 +92,7 @@ const ManageGpuModal = ({
           onClick={close}
         >
           {msg.cancelButton()}
-        </Button>
+        </Button>,
       ]}
     >
       <Spinner loading={isLoading}>
@@ -124,12 +124,12 @@ ManageGpuModal.propTypes = {
       frameRateLimiter: PropTypes.number,
       product: PropTypes.string,
       vendor: PropTypes.string,
-      address: PropTypes.string
+      address: PropTypes.string,
     })),
   displayOn: PropTypes.bool,
 
   onSelectButtonClick: PropTypes.func,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 }
 
 export default ManageGpuModal
