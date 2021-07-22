@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
-
+import { createErrorMessage } from '_/utils/error-message'
 import PluginApiModal from '_/components/modals/PluginApiModal'
+import getPluginApi from '_/plugin-api'
 import { Spinner } from 'patternfly-react'
 import { Button } from '@patternfly/react-core'
 import VmExportModalBody from './VmExportModalBody'
@@ -46,8 +47,8 @@ const VmExportModal = ({
       console.log('export result:', result)
       close()
     } catch (e) {
-      console.error('export problem:', e)
-      setError(e.message)
+      getPluginApi().logger().severe('Error while exporting the VM. ' + createErrorMessage(e))
+      setError(e.detail || e.message)
     }
   }
 

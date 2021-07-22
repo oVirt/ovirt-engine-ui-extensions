@@ -21,23 +21,6 @@ function engineRequestHeaders (extraHeaders = {}) {
   }
 }
 
-async function createResponseErrorMessage (method, response) {
-  const message = `Method: ${method}, url: ${response.url}, status: ${response.status}, status text: ${response.statusText}`
-  try {
-    // if server returned detailed error message, e.g. Vm with given ID does not exists,
-    // it is stored in response.json()
-    const jsonMessage = await response.json()
-
-    if (jsonMessage && jsonMessage.detail) {
-      return `${message}, detailed message: ${jsonMessage.detail}`
-    }
-    return message
-  } catch (_error) {
-    // if there is no detailed error message, e.g. 404: Not found
-    return message
-  }
-}
-
 /**
  * Initiate Engine HTTP `GET` request, expecting JSON response.
  *
@@ -91,7 +74,18 @@ export async function engineApiRequest (method, relativePath, body, extraHeaders
     return response.json()
   }
 
-  throw new Error('Error while communicating with the engine API. ' + await createResponseErrorMessage(method, response))
+  let jsonMessage
+  try {
+    // if server returned detailed error message, e.g. Vm with given ID does not exists,
+    // it is stored in response.json()
+    jsonMessage = await response.json()
+  } catch (e) {
+    // it is OK if json cannot be retrieved, we will throw error with basic
+    // information
+  }
+
+  const details = jsonMessage?.fault || jsonMessage || {}
+  throw new EngineError(method, response, details)
 }
 
 /**
@@ -123,4 +117,30 @@ export async function ansiblePlaybookPost (playbook, variables = '', executionTi
   }
 
   return response.text()
+}
+
+class EngineError extends Error {
+  constructor (method, { url, status, statusText }, { detail, reason }, ...params) {
+    super(...params)
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, EngineError)
+    }
+
+    this.name = 'EngineError'
+    this.detail = detail
+    this.message = `Method: ${method}, url: ${url}, status: ${status}, status text: ${statusText}`
+    if (reason) {
+      this.message = `${this.message}, reason: ${reason}`
+    }
+    if (detail) {
+      if (this.detail.startsWith('[')) {
+        this.detail = this.detail.substring(1)
+      }
+      if (this.detail.endsWith(']')) {
+        this.detail = this.detail.substring(0, this.detail.length - 2)
+      }
+      this.message = `${this.message}, detailed message: ${this.detail}`
+    }
+  }
 }
