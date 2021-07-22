@@ -9,7 +9,7 @@ Source: @TAR_FILE@
 BuildArch: noarch
 
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.55-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.0.56-1
 
 Requires: ovirt-engine-webadmin-portal >= 4.3
 Requires: ovirt-ansible-collection >= 1.2.0

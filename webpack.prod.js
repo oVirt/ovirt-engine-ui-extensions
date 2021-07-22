@@ -10,8 +10,6 @@ const common = require('./webpack.common.js')
 // productions mode
 // @see https://github.com/patternfly/patternfly-react-seed/blob/master/webpack.prod.js
 async function prod () {
-  let cssToExtract
-
   const prodConfig = merge(await common, {
     mode: 'production',
     devtool: 'source-map',
@@ -20,25 +18,36 @@ async function prod () {
       rules: [
         {
           test: /\.css$/,
-          include: cssToExtract = [
-            path.resolve(__dirname, 'src'),
-            path.resolve(__dirname, 'static'),
-            path.resolve(__dirname, 'node_modules'),
-          ],
-          use: [
-            MiniCssExtractPlugin.loader,
+          oneOf: [
             {
-              loader: 'css-loader',
-              options: {
-                sourceMap: true,
-              },
+              // We import @patternfly/patternfly/patternfly-no-reset.css in all
+              // entry points.  It includes ALL of the css necessary for ALL PF4
+              // components.   We do not need to import any PF4 component only style
+              // sheets.  This null-loader will make sure those css files are excluded.
+              test: /@patternfly\/react-styles\/css/,
+              use: 'null-loader',
+            },
+            {
+              // For prod, extract our css AND vendor css
+              include: [
+                path.resolve(__dirname, 'src'),
+                path.resolve(__dirname, 'static'),
+                path.resolve(__dirname, 'node_modules'),
+              ],
+              use: [
+                MiniCssExtractPlugin.loader,
+                {
+                  loader: 'css-loader',
+                  options: {
+                    sourceMap: true,
+                  },
+                },
+              ],
+            },
+            {
+              use: ['style-loader', 'css-loader'],
             },
           ],
-        },
-        {
-          test: /\.css$/,
-          exclude: cssToExtract,
-          use: ['style-loader', 'css-loader'],
         },
       ],
     },
