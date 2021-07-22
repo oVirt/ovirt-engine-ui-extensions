@@ -86,7 +86,7 @@
     "mini-css-extract-plugin": "^0.8.0",
     "null-loader": "^4.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "react-intl-po": "^1.2.0",
+    "react-intl-po": "2.2.2",
     "react-test-renderer": "^16.13.1",
     "style-loader": "^0.23.1",
     "table": "^5.4.6",
