@@ -118,6 +118,33 @@ const GpuDataProvider = ({ children, vmId }) => {
     return gpus
   }
 
+  const countAggregatedMaxInstances = (gpus) => {
+    // count how many instances of a mdev type has each host (host can have more cards)
+    const aggregatedMaxInstances = {}
+    gpus.forEach((gpu) => {
+      if (gpu.maxInstances) {
+        if (!(gpu.mDevType in aggregatedMaxInstances)) {
+          aggregatedMaxInstances[gpu.mDevType] = {}
+        }
+
+        const aggregatedMaxInstancesPerHosts = aggregatedMaxInstances[gpu.mDevType]
+        if (gpu.host in aggregatedMaxInstancesPerHosts) {
+          aggregatedMaxInstancesPerHosts[gpu.host] += gpu.maxInstances
+        } else {
+          aggregatedMaxInstancesPerHosts[gpu.host] = gpu.maxInstances
+        }
+      }
+    })
+
+    // find the maximal number of instances of a given mdev type across all hosts
+    gpus.forEach((gpu) => {
+      if (gpu.mDevType in aggregatedMaxInstances && gpu.host in aggregatedMaxInstances[gpu.mDevType]) {
+        const max = Math.max(...Object.values(aggregatedMaxInstances[gpu.mDevType]))
+        gpu.aggregatedMaxInstances = Number.isFinite(max) ? max : undefined
+      }
+    })
+  }
+
   // See nVidia and kernel docs for explanation of the vGPU and mDev types data
   // Nvidia: https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#vgpu-information-in-sysfs-file-system
   // Kernel: https://www.kernel.org/doc/Documentation/vfio-mediated-device.txt
@@ -173,6 +200,7 @@ const GpuDataProvider = ({ children, vmId }) => {
     allCustomProperties = getCustomProperties(vm)
     const selectedMdevs = getSelectedMdevs(allCustomProperties)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
+    countAggregatedMaxInstances(gpus)
     const noDisplay = isNoDisplay(allCustomProperties)
     return { gpus: gpus, noDisplay: noDisplay }
   }

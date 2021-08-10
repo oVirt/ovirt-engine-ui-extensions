@@ -15,6 +15,7 @@ const columns = [
   msg.vmManageGpuTableVendor(),
   msg.vmManageGpuTableProduct(),
   msg.vmManageGpuTableAddress(),
+  { title: msg.vmManageGpuTableMaxInstances(), transforms: [nowrap] },
   { title: msg.vmManageGpuTableAvailableInstances(), transforms: [nowrap] },
 ]
 
@@ -26,6 +27,7 @@ const createRows = (gpus) => {
         handleNonAvailableValue(gpu.vendor),
         handleNonAvailableValue(gpu.product),
         handleNonAvailableValue(gpu.address),
+        handleNonAvailableValue(gpu.maxInstances),
         handleNonAvailableValue(gpu.availableInstances),
       ],
     }

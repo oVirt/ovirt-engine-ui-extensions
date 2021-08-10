@@ -123,6 +123,7 @@ ManageGpuModalBody.propTypes = {
       availableInstances: PropTypes.number,
       requestedInstances: PropTypes.number,
       maxInstances: PropTypes.number,
+      aggregatedMaxInstances: PropTypes.number,
       maxResolution: PropTypes.string,
       numberOfHeads: PropTypes.number,
       frameBuffer: PropTypes.string,

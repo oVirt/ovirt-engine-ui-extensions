@@ -121,7 +121,7 @@ const GpuTable = ({ gpus, selectedMDevTypes, onGpuSelectionChange }) => {
         handleNonAvailableValue(gpu.frameRateLimiter),
         handleNonAvailableValue(gpu.maxResolution),
         handleNonAvailableValue(gpu.frameBuffer),
-        handleNonAvailableValue(gpu.maxInstances),
+        handleNonAvailableValue(gpu.aggregatedMaxInstances),
         requestedInstances,
       ],
       gpu: gpu,
@@ -181,7 +181,7 @@ const GpuTable = ({ gpus, selectedMDevTypes, onGpuSelectionChange }) => {
     return [
       {
         title: msg.vmManageGpuAddActionButton(),
-        isDisabled: selectedMDevTypes[rowData.gpu.mDevType] >= rowData.gpu.maxInstances,
+        isDisabled: rowData.gpu.aggregatedMaxInstances && selectedMDevTypes[rowData.gpu.mDevType] >= rowData.gpu.aggregatedMaxInstances,
         onClick: (_event, _rowId, rowData, _extra) => {
           onGpuSelectionChange(rowData.gpu.mDevType, selectedMDevTypes[rowData.gpu.mDevType] + 1)
         },
@@ -239,6 +239,7 @@ GpuTable.propTypes = {
       availableInstances: PropTypes.number,
       requestedInstances: PropTypes.number,
       maxInstances: PropTypes.number,
+      aggregatedMaxInstances: PropTypes.number,
       maxResolution: PropTypes.string,
       numberOfHeads: PropTypes.number,
       frameBuffer: PropTypes.string,

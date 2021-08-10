@@ -16,7 +16,7 @@ function gpuArrayToSelectedMap (gpus) {
         mdevTypesToRequestedInstances[gpu.mDevType] = 0
       } else {
         selectedMDevTypeAlreadyFound = !!gpu.requestedInstances
-        mdevTypesToRequestedInstances[gpu.mDevType] = Math.min(gpu.requestedInstances, gpu.maxInstances)
+        mdevTypesToRequestedInstances[gpu.mDevType] = Math.min(gpu.requestedInstances, gpu.aggregatedMaxInstances || Number.POSITIVE_INFINITY)
       }
     }
   }
@@ -118,6 +118,7 @@ ManageGpuModal.propTypes = {
       availableInstances: PropTypes.number,
       requestedInstances: PropTypes.number,
       maxInstances: PropTypes.number,
+      aggregatedMaxInstances: PropTypes.number,
       maxResolution: PropTypes.string,
       numberOfHeads: PropTypes.number,
       frameBuffer: PropTypes.string,
