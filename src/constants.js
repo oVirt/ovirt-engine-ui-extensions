@@ -103,4 +103,5 @@ export const vmUpStates = ['Up', 'PoweringUp', 'RebootInProgress', 'Paused']
 
 export const autoSelectItemVal = '_AutoSelect_'
 
-export const noHostVal = '__NO_HOST__'
+export const noHostValue = '__NO_HOST__'
+export const selectHostValue = '_None_'

@@ -24,23 +24,23 @@ const HEADER_ICON = {
 
 const STATUS_TYPE = {
   up: {
-    text: msg.dashboardStatusTypeUp(),
+    toText: msg.dashboardStatusTypeUp,
     iconClass: <ArrowAltCircleUpIcon style={{ height: '15px' }} />,
   },
   down: {
-    text: msg.dashboardStatusTypeDown(),
+    toText: msg.dashboardStatusTypeDown,
     iconClass: <ArrowAltCircleDownIcon style={{ height: '15px' }} />,
   },
   error: {
-    text: msg.dashboardStatusTypeError(),
+    toText: msg.dashboardStatusTypeError,
     iconClass: <ErrorCircleOIcon style={{ color: 'var(--pf-global--danger-color--100)', height: '15px' }} />,
   },
   warning: {
-    text: msg.dashboardStatusTypeWarning(),
+    toText: msg.dashboardStatusTypeWarning,
     iconClass: <WarningTriangleIcon style={{ color: 'var(--pf-global--warning-color--100)', height: '15px' }} />,
   },
   alert: {
-    text: msg.dashboardStatusTypeAlert(),
+    toText: msg.dashboardStatusTypeAlert,
     iconClass: <FlagIcon style={{ height: '15px' }} />,
   },
 }
@@ -55,7 +55,7 @@ const AggregateStatusCard = ({
   onStatusCountClick = () => {},
 }) => {
   const statusTypeToText =
-    (statusType) => STATUS_TYPE[statusType] ? STATUS_TYPE[statusType].text : msg.dashboardStatusTypeUnknown()
+    (statusType) => STATUS_TYPE[statusType] ? STATUS_TYPE[statusType].toText() : msg.dashboardStatusTypeUnknown()
 
   const statusTypeToIconClass =
     (statusType) => STATUS_TYPE[statusType] ? STATUS_TYPE[statusType].iconClass : <QuestionCircleIcon />

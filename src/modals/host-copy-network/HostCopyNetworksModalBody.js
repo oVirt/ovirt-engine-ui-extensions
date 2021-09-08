@@ -13,17 +13,7 @@ import { msg } from '_/intl-messages'
 
 import FieldLevelHelp from '_/components/helper/FieldLevelHelp'
 
-import { noHostVal } from '_/constants'
-
-const NO_HOST_AVAILABLE_HOST_ITEMS = [{
-  text: msg.hostCopyNetworksNoAvailableHost(),
-  value: noHostVal,
-}]
-
-export const CHOOSE_MSG = {
-  text: msg.hostCopyNetworksSelectHost(),
-  value: '_None_',
-}
+import { noHostValue, selectHostValue } from '_/constants'
 
 export const selectItemShape = {
   value: PropTypes.string.isRequired,
@@ -38,8 +28,19 @@ const HostCopyNetworksModalBody = ({
 }) => {
   const copyDisabled = targetHostItems.length === 0
   const items = copyDisabled
-    ? NO_HOST_AVAILABLE_HOST_ITEMS
-    : [CHOOSE_MSG, ...targetHostItems]
+    ? [
+      {
+        text: msg.hostCopyNetworksNoAvailableHost(),
+        value: noHostValue,
+      },
+    ]
+    : [
+      {
+        text: msg.hostCopyNetworksSelectHost(),
+        value: selectHostValue,
+      },
+      ...targetHostItems,
+    ]
 
   return (
     <>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
+import { selectHostValue } from '_/constants'
 
 import PluginApiModal from '_/components/modals/PluginApiModal'
 import { Spinner } from 'patternfly-react'
 import { Button } from '@patternfly/react-core'
-import HostCopyNetworksModalBody, { CHOOSE_MSG, selectItemShape } from './HostCopyNetworksModalBody'
+import HostCopyNetworksModalBody, { selectItemShape } from './HostCopyNetworksModalBody'
 
 const HostCopyNetworksModal = ({
   isLoading = false,
@@ -16,7 +17,7 @@ const HostCopyNetworksModal = ({
   onClose = () => {},
 }) => {
   const [isOpen, setOpen] = useState(true)
-  const [hostId, setHostId] = useState(CHOOSE_MSG.value)
+  const [hostId, setHostId] = useState(selectHostValue)
 
   if (!isOpen) {
     return null
@@ -28,10 +29,7 @@ const HostCopyNetworksModal = ({
   }
 
   const onCopyNetworksToHostButtonClick = () => {
-    const hostOrNothing =
-      hostId === CHOOSE_MSG.value
-        ? undefined
-        : hostId
+    const hostOrNothing = hostId === selectHostValue ? undefined : hostId
 
     onCopyNetworksToHost(hostOrNothing)
     close()
@@ -43,7 +41,7 @@ const HostCopyNetworksModal = ({
       ouiaId='host-copy-networks-copy-button'
       variant='primary'
       onClick={onCopyNetworksToHostButtonClick}
-      isDisabled={targetHostItems.length === 0 || hostId === CHOOSE_MSG.value}
+      isDisabled={targetHostItems.length === 0 || hostId === selectHostValue}
     >
       {msg.hostCopyNetworksButton()}
     </Button>,

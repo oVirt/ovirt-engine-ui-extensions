@@ -18,7 +18,7 @@ import VmList from './VmList'
 
 import { stringCompare } from '_/utils/compare'
 
-import { autoSelectItemVal, noHostVal } from '_/constants'
+import { autoSelectItemVal, noHostValue } from '_/constants'
 
 export const selectItemShape = {
   value: PropTypes.string.isRequired,
@@ -41,7 +41,7 @@ const VmMigrateModalBody = ({
   }
   const noHostItems = [{
     text: msg.migrateVmNoAvailableHost(),
-    value: noHostVal,
+    value: noHostValue,
   }]
 
   const items = migrationDisabled

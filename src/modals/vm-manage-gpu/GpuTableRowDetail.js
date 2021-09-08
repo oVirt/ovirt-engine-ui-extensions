@@ -10,15 +10,6 @@ import {
 import { msg } from '_/intl-messages'
 import { handleNonAvailableValue } from './handleNonAvailableValue'
 
-const columns = [
-  msg.vmManageGpuTableHostName(),
-  msg.vmManageGpuTableVendor(),
-  msg.vmManageGpuTableProduct(),
-  msg.vmManageGpuTableAddress(),
-  { title: msg.vmManageGpuTableMaxInstances(), transforms: [nowrap] },
-  { title: msg.vmManageGpuTableAvailableInstances(), transforms: [nowrap] },
-]
-
 const createRows = (gpus) => {
   return gpus.map((gpu) => {
     return {
@@ -35,6 +26,15 @@ const createRows = (gpus) => {
 }
 
 const GpuTableRowDetail = ({ gpus }) => {
+  const columns = [
+    msg.vmManageGpuTableHostName(),
+    msg.vmManageGpuTableVendor(),
+    msg.vmManageGpuTableProduct(),
+    msg.vmManageGpuTableAddress(),
+    { title: msg.vmManageGpuTableMaxInstances(), transforms: [nowrap] },
+    { title: msg.vmManageGpuTableAvailableInstances(), transforms: [nowrap] },
+  ]
+
   return (
     <Table
       aria-label='Simple Table'
