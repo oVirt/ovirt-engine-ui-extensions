@@ -20,6 +20,7 @@ import 'patternfly-react/dist/css/patternfly-react.css'
 //      See: https://github.com/patternfly/patternfly-react/pull/5166#pullrequestreview-546364469
 //
 import '@patternfly/patternfly/patternfly-no-reset.css'
+import '@patternfly/patternfly/patternfly-addons.css'
 
 // ** overrides
 import '../static/css/plugin-pf4-overrides.css'
