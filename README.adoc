@@ -1,4 +1,5 @@
 = oVirt UI Extensions
+image:https://copr.fedorainfracloud.org/coprs/ovirt/ovirt-master-snapshot/package/ovirt-engine-ui-extensions/status_image/last_build.png[link="https://copr.fedorainfracloud.org/coprs/ovirt/ovirt-master-snapshot/package/ovirt-engine-ui-extensions/"]
 
 == Introduction
 

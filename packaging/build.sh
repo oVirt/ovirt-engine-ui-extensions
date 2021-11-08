@@ -23,6 +23,15 @@ spectool \
   --get-files \
   "${spec_file}"
 
+if [[ "${1:-foo}" == "copr" ]] ; then
+# Build the source .rpm files:
+rpmbuild \
+  -bs \
+  --define="_sourcedir ${PWD}" \
+  --define="_rpmdir ${PWD}" \
+  --define="_srcrpmdir ${PWD}" \
+  "${spec_file}"
+else
 # Build the source and binary .rpm files:
 rpmbuild \
   -ba \
@@ -30,3 +39,4 @@ rpmbuild \
   --define="_rpmdir ${PWD}" \
   --define="_srcrpmdir ${PWD}" \
   "${spec_file}"
+fi
