@@ -1,18 +1,21 @@
-#!/bin/sh -ex
+#!/bin/bash -ex
 
-if [[ "${1:-foo}" != "copr" ]] ; then
-# Force updating nodejs-modules so any pre-seed update to rpm wait is minimized
-PACKAGER=$(command -v dnf >/dev/null 2>&1 && echo 'dnf' || echo 'yum')
-REPOS=$(sed -e '/^#/d' -e '/^[ \t]*$/d' automation/build.repos | cut -f 1 -d ',' | paste -s -d,)
+[[ "${1:-foo}" == "copr" ]] && source_build=1 || source_build=0
+[[ ${OFFLINE_BUILD:-1} -eq 1 ]] && use_nodejs_modules=1 || use_nodejs_modules=0
 
-${PACKAGER} --disablerepo='*' --enablerepo="${REPOS}" clean metadata
-${PACKAGER} -y install ovirt-engine-nodejs-modules
+if [[ $source_build -eq 0 && $use_nodejs_modules -eq 1 ]] ; then
+  # Force updating nodejs-modules so any pre-seed update to rpm wait is minimized
+  PACKAGER=$(command -v dnf >/dev/null 2>&1 && echo 'dnf' || echo 'yum')
+  REPOS=$(sed -e '/^#/d' -e '/^[ \t]*$/d' automation/build.repos | cut -f 1 -d ',' | paste -s -d,)
 
-# Clean the artifacts directory:
-rm -rf exported-artifacts
+  ${PACKAGER} --disablerepo='*' --enablerepo="${REPOS}" clean metadata
+  ${PACKAGER} -y install ovirt-engine-nodejs-modules
 fi
 
-# create the artifacts directory:
+# Clean the artifacts directory:
+test -d exported-artifacts && rm -rf exported-artifacts || :
+
+# Create the artifacts directory:
 mkdir -p exported-artifacts
 
 # Resolve the version and snapshot used for RPM build:
@@ -36,10 +39,11 @@ git archive --prefix="${tar_prefix}" --output="${tar_file}" HEAD
 # Build the RPM:
 mv "${tar_file}" packaging/
 pushd packaging
+    export source_build
     export tar_version="${version}"
     export tar_file
     export rpm_snapshot="${snapshot}"
-    ./build.sh ${1:-foo}
+    ./build.sh
 popd
 
 # Copy the .tar.gz and .rpm files to the artifacts directory:

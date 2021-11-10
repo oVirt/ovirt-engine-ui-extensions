@@ -15,28 +15,24 @@ sed \
   -e "s|@RPM_VERSION@|${rpm_version}|g" \
   -e "s|@RPM_SNAPSHOT@|${rpm_snapshot}|g" \
   -e "s|@TAR_FILE@|${tar_file}|g" \
+  -e "s|@OFFLINE_BUILD@|${OFFLINE_BUILD:-1}|g" \
   < "${spec_template}" \
   > "${spec_file}" \
 
-# Download the sources:
-spectool \
-  --get-files \
-  "${spec_file}"
-
-if [[ "${1:-foo}" == "copr" ]] ; then
-# Build the source .rpm files:
-rpmbuild \
-  -bs \
-  --define="_sourcedir ${PWD}" \
-  --define="_rpmdir ${PWD}" \
-  --define="_srcrpmdir ${PWD}" \
-  "${spec_file}"
+if [[ ${source_build:-0} -eq 1 ]] ; then
+  # Build the source .rpm files:
+  rpmbuild \
+    -bs \
+    --define="_sourcedir ${PWD}" \
+    --define="_rpmdir ${PWD}" \
+    --define="_srcrpmdir ${PWD}" \
+    "${spec_file}"
 else
-# Build the source and binary .rpm files:
-rpmbuild \
-  -ba \
-  --define="_sourcedir ${PWD}" \
-  --define="_rpmdir ${PWD}" \
-  --define="_srcrpmdir ${PWD}" \
-  "${spec_file}"
+  # Build the source and binary .rpm files:
+  rpmbuild \
+    -ba \
+    --define="_sourcedir ${PWD}" \
+    --define="_rpmdir ${PWD}" \
+    --define="_srcrpmdir ${PWD}" \
+    "${spec_file}"
 fi
