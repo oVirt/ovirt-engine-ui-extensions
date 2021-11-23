@@ -2,6 +2,7 @@ import { entityTypes, vmUpStates } from '_/constants'
 import getPluginApi from '_/plugin-api'
 import config from '_/plugin-config'
 import { msg } from '_/intl-messages'
+import { showCpuPinningModal } from './showVmCpuPinning'
 import { showVmManageGpuModal } from './showVmManageGpu'
 import { showVmMigrateModal } from './showVmMigrate'
 import { showClusterUpgradeWizard } from './showClusterUpgrade'
@@ -20,6 +21,17 @@ function addVmManageGpuButton () {
 
     index: 2,
     id: 'VmManageGpu',
+  })
+}
+
+function addVmCpuPinningButton () {
+  getPluginApi().addDetailPlaceActionButton(entityTypes.vm, entityTypes.hostDevices, msg.cpuPinningModalButton(), {
+    onClick: function (_selectedItems, parent) {
+      showCpuPinningModal(parent)
+    },
+
+    index: 3,
+    id: 'VmCpuPinning',
   })
 }
 
@@ -130,6 +142,7 @@ function addHostCopyNetworksButton () {
 
 export function addButtons () {
   addVmManageGpuButton()
+  addVmCpuPinningButton()
   addVmMigrateButton()
   addHostVmMigrateButton()
   addVmExportButton()

@@ -1,0 +1,36 @@
+.cpu-pinning-body {
+    min-height: 300px;
+}
+
+.cpu-socket {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.cpu-core {
+    background-color: var(--pf-global--palette--blue-50);
+    margin: 10px;
+    padding: 10px;
+}
+
+.cpu-core-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 10px;
+}
+
+.cpu-thread {
+    display: inline-block;
+    background-color: white;
+    box-shadow: var(--pf-global--BoxShadow--md);
+    width: 130px;
+    min-height: 130px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.cpu-thread-body {
+    padding-top: 5px;
+}

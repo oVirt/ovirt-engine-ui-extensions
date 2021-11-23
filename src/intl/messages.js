@@ -993,6 +993,127 @@ const messageDescriptors = {
       'as the source host. The management network configuration is not copied.',
     description: 'field help for the dropdown used to select copy networks target host',
   },
+
+  // CPU pinning modal dialog related strings
+
+  cpuPinningModalButton: {
+    id: 'cpupinning.buttonLabel',
+    defaultMessage: 'View CPU Pinning',
+    description: 'label of `View CPU Pinning` button',
+  },
+
+  cpuPinningDataError: {
+    id: 'cpu.pinning.dataError',
+    defaultMessage: 'Could not fetch data needed for the CPU Pinning dialog',
+    description: 'notification shown when CPU Pinning dialog failed to load its data',
+  },
+
+  cpuPinningModalTitle: {
+    id: 'cpu.pinning.modal.title',
+    defaultMessage: 'CPU Pinning',
+    description: 'title of the CPU Pinning dialog',
+  },
+
+  cpuPinningModalVmPinningPolicyField: {
+    id: 'cpu.pinning.modal.field.cpupinning.policy',
+    defaultMessage: 'CPU Pinning Policy',
+    description: 'cpu pinning policy field in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalVmPinningPolicyFieldNone: {
+    id: 'cpu.pinning.modal.field.cpupinning.policy.none',
+    defaultMessage: 'None',
+    description: 'None cpu pinning policy field in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalVmPinningPolicyFieldManual: {
+    id: 'cpu.pinning.modal.field.cpupinning.policy.manual',
+    defaultMessage: 'Manual',
+    description: 'Manual cpu pinning policy field in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalVmPinningPolicyFieldResizeAndPin: {
+    id: 'cpu.pinning.modal.field.cpupinning.policy.resize.and.pin',
+    defaultMessage: 'Resize and Pin Numa',
+    description: 'Resize and Pin Numa cpu pinning policy field in the CPU Pinning dialog',
+  },
+  cpuPinningModalVmPinningField: {
+    id: 'cpu.pinning.modal.field.cpupinning',
+    defaultMessage: 'CPU Pinning',
+    description: 'cpu pinning field in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalVmPinningFieldPlaceholder: {
+    id: 'cpu.pinning.modal.field.cpupinning.placeholder',
+    defaultMessage: 'No CPU Pinning specified for the VM',
+    description: 'cpu pinning field placeholder in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalHostField: {
+    id: 'cpu.pinning.modal.field.host',
+    defaultMessage: 'Host',
+    description: 'host field in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalRunsOnHostField: {
+    id: 'cpu.pinning.modal.field.host.runson',
+    defaultMessage: 'Runs On',
+    description: 'runs on host field in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalRunsOnHostFieldPlaceholder: {
+    id: 'cpu.pinning.modal.field.host.runson.placeholder',
+    defaultMessage: 'The VM is currently not running',
+    description: 'runs on host placeholder in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalEmptyState: {
+    id: 'cpu.pinning.modal.empty.title',
+    defaultMessage: 'No CPU topology found',
+    description: 'title of the empty state in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalAlertInvalidPinningTitle: {
+    id: 'cpu.pinning.modal.alert.pinning.title',
+    defaultMessage: 'Invalid pinning',
+    description: 'alert title for the invalid pinning in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalAlertInvalidPinningText: {
+    id: 'cpu.pinning.modal.alert.pinning.text',
+    defaultMessage: 'The pinning is not valid for the selected host. Some pinned CPU IDs do not map to host CPU IDs.',
+    description: 'alert text for the invalid pinning in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalCpuId: {
+    id: 'cpu.pinning.modal.cpuId',
+    defaultMessage: 'vCPU',
+    description: 'label of the vCPU in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalPinnedCpu: {
+    id: 'cpu.pinning.modal.pinnedCpu',
+    defaultMessage: 'pCPU',
+    description: 'label of the pCPU in the CPU Pinning dialog',
+  },
+
+  cpuTopology: {
+    id: 'cpu.topology',
+    defaultMessage: 'CPU Topology',
+    description: 'cpu topology',
+  },
+
+  cpuTopologySocket: {
+    id: 'cpu.topology.socket',
+    defaultMessage: 'Socket',
+    description: 'socket',
+  },
+
+  cpuTopologyCore: {
+    id: 'cpu.topology.core',
+    defaultMessage: 'Core',
+    description: 'core',
+  },
 }
 
 module.exports = exports = messageDescriptors
