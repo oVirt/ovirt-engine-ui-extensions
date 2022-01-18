@@ -20,6 +20,13 @@ export function buildSearch (prefix, fields = []) {
   return str
 }
 
+/**
+ * Apply a search query to the given webadmin place.
+ *
+ * @param {string} place Top level place to navigate the user
+ * @param {string} prefix Primary search entity
+ * @param {[{ name: string, values: [string], operator: string }]} fields Search fields and values
+ */
 export function applySearch (place, prefix, fields = []) {
   getPluginApi().revealPlace(place)
   getPluginApi().setSearchString(buildSearch(prefix, fields))
