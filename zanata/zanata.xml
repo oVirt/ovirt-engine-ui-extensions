@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
-    <url>https://zanata.phx.ovirt.org/</url>
+    <url>https://zanata.ovirt.org/</url>
     <project>ovirt-engine-ui-extensions</project>
     <project-version>1.2</project-version>
     <project-type>gettext</project-type>
