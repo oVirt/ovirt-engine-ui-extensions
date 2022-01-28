@@ -6,6 +6,8 @@ dist/
 
 # Additional build artifacts
 extra/
+tmp.repos/
+exported-artifacts/
 
 # IDE files
 .idea/
@@ -17,7 +19,6 @@ extra/
 # mock_runner
 .bash_history
 .node-gyp/
-exported-artifacts/
 rpmbuild/
 
 # override default excludes so we can lint config js files in project root

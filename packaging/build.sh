@@ -17,22 +17,18 @@ sed \
   -e "s|@TAR_FILE@|${tar_file}|g" \
   -e "s|@OFFLINE_BUILD@|${OFFLINE_BUILD:-1}|g" \
   < "${spec_template}" \
-  > "${spec_file}" \
+  > "${spec_file}"
 
 if [[ ${source_build:-0} -eq 1 ]] ; then
   # Build the source .rpm files:
   rpmbuild \
     -bs \
-    --define="_sourcedir ${PWD}" \
-    --define="_rpmdir ${PWD}" \
-    --define="_srcrpmdir ${PWD}" \
+    --define="_topdir ${top_dir}" \
     "${spec_file}"
 else
   # Build the source and binary .rpm files:
   rpmbuild \
     -ba \
-    --define="_sourcedir ${PWD}" \
-    --define="_rpmdir ${PWD}" \
-    --define="_srcrpmdir ${PWD}" \
+    --define="_topdir ${top_dir}" \
     "${spec_file}"
 fi

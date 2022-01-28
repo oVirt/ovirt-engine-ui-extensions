@@ -12,7 +12,7 @@ BuildArch: noarch
 
 %if %{offline_build}
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.0.56-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.1.6-1
 %else
 BuildRequires: nodejs >= 14.15
 BuildRequires: yarn >= 1.22
@@ -32,6 +32,7 @@ Extensions include:
   - Cluster upgrade wizard
   - Host copy network dialog
   - VM export dialog
+  - VM CPU host pinning dialog
   - VM manage GPU dialog
   - VM migrate dialog
 

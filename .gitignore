@@ -9,6 +9,8 @@ extra/
 packaging/ovirt-engine-ui-extensions.spec
 packaging/ovirt-engine-ui-extensions*.tar.gz
 stats.json
+tmp.repos/
+exported-artifacts/
 
 # Yarn log files
 yarn-error.log
@@ -24,6 +26,5 @@ yarn-error.log
 # mock_runner
 .bash_history
 .node-gyp/
-exported-artifacts/
 rpmbuild/
 mocker-*.cfg
