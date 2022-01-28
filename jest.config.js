@@ -47,6 +47,7 @@ module.exports = {
     '<rootDir>/exported-artifacts',
     '<rootDir>/node_modules',
     '<rootDir>/packaging',
+    '<rootDir>/tmp.repos',
     '<rootDir>/rpmbuild',
     '<rootDir>/zanata',
   ],

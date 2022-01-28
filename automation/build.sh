@@ -1,16 +1,7 @@
 #!/bin/bash -ex
 
 [[ "${1:-foo}" == "copr" ]] && source_build=1 || source_build=0
-[[ ${OFFLINE_BUILD:-1} -eq 1 ]] && use_nodejs_modules=1 || use_nodejs_modules=0
-
-if [[ $source_build -eq 0 && $use_nodejs_modules -eq 1 ]] ; then
-  # Force updating nodejs-modules so any pre-seed update to rpm wait is minimized
-  PACKAGER=$(command -v dnf >/dev/null 2>&1 && echo 'dnf' || echo 'yum')
-  REPOS=$(sed -e '/^#/d' -e '/^[ \t]*$/d' automation/build.repos | cut -f 1 -d ',' | paste -s -d,)
-
-  ${PACKAGER} --disablerepo='*' --enablerepo="${REPOS}" clean metadata
-  ${PACKAGER} -y install ovirt-engine-nodejs-modules
-fi
+[[ ${MOVE_ARTIFACTS:-1} -eq 1 ]] && use_exported_artifacts=1 || use_exported_artifacts=0
 
 # Clean the artifacts directory:
 test -d exported-artifacts && rm -rf exported-artifacts || :
@@ -30,14 +21,19 @@ if [ ! -z ${tag} ]; then
   snapshot=""
 fi
 
-# Build the tar file:
+# Build the source tar file from git known files:
 tar_name="ovirt-engine-ui-extensions"
 tar_prefix="${tar_name}-${version}/"
 tar_file="${tar_name}-${version}${snapshot}.tar.gz"
 git archive --prefix="${tar_prefix}" --output="${tar_file}" HEAD
 
+# Create rpm build directories and place the src tar in the right place
+export top_dir="${PWD}/tmp.repos"
+test -d "${top_dir}" && rm -rf "${top_dir}" || :
+mkdir -p "${top_dir}"/{SPECS,RPMS,SRPMS,SOURCES}
+mv "${tar_file}" "${top_dir}/SOURCES"
+
 # Build the RPM:
-mv "${tar_file}" packaging/
 pushd packaging
     export source_build
     export tar_version="${version}"
@@ -47,7 +43,11 @@ pushd packaging
 popd
 
 # Copy the .tar.gz and .rpm files to the artifacts directory:
-for file in $(find . -type f -regex '.*\.\(tar.gz\|rpm\)'); do
-  echo "Archiving file \"$file\"."
-  mv "$file" exported-artifacts/
-done
+if [[ $use_exported_artifacts -eq 1 ]] ; then
+  [[ -d exported-artifacts ]] || mkdir -p exported-artifacts
+
+  for file in $(find $top_dir -type f -regex '.*\.\(tar.gz\|rpm\)'); do
+    echo "Archiving file \"$file\"."
+    mv "$file" exported-artifacts/
+  done
+fi
