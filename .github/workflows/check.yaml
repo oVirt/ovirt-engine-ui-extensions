@@ -13,15 +13,9 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: quay.io/centos/centos:stream8
+      image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
-      - name: Enable repos, choose module versions, install required packages
-        run: |
-          dnf -y copr enable ovirt/ovirt-master-snapshot centos-stream-8
-          dnf -y module enable nodejs:14
-          dnf -y install ovirt-engine-nodejs-modules git
-
       - name: Checkout sources
         uses: actions/checkout@v2
 
@@ -38,15 +32,9 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: quay.io/centos/centos:stream8
+      image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
-      - name: Enable repos, choose module versions, install base required packages
-        run: |
-          dnf -y copr enable ovirt/ovirt-master-snapshot centos-stream-8
-          dnf -y module enable nodejs:14
-          dnf -y install ovirt-engine-nodejs-modules git jq rpm-build
-
       - name: Checkout sources
         uses: actions/checkout@v2
 
@@ -64,15 +52,13 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: quay.io/centos/centos:stream8
+      image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
-      - name: Enable repos, choose module versions, install base required packages
+      - name: Install yarn (online mode does not use ovirt-engine-nodejs-modules so yarn isn't installed)
         run: |
-          dnf -y copr enable ovirt/ovirt-master-snapshot centos-stream-8
           dnf -y config-manager --add-repo https://dl.yarnpkg.com/rpm/yarn.repo
-          dnf -y module enable nodejs:14
-          dnf -y install git jq yarn nodejs
+          dnf -y install yarn
 
       - name: Checkout sources
         uses: actions/checkout@v2
@@ -91,15 +77,13 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: quay.io/centos/centos:stream8
+      image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
-      - name: Enable repos, choose module versions, install base required packages
+      - name: Install yarn (online mode does not use ovirt-engine-nodejs-modules so yarn isn't installed)
         run: |
-          dnf -y copr enable ovirt/ovirt-master-snapshot centos-stream-8
           dnf -y config-manager --add-repo https://dl.yarnpkg.com/rpm/yarn.repo
-          dnf -y module enable nodejs:14
-          dnf -y install git jq rpm-build
+          dnf -y install yarn
 
       - name: Checkout sources
         uses: actions/checkout@v2

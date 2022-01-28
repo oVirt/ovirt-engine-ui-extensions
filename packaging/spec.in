@@ -10,6 +10,12 @@ Source: @TAR_FILE@
 
 BuildArch: noarch
 
+# requirements for automation/build.sh (to be included in the build container)
+BuildRequires: git
+BuildRequires: jq
+BuildRequires: rpmlint
+BuildRequires: rpm-build
+
 %if %{offline_build}
 # nodejs-modules embeds yarn and requires nodejs
 BuildRequires: ovirt-engine-nodejs-modules >= 2.1.6-1
