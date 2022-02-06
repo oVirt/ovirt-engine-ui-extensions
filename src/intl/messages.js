@@ -1181,6 +1181,140 @@ const messageDescriptors = {
     defaultMessage: 'Core {id, number, ::.}',
     description: 'core',
   },
+
+  // Storage Connections modal dialog related strings
+
+  storageConnectionsManageButton: {
+    id: 'storage.domains.connections.buttonLabel',
+    defaultMessage: 'Connections',
+    description: 'label for Storage Connections management dialog button',
+  },
+
+  storageConnectionsDataError: {
+    id: 'storage.domains.connections.dataError',
+    defaultMessage: 'Could not fetch data needed for showing Storage Connections',
+    description: 'notification shown when Storage Connections dialog failed to load its data',
+  },
+
+  storageConnectionsTitle: {
+    id: 'storage.domains.connections.title',
+    defaultMessage: 'Manage Storage Connections',
+    description: 'title of Storage Connections dialog',
+  },
+
+  storageConnectionsTitleWithName: {
+    id: 'storage.domains.connections.title.withName',
+    defaultMessage: 'Manage Storage Connections - {sdName}',
+    description: 'title of Storage Connections dialog with name',
+  },
+
+  storageConnectionsTableColAddress: {
+    id: 'storage.domains.connections.table.column.address',
+    defaultMessage: 'Address',
+    description: 'address column of Storage Connections Table',
+  },
+
+  storageConnectionsTableColPort: {
+    id: 'storage.domains.connections.table.column.port',
+    defaultMessage: 'Port',
+    description: 'port column of Storage Connections Table',
+  },
+
+  storageConnectionsTableColTarget: {
+    id: 'storage.domains.connections.table.column.target',
+    defaultMessage: 'Target',
+    description: 'target column of Storage Connections Table',
+  },
+
+  storageConnectionsTableColPath: {
+    id: 'storage.domains.connections.table.column.path',
+    defaultMessage: 'Path',
+    description: 'path column of Storage Connections Table',
+  },
+
+  storageConnectionsTableColAttached: {
+    id: 'storage.domains.connections.table.column.attached',
+    defaultMessage: 'Attached',
+    description: 'attached column of Storage Connections Table',
+  },
+
+  storageConnectionsTableAttachedStr: {
+    id: 'storage.domains.connections.table.connection.attached',
+    defaultMessage: 'ATTACHED',
+    description: 'attached string in Storage Connections Table',
+  },
+
+  storageConnectionsRemoveConnectionButton: {
+    id: 'storage.domains.connections.connection.remove.button',
+    defaultMessage: 'Remove',
+    description: 'remove Connection button',
+  },
+
+  storageConnectionsAddConnectionButton: {
+    id: 'storage.domains.connections.connection.add.button',
+    defaultMessage: 'Add',
+    description: 'add Connection button',
+  },
+
+  storageConnectionsAttachConnectionButton: {
+    id: 'storage.domains.connections.connection.attach.button',
+    defaultMessage: 'Attach',
+    description: 'attach Connection button',
+  },
+
+  storageConnectionsDetachConnectionButton: {
+    id: 'storage.domains.connections.connection.detach.button',
+    defaultMessage: 'Detach',
+    description: 'detach Connection button',
+  },
+
+  storageConnectionsDomainNotInMaintenanceWarning: {
+    id: 'storage.domains.connections.domain.maintenance.warning',
+    defaultMessage: 'Storage Domain is not in Maintenance mode',
+    description: 'storage Domain is not in Maintenance mode Warning',
+  },
+
+  storageConnectionsDomainNotInMaintenanceWarningDetail: {
+    id: 'storage.domains.connections.domain.maintenance.warning.detail',
+    defaultMessage: 'Connections cannot be attached or detached, cannot edit attached connections',
+    description: 'storage Domain is not in Maintenance mode Warning Detail',
+  },
+
+  storageConnectionsShowAllConnectionsSwitchOn: {
+    id: 'storage.domains.connections.showAll.switch.on',
+    defaultMessage: 'On',
+    description: 'show all connections switch on',
+  },
+
+  storageConnectionsShowAllConnectionsSwitchOff: {
+    id: 'storage.domains.connections.showAll.switch.off',
+    defaultMessage: 'Off',
+    description: 'show all connections switch off',
+  },
+
+  storageConnectionsShowAllConnectionsLabel: {
+    id: 'storage.domains.connections.showAll.label',
+    defaultMessage: 'Show all connections',
+    description: 'show all connections label',
+  },
+
+  storageConnectionsOperationFailedTitle: {
+    id: 'storage.domains.connections.operation.failed.title',
+    defaultMessage: 'Operation Failed',
+    description: 'storage Connection operation failed title',
+  },
+
+  storageConnectionsFieldRequiredError: {
+    id: 'storage.domains.connections.field.required.error',
+    defaultMessage: 'This field is required',
+    description: 'field required error message',
+  },
+
+  storageConnectionsFieldPortError: {
+    id: 'storage.domains.connections.field.port.error',
+    defaultMessage: 'Invalid port value',
+    description: 'invalid port field value error',
+  },
 }
 
 module.exports = exports = messageDescriptors

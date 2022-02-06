@@ -46,10 +46,6 @@ export async function enginePost (relativePath, body, extraHeaders) {
   return engineApiRequest('POST', relativePath, body, extraHeaders)
 }
 
-export async function engineDelete (relativePath) {
-  return engineApiRequest('DELETE', relativePath)
-}
-
 /**
  * Initiate Engine HTTP `PUT` request, expecting JSON response.
  *
@@ -61,6 +57,18 @@ export async function engineDelete (relativePath) {
  */
 export async function enginePut (relativePath, body, extraHeaders) {
   return engineApiRequest('PUT', relativePath, body, extraHeaders)
+}
+
+/**
+ * Initiate Engine HTTP `DELETE` request, expecting JSON response.
+ *
+ * @example
+ * ```
+ * const json = await engineDelete(`api/vms/${vmId}`)
+ * ```
+ */
+export async function engineDelete (relativePath, extraHeaders) {
+  return engineApiRequest('DELETE', relativePath, null, extraHeaders)
 }
 
 /**

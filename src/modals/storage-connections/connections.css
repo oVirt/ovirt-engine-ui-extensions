@@ -1,0 +1,13 @@
+.storage-connections-modal {
+    min-height: 700px;
+}
+.storage-connections-table th.pf-c-table__sort {
+    padding-top: var(--pf-c-table-cell--PaddingTop);
+    padding-right: var(--pf-c-table-cell--PaddingRight);
+    padding-bottom: var(--pf-c-table-cell--PaddingBottom);
+    padding-left: var(--pf-c-table-cell--PaddingLeft);
+}
+
+.storage-connections-table ul {
+    list-style: none;
+}
