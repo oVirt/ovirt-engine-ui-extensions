@@ -1,28 +1,33 @@
 = Packaging
 
 == Introduction
-
 This directory contains files required to package the application
 for packaging systems like RPM.
 
 == RPM
+The RPM build version number is pulled from `package.json`.  A snapshot suffix is added
+to the version if the HEAD commit is not tagged.
 
-To build the RPM place the `.tar.gz` file containing distribution
-of the application in this directory and then run the `build.sh`
-script, specifying the version with the `tar_version` environment
-variable.
+=== copr Builds
+[copr builds](https://copr.fedorainfracloud.org/coprs/ovirt/ovirt-master-snapshot/package/ovirt-engine-ui-extensions/)
+for the project work in two stages.  First, the source rpm is build.  See `.copr/Makefile`'s
+srpm target.  Second, the source rpm is rebuilt in specific target chroots.  The source
+rpm needs to have all of the sources and scripts needed to build the binary rpm from the
+source rpm.  This is the `%build` section of the spec file.
 
-For example, if the name of the file is
-`ovirt-engine-ui-extensions-0.0.1.tar.gz` then use the following command:
+=== Manual Builds
+To build both the source and binary RPMs run `build.sh` from the repository root directory
+using the offline build capabilities of `ovirt-engine-nodejs-modules`:
 
-  $ tar_version=0.0.1 build.sh
+  $ ./packaging/build.sh
 
-If the name of the `.tar.gz` file isn't the expected one,
-you can also specify the `tar_file` environment variable:
+To skip use of `ovirt-engine-nodejs-modules` use the follow varient:
 
-  tar_version=0.0.1 tar_file="mytar.tar.gz" build.sh
+  $ OFFLINE_BUILD=0 ./packaging/build.sh
 
-Resulting `.rpm` file will be created in the `noarch` subdirectory.
+=== Build Results
+In all cases, the resulting `.rpm` files will be in the `exported-artifacts/` subdirectory.
 
+=== Install Notes
 When installed, the RPM will put the files into
 `/usr/share/ovirt-engine-ui-extensions` directory.

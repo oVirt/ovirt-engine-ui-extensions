@@ -38,9 +38,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
 
-      - name: Run automation/build.sh
+      - name: Run packaging/build.sh
         run: |
-          ./automation/build.sh
+          ./packaging/build.sh
 
       - name: Upload artifacts as rpm repo
         uses: ovirt/upload-rpms-action@v2
@@ -90,7 +90,7 @@ jobs:
 
       - name: Build srpm
         run: |
-          ./automation/build.sh copr
+          ./packaging/build.sh copr
 
       - name: Install build dependencies from srpm
         run: |
