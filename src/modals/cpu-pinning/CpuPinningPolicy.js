@@ -15,7 +15,11 @@ const CpuPinningPolicy = {
   },
 
   isDynamic (policy) {
-    return !this.isManual(policy) && !this.isNone(policy)
+    return policy && !this.isManual(policy) && !this.isNone(policy)
+  },
+
+  isExclusive (policy) {
+    return policy === 'dedicated'
   },
 }
 

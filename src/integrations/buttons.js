@@ -2,7 +2,7 @@ import { entityTypes, vmUpStates } from '_/constants'
 import getPluginApi from '_/plugin-api'
 import config from '_/plugin-config'
 import { msg } from '_/intl-messages'
-import { showCpuPinningModal } from './showVmCpuPinning'
+import { showVmCpuPinningModal, showHostCpuPinningModal } from './showCpuPinning'
 import { showVmManageGpuModal } from './showVmManageGpu'
 import { showVmMigrateModal } from './showVmMigrate'
 import { showClusterUpgradeWizard } from './showClusterUpgrade'
@@ -27,7 +27,7 @@ function addVmManageGpuButton () {
 function addVmCpuPinningButton () {
   getPluginApi().addDetailPlaceActionButton(entityTypes.vm, entityTypes.hostDevices, msg.cpuPinningModalButton(), {
     onClick: function (_selectedItems, parent) {
-      showCpuPinningModal(parent)
+      showVmCpuPinningModal(parent)
     },
 
     index: 3,
@@ -141,6 +141,17 @@ function addHostCopyNetworksButton () {
   })
 }
 
+function addHostCpuPinningButton () {
+  getPluginApi().addDetailPlaceActionButton(entityTypes.host, entityTypes.hostDevices, msg.cpuPinningModalButton(), {
+
+    onClick: function (_selectedItems, parent) {
+      showHostCpuPinningModal(parent)
+    },
+
+    id: 'HostCpuPinning',
+  })
+}
+
 export function addButtons () {
   addVmManageGpuButton()
   addVmCpuPinningButton()
@@ -149,4 +160,5 @@ export function addButtons () {
   addVmExportButton()
   addClusterUpgradeButton()
   addHostCopyNetworksButton()
+  addHostCpuPinningButton()
 }

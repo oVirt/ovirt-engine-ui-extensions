@@ -1098,16 +1098,40 @@ const messageDescriptors = {
     description: 'alert text for the invalid pinning in the CPU Pinning dialog',
   },
 
+  cpuTopologyDescriptionForVmView: {
+    id: 'cpu.pinning.modal.cputopology.description.vm',
+    defaultMessage: 'The CPU Topology shows mapping from the VM\'s vCPU to the host physical CPU',
+    description: 'description text for the cpu topology',
+  },
+
+  cpuTopologyDescriptionForHostView: {
+    id: 'cpu.pinning.modal.cputopology.description.host',
+    defaultMessage: 'The CPU Topology shows mapping from the host physical CPU to the VM that has its vCPU pinned to the host physical CPU',
+    description: 'description text for the cpu topology',
+  },
+
   cpuPinningModalCpuId: {
     id: 'cpu.pinning.modal.cpuId',
-    defaultMessage: 'vCPU',
+    defaultMessage: 'CPU {id, number, ::.}',
+    description: 'label of the CPU in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalvCpuId: {
+    id: 'cpu.pinning.modal.vcpuId',
+    defaultMessage: 'vCPU {id, number, ::.}',
     description: 'label of the vCPU in the CPU Pinning dialog',
   },
 
   cpuPinningModalPinnedCpu: {
     id: 'cpu.pinning.modal.pinnedCpu',
-    defaultMessage: 'pCPU',
+    defaultMessage: 'pCPU {id, number, ::.}',
     description: 'label of the pCPU in the CPU Pinning dialog',
+  },
+
+  cpuPinningModalExclusivePinning: {
+    id: 'cpu.pinning.modal.exclusive.pinning',
+    defaultMessage: 'Exclusive pinning',
+    description: 'exclusive pinning in the CPU Pinning dialog',
   },
 
   cpuTopology: {
@@ -1118,13 +1142,13 @@ const messageDescriptors = {
 
   cpuTopologySocket: {
     id: 'cpu.topology.socket',
-    defaultMessage: 'Socket',
+    defaultMessage: 'Socket {id, number, ::.}',
     description: 'socket',
   },
 
   cpuTopologyCore: {
     id: 'cpu.topology.core',
-    defaultMessage: 'Core',
+    defaultMessage: 'Core {id, number, ::.}',
     description: 'core',
   },
 }

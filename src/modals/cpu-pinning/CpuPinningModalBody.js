@@ -12,81 +12,95 @@ import React, { useEffect, useState } from 'react'
 import { msg } from '_/intl-messages'
 import CpuPinningPolicy from './CpuPinningPolicy'
 import CpuTopology from './CpuTopology'
-import { parse } from './cpuPinningParser'
+import PinnedEntity from './PinnedEntity'
 
-const CpuPinningModalBody = ({ vm, hosts }) => {
-  const [selectedHost, setSelectedHost] = useState()
+const CpuPinningModalBody = ({
+  mainEntity,
+  pinnedEntities,
+  socketLabelProvider,
+  coreLabelProvider,
+  cpuLabelProvider,
+  pinnedCpuLabelProvider,
+  pinnedEntityIcon,
+  cpuTopologyDescription,
+  variant,
+}) => {
+  const [selectedPinnedEntity, setSelectedPinnedEntity] = useState()
 
   useEffect(() => {
-    if (hosts && hosts[0]) {
-      setSelectedHost(hosts[0])
+    if (pinnedEntities && pinnedEntities[0]) {
+      setSelectedPinnedEntity(pinnedEntities[0])
     }
-  }, [hosts])
+  }, [pinnedEntities])
 
-  const handleHostChange = (hostId) => {
-    setSelectedHost(hosts.find((host) => host.id === hostId))
-  }
-
-  const cpuPinningString = (vm) => {
-    // e.g 0#0_1#1-4,^2
-    const pinnings = []
-    vm.cpuPinnings.forEach((pinning) =>
-      pinnings.push(`${pinning.vcpu}#${pinning.cpuSet}`)
-    )
-    return pinnings.join('_')
-  }
-
-  const cpuPinningMapping = () => {
-    const mapping = new Map()
-    vm.cpuPinnings.forEach((cpuPinning) => {
-      const [vcpu, pcpus] = parse(cpuPinning)
-      mapping.set(vcpu, [...pcpus])
-    })
-    return mapping
+  const handlePinnedEntityChange = (id) => {
+    setSelectedPinnedEntity(pinnedEntities.find((pinned) => pinned.id === id))
   }
 
   const isPinnedCpuValid = (id) => {
-    return !selectedHost || (selectedHost.cpus > id)
+    return !selectedPinnedEntity || (selectedPinnedEntity.cpuCount > id)
   }
 
-  const cpuIdToPinnedCpuIdsMap = cpuPinningMapping()
-  const allPinnedCpusValid = Array.from(cpuIdToPinnedCpuIdsMap.values()).flat().every(cpu => isPinnedCpuValid(cpu))
+  const validateAllCpus = () => {
+    if (CpuPinningPolicy.isManual(mainEntity.cpuPinningPolicy)) {
+      for (const socket of mainEntity.cpuPinningTopology.sockets.values()) {
+        for (const core of socket.cores.values()) {
+          for (const cpu of core.cpus.values()) {
+            if (!isPinnedCpuValid(cpu.cpuId)) {
+              return false
+            }
+          }
+        }
+      }
+    }
+    return true
+  }
+
+  const allPinnedCpusValid = validateAllCpus()
+
   return (
     <DescriptionList>
-      <DescriptionListGroup>
-        <DescriptionListTerm>
-          {msg.cpuPinningModalVmPinningPolicyField()}
-        </DescriptionListTerm>
-        <DescriptionListDescription>
-          {CpuPinningPolicy[vm.cpuPinningPolicy] || vm.cpuPinningPolicy}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
-
-      <DescriptionListGroup>
-        <DescriptionListTerm>
-          {msg.cpuPinningModalVmPinningField()}
-        </DescriptionListTerm>
-        <DescriptionListDescription>
-          {cpuPinningString(vm) || msg.cpuPinningModalVmPinningFieldPlaceholder()}
-        </DescriptionListDescription>
-      </DescriptionListGroup>
       {
-        CpuPinningPolicy.isManual(vm.cpuPinningPolicy) && (
+        mainEntity.cpuPinningPolicy && (
+          <DescriptionListGroup>
+            <DescriptionListTerm>
+              {msg.cpuPinningModalVmPinningPolicyField()}
+            </DescriptionListTerm>
+            <DescriptionListDescription>
+              {CpuPinningPolicy[mainEntity.cpuPinningPolicy]}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+        )
+      }
+      {
+        mainEntity.cpuPinningString !== undefined && (
+          <DescriptionListGroup>
+            <DescriptionListTerm>
+              {msg.cpuPinningModalVmPinningField()}
+            </DescriptionListTerm>
+            <DescriptionListDescription>
+              {mainEntity.cpuPinningString || msg.cpuPinningModalVmPinningFieldPlaceholder()}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+        )
+      }
+      {
+        CpuPinningPolicy.isManual(mainEntity.cpuPinningPolicy) && (
           <DescriptionListGroup>
             <DescriptionListTerm>
               {msg.cpuPinningModalHostField()}
             </DescriptionListTerm>
             <DescriptionListDescription>
               <FormSelect
-                id='cpu-pinning-host-field'
-                value={selectedHost?.id}
-                onChange={handleHostChange}
+                id='cpu-pinned-entity-field'
+                value={selectedPinnedEntity?.id}
+                onChange={handlePinnedEntityChange}
               >
-                {hosts.map((host, index) => (
+                {pinnedEntities.map((pinned, index) => (
                   <FormSelectOption
                     key={index}
-                    value={host.id}
-                    label={host.name}
+                    value={pinned.id}
+                    label={pinned.name}
                   />
                 ))}
               </FormSelect>
@@ -95,14 +109,14 @@ const CpuPinningModalBody = ({ vm, hosts }) => {
         )
       }
       {
-        CpuPinningPolicy.isDynamic(vm.cpuPinningPolicy) && (
+        CpuPinningPolicy.isDynamic(mainEntity.cpuPinningPolicy) && (
           <DescriptionListGroup>
             <DescriptionListTerm>
               {msg.cpuPinningModalRunsOnHostField()}
             </DescriptionListTerm>
             <DescriptionListDescription>
               {
-                selectedHost?.name || msg.cpuPinningModalRunsOnHostFieldPlaceholder()
+                selectedPinnedEntity?.name || msg.cpuPinningModalRunsOnHostFieldPlaceholder()
               }
             </DescriptionListDescription>
           </DescriptionListGroup>
@@ -120,21 +134,21 @@ const CpuPinningModalBody = ({ vm, hosts }) => {
           )
           }
           {
-            !vm.cpuTopology.sockets && msg.cpuPinningModalEmptyState()
+            !mainEntity.cpuPinningTopology.numberOfSockets() && msg.cpuPinningModalEmptyState()
           }
           {
-            vm.cpuTopology.sockets && (
+            mainEntity.cpuPinningTopology.numberOfSockets() && (
               <div className='cpu-pinning-body'>
+                <div className='cpu-pinning-body-description'>{cpuTopologyDescription}</div>
                 <CpuTopology
-                  sockets={vm.cpuTopology.sockets}
-                  cores={vm.cpuTopology.cores}
-                  threads={vm.cpuTopology.threads}
-                  cpuIdToPinnedCpuIdsMap={cpuIdToPinnedCpuIdsMap}
-                  socketLabelProvider={(id) => `${msg.cpuTopologySocket()} ${id}`}
-                  coreLabelProvider={(id) => `${msg.cpuTopologyCore()} ${id}`}
-                  cpuLabelProvider={(id) => `${msg.cpuPinningModalCpuId()} ${id}`}
-                  pinnedCpuLabelProvider={(id) => `${msg.cpuPinningModalPinnedCpu()} ${id}`}
+                  variant={variant}
+                  topology={mainEntity.cpuPinningTopology}
+                  socketLabelProvider={socketLabelProvider}
+                  coreLabelProvider={coreLabelProvider}
+                  cpuLabelProvider={cpuLabelProvider}
+                  pinnedCpuLabelProvider={pinnedCpuLabelProvider}
                   isPinnedCpuValid={isPinnedCpuValid}
+                  pinnedEntityIcon={pinnedEntityIcon}
                 />
               </div>
             )
@@ -146,29 +160,17 @@ const CpuPinningModalBody = ({ vm, hosts }) => {
 }
 
 CpuPinningModalBody.propTypes = {
-  vm: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    cpuTopology: PropTypes.shape({
-      sockets: PropTypes.number,
-      cores: PropTypes.number,
-      threads: PropTypes.number,
-    }),
-    cpuPinningPolicy: PropTypes.string,
-    cpuPinnings: PropTypes.arrayOf(
-      PropTypes.shape({
-        vcpu: PropTypes.string,
-        cpuSet: PropTypes.string,
-      })
-    ),
-  }),
-  hosts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      cpus: PropTypes.number,
-    })
+  mainEntity: PropTypes.instanceOf(PinnedEntity),
+  pinnedEntities: PropTypes.arrayOf(
+    PropTypes.instanceOf(PinnedEntity)
   ),
+  socketLabelProvider: PropTypes.func,
+  coreLabelProvider: PropTypes.func,
+  cpuLabelProvider: PropTypes.func,
+  pinnedCpuLabelProvider: PropTypes.func,
+  cpuTopologyDescription: PropTypes.string,
+  pinnedEntityIcon: PropTypes.element,
+  variant: PropTypes.string,
 }
 
 export default CpuPinningModalBody
