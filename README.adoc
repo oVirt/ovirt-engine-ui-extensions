@@ -16,15 +16,17 @@ environment.
 
 === Prerequisites
 
-Install https://nodejs.org/[Node.js] (LTS). https://github.com/creationix/nvm[nvm] can be
+* Install https://nodejs.org/[Node.js] (LTS). https://github.com/creationix/nvm[nvm] can be
 used to manage multiple Node.js versions. Run `node -v` to check the current Node.js version.
 
-Install https://yarnpkg.com/[Yarn] package manager.
+* Install https://yarnpkg.com/[Yarn] package manager.
 
-Build and configure oVirt Engine according to its
-https://gerrit.ovirt.org/gitweb?p=ovirt-engine.git;a=blob_plain;f=README.adoc;hb=master[developer instructions].
+* Build and configure oVirt Engine according to its
+https://github.com/oVirt/ovirt-engine#developer-mode-installation[developer instructions].
 
-Checkout the source from https://gerrit.ovirt.org/#/admin/projects/ovirt-engine-ui-extensions[gerrit].
+* Checkout the sources from https://github.com/oVirt/ovirt-engine-ui-extensions[GitHub].
+
+NOTE: Required versions of `nodejs` and `yarn` can be seen in https://github.com/oVirt/ovirt-engine-ui-extensions/blob/master/packaging/spec.in[the current rpm spec template].
 
 === Setting up the extension
 
@@ -43,20 +45,24 @@ Build the extension with `yarn dev` or `yarn build` to generate `${PLUGIN_REPO}/
 Symlink the extension's plugin resources to `ui-plugins` directory of your developer
 engine as follows:
 
+```console
  % cd ${PREFIX}/share/ovirt-engine/ui-plugins/
  % ln -s ${PLUGIN_REPO}/dist/ui-extensions.json ui-extensions.json
  % ln -s ${PLUGIN_REPO}/dist/ui-extensions-resources ui-extensions-resources
+```
 
 Symlink the extensions's ansible resources to `playbooks` directory of your developer
 engine as follows:
 
+```console
  % cd ${PREFIX}/share/ovirt-engine/ansible-runner-service-project/project
  % ln -s ${PLUGIN_REPO}/ansible-playbooks/*
+```
 
 NOTE: If you add additional playbook yml files after the initial symlink, the
       process will need to be repeated.
 
-=== Accessing plugin
+=== Accessing the plugins
 
 Open WebAdmin in your browser, you should land on *Dashboard* place automatically:
 
@@ -75,7 +81,7 @@ as required.
 The current locale used by the `intl.js` formatting functions is provided to the application via
 the `app-init.js` service and the oVirt UI plugin API.
 
-We use the https://translate.zanata.org/[Zanata] tool to manage translations.
+We use the https://zanata.ovirt.org/[Zanata] tool instance to manage translations.
 
 === Translation workflow
 
@@ -86,7 +92,7 @@ Generally, the project is made localizable and is translated in the following wo
 * When the strings are stable, the messages are converted to a GNU gettext .pot file
 * The .pot file is pushed to Zanata
 * Translators do their work for each supported language within the corresponding
-  https://translate.zanata.org/project/view/ovirt-engine-ui-extensions[Zanata project]
+  https://zanata.ovirt.org/project/view/ovirt-engine-ui-extensions[Zanata project]
 * When translations are complete, the localized strings are pulled from Zanata as a set of GNU gettext .po files
 * The .po files are converted to a JSON file, specifically `src/intl/translations.json`
 * The JSON file is referenced in `intl.js`, providing localized messages to the `msg` object in `intl-messages.js`
@@ -127,12 +133,12 @@ file needs to be normalized for git diff sanity.
 Dependencies not related to production build (not needed for `yarn build`)
 should go into `devDependencies`. Try to keep as few `dependencies` as possible.
 
-Whenever `dependencies` are changed:
+Whenever `dependencies` are changed, they need to be pre-seeded to
+https://github.com/oVirt/ovirt-engine-nodejs-modules[ovirt-engine-nodejs-modules]
+for CI to pass offline builds.
 
-* submit patch for https://gerrit.ovirt.org/#/q/project:ovirt-engine-nodejs-modules[ovirt-engine-nodejs-modules]:
-** bump the `Release` number
-** merge the patch, this triggers `ovirt-engine-nodejs-modules` RPM build
-* update `automation/build.packages` according to the new RPM version
+See the https://github.com/oVirt/ovirt-engine-nodejs-modules/blob/master/pre-seed/README.adoc[pre-seed documentation]
+for deatils on that process.
 
 === Package versioning
 
@@ -149,28 +155,24 @@ Only covers release builds (RC and GA).
 
 To create new stable branch:
 
-. create new branch via https://gerrit.ovirt.org/#/admin/projects/ovirt-engine-ui-extensions,branches[Gerrit]
+. create new branch on the GitHub repo
 . rebase on top of the newly created branch
-. ensure that `automation/build.repos` contains proper repos (avoid `master` repos)
 
 Then, update the master branch:
 
-* submit patch with following changes:
+* submit pull request with following changes:
 ** `package.json` - bump `version`
-** `packaging/spec.in` - reset `Release` number to `0.1` and update `%changelog`
+** `packaging/spec.in` - reset `Release` number to `1` and update `%changelog`
 
-Finally, update CI job config:
-
-* submit patch for https://gerrit.ovirt.org/#/q/project:jenkins[jenkins]:
-** in `jobs/confs/projects/ovirt-engine-ui-extensions/ovirt-engine-ui-extensions_standard.yaml`,
-   ensure that `version` contains proper Engine version to corresponding stable branch mapping
+TODO: Do any changes need to be made to copr, for builds, or a github actions, for CI, if
+      a new stable branch is added?
 
 ==== Releases
 
 To perform new release:
 
 . switch to appropriate stable branch
-. submit patch that prepares the branch for release:
+. submit pull request that prepares the branch for release:
 .. `package.json` - ensure proper `version` (e.g. bump `.z` component)
 .. `packaging/spec.in` - ensure proper `Release` number and update `%changelog`
 . pull changes from remote
@@ -182,10 +184,28 @@ To perform new release:
 
 Tag name example: `ovirt-engine-ui-extensions-1.0.0-1`
 
-=== Building RPM
+== Building RPM
 
-To build RPM from an open patch, just post `ci please build` comment on Gerrit. See
-https://www.ovirt.org/blog/2016/12/ci-please-build/[this blog post] for details on this CI feature.
+=== GitHub pull request
 
-Alternatively, RPM can be built locally using
-https://ovirt-infra-docs.readthedocs.io/en/latest/CI/Using_mock_runner/index.html[mock_runner].
+GitHub actions that run CI on each pull request do a full rpm build.  To access
+the RPMs for a pull request, open the checks tab.  If the offline / `ovirt-engine-nodejs-modules`
+check passed, the artifacts should be available on that page or on the action run's page.
+
+=== Manual build
+
+Alternatively, a RPM can be built locally using the `packaging/build.sh` script.  To build
+online (skipping `ovirt-engine-nodejs-modules`), you will need to install the packages listed
+in the `packaging/spec.in` file `BuildRequires` lines.  As of 2022-Feb-15, install:
+
+```console
+  % sudo dnf install git jq rpmlit rpm-build yarn nodejs
+```
+
+Then build with the command:
+
+```console
+  % OFFLINE_BUILD=0 ./packaging/build.sh
+```
+
+Upon a successful build, the RPMs will be located in the `exported-artifacts/` folder.
