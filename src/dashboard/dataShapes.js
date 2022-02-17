@@ -59,4 +59,5 @@ export const dashboardDataShape = {
     storage: heatMapDataArray,
     vdoSavings: heatMapDataArray,
   }),
+  engineGrafanaBaseUrl: PropTypes.string,
 }
