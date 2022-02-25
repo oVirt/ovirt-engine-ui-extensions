@@ -9,7 +9,6 @@ import * as C from '_/constants'
 import { engineGet, ansiblePlaybookPost } from '_/utils/fetch'
 import { randomHexString } from '_/utils/random'
 import { msg } from '_/intl-messages'
-import { applySearch } from '_/utils/webadmin-search'
 
 //
 // for FAKE_DATA=true
@@ -151,10 +150,6 @@ async function upgradeCluster ({
       C.webadminToastTypes.info,
       msg.clusterUpgradeOperationStarted({ clusterName })
     )
-    applySearch(C.webadminPlaces.event, C.searchPrefixes.event, [{
-      name: 'correlation_id',
-      values: [engineCorrelationId],
-    }])
   } catch (error) {
     console.error(
       'upgradeCluster: the ansible service failed\n\nplaybook: %s\nansibleVariables:\n%s',

@@ -1,4 +1,3 @@
-// with any existing occurrences, like in UtilizationBar component.
 export const randomId = () => `generated-id-${randomHexString()}`
 
 /**
