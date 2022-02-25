@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { msg } from '_/intl-messages'
 import { scalarArrayEq } from '_/utils/equalityCheck'
-import { propNamesToType } from '_/utils/react'
 
 import { Alert, Table } from 'patternfly-react'
 import HostStatusIcon from './HostStatusIcon'
@@ -9,8 +9,6 @@ import HostStatusIcon from './HostStatusIcon'
 /**
  * Display an array of hosts as a table and allow selecting multiple hosts. The selection
  * will always be returned in the row order displayed on screen.
- *
- * TODO: Add table sorting and filtering to help control what hosts can be selected.
  *
  * The host selection is purely controlled.
  */
@@ -60,17 +58,13 @@ class SelectHosts extends React.Component {
     // Column Definitions
     this.columns = [
       {
-        header: {
-          formatters: [headerFormatSelect],
-        },
-        cell: {
-          formatters: [cellFormatSelect],
-        },
+        header: { formatters: [headerFormatSelect] },
+        cell: { formatters: [cellFormatSelect] },
         property: 'selected',
       },
       {
         header: {
-          label: props.hostTableHeaderStatus,
+          label: msg.clusterUpgradeHostTableHeaderStatus(),
           formatters: [headerFormatText],
           props: {
             style: { width: 75, textAlign: 'center' },
@@ -80,18 +74,18 @@ class SelectHosts extends React.Component {
         property: 'status',
       },
       {
-        header: { label: props.hostTableHeaderName, formatters: [headerFormatText] },
+        header: { label: msg.clusterUpgradeHostTableHeaderName(), formatters: [headerFormatText] },
         cell: { formatters: [cellFormatText] },
         property: 'name',
       },
       {
-        header: { label: props.hostTableHeaderHostname, formatters: [headerFormatText] },
+        header: { label: msg.clusterUpgradeHostTableHeaderHostname(), formatters: [headerFormatText] },
         cell: { formatters: [cellFormatText] },
         property: 'address',
       },
       {
         header: {
-          label: props.hostTableHeaderVMs,
+          label: msg.clusterUpgradeHostTableHeaderVMs(),
           formatters: [headerFormatText],
           props: {
             style: { width: 140 },
@@ -146,7 +140,7 @@ class SelectHosts extends React.Component {
     if (!hosts || hosts.length === 0) {
       return (
         <div className='clusterUpgradeWizard-SelectHosts-NoHosts'>
-          <h2>{this.props.noHostsMessage}</h2>
+          <h2>{msg.clusterUpgradeNoHostsMessage()}</h2>
         </div>
       )
     }
@@ -154,7 +148,7 @@ class SelectHosts extends React.Component {
     return (
       <div className='clusterUpgradeWizard-SelectHosts'>
         <Alert type='info' style={{ margin: '0' }}>
-          {this.props.selectHostsMessage}
+          {msg.clusterUpgradeSelectHostsMessage()}
         </Alert>
 
         <div className='tableContainer'>
@@ -183,33 +177,15 @@ class SelectHosts extends React.Component {
   }
 }
 
-SelectHosts.i18nProps = {
-  noHostsMessage: 'There are no hosts in this cluster.  Can\'t upgrade nothing.',
-
-  selectHostsMessage:
-  // 'The order of the Hosts listed below will by the order that they' +
-  // 'are upgraded. Use sorting to affect the upgrade order.',
-    'If a host has a down status, it can cause the cluster upgrade to fail.',
-
-  hostTableHeaderStatus: 'Status',
-  hostTableHeaderName: 'Name',
-  hostTableHeaderHostname: 'Hostname/IP Address',
-  hostTableHeaderVMs: 'Virtual Machines',
-}
-
 SelectHosts.propTypes = {
   hosts: PropTypes.arrayOf(PropTypes.object),
   selectedHosts: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func.isRequired,
-
-  ...propNamesToType(SelectHosts.i18nProps, PropTypes.string),
 }
 
 SelectHosts.defaultProps = {
   hosts: [],
   selectedHosts: [],
-
-  ...SelectHosts.i18nProps,
 }
 
 export default SelectHosts

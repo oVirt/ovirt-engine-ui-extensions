@@ -1,12 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { selectProps, propNamesToType } from '_/utils/react'
+import { msg } from '_/intl-messages'
 
-import {
-  selectKeys,
-  noop,
-  Icon,
-} from 'patternfly-react'
+import { Icon } from 'patternfly-react'
 
 import MessageDialog from '_/components/patternfly/MessageDialog'
 import WizardPattern from '_/components/patternfly-react-overrides/WizardPattern'
@@ -52,7 +48,7 @@ class ClusterUpgradeWizard extends React.Component {
       mapIdToHost: {}, // hostListToMapById(props.clusterHosts),
       selectedHostsInSortOrder: [],
 
-      options: { // match defaults with: https://github.com/oVirt/ovirt-ansible-cluster-upgrade
+      options: { // match defaults with: https://github.com/oVirt/ovirt-ansible-collection/tree/master/roles/cluster_upgrade
         stopPinnedVms: true,
         upgradeTimeoutInMin: 60,
         checkForUpgradesOnHosts: false,
@@ -72,7 +68,7 @@ class ClusterUpgradeWizard extends React.Component {
 
     this.wizardSteps = [
       {
-        title: this.props.stepSelectHostsLabel,
+        title: msg.clusterUpgradeStepSelectHostsLabel(),
         isInvalid: true,
         preventExit: true,
         render: () => (
@@ -80,12 +76,11 @@ class ClusterUpgradeWizard extends React.Component {
             hosts={this.props.clusterHosts}
             selectedHosts={this.state.selectedHostsInSortOrder}
             onChange={this.onHostSelectionChange}
-            {...selectProps(this.props, SelectHosts.i18nProps)}
           />
         ),
       },
       {
-        title: this.props.stepUpgradeOptionsLabel,
+        title: msg.clusterUpgradeStepUpgradeOptionsLabel(),
         isInvalid: false,
         preventExit: false,
         render: () => (
@@ -96,21 +91,17 @@ class ClusterUpgradeWizard extends React.Component {
             rebootAfterUpgrade={this.state.options.rebootAfterUpgrade}
             useMaintenanceClusterPolicy={this.state.options.useMaintenanceClusterPolicy}
             onChange={this.onOptionsChange}
-            {...selectProps(this.props, UpgradeOptions.i18nProps)}
           />
         ),
       },
       {
-        title: this.props.stepReviewLabel,
+        title: msg.clusterUpgradeStepReviewLabel(),
         wizardRowClassName: 'clusterUpgradeWizard-UpgradeReview-Row',
         isInvalid: false,
         preventExit: false,
         render: () => (
           <UpgradeReview
             hostCount={this.state.selectedHostsInSortOrder.length}
-            // nonMigratableVmCount={0}
-            // migrateVmCount={0}
-            {...selectProps(this.props, UpgradeReview.i18nProps)}
           />
         ),
       },
@@ -210,17 +201,6 @@ class ClusterUpgradeWizard extends React.Component {
       container,
       isLoading,
       onExited,
-
-      title,
-      loadingTitle,
-      loadingMessage,
-      clusterInMaintenaceTitle,
-      clusterInMaintenaceMessage,
-      clusterInMaintenaceContinue,
-      cancelButtonText,
-      backButtonText,
-      nextButtonText,
-      upgradeButtonText,
     } = this.props
     const {
       activeStepIndex,
@@ -241,9 +221,9 @@ class ClusterUpgradeWizard extends React.Component {
           id='clusterUpgradeWizard-spinner'
           show
           container={container}
-          title={loadingTitle}
-          message={loadingMessage}
-          onHide={noop} // Future enhancement: Closing the spinner could cancel the fetch from data provider
+          title={msg.clusterUpgradeLoadingTitle()}
+          message={msg.clusterUpgradeLoadingMessage()}
+          onHide={() => {}} // Future enhancement: Closing the spinner could cancel the fetch from data provider
         />
       )
     }
@@ -269,12 +249,12 @@ class ClusterUpgradeWizard extends React.Component {
           secondaryAction={this.close}
 
           icon={<Icon type='pf' name='warning-triangle-o' />}
-          title={title}
-          primaryContent={<p className='lead'>{clusterInMaintenaceTitle}</p>}
-          secondaryContent={<p>{clusterInMaintenaceMessage}</p>}
+          title={msg.clusterUpgradeTitle({ clusterName: cluster.name })}
+          primaryContent={<p className='lead'>{msg.clusterUpgradeClusterInMaintenaceTitle()}</p>}
+          secondaryContent={<p>{msg.clusterUpgradeClusterInMaintenaceMessage({ clusterName: cluster.name })}</p>}
 
-          primaryActionButtonContent={clusterInMaintenaceContinue}
-          secondaryActionButtonContent={cancelButtonText}
+          primaryActionButtonContent={msg.clusterUpgradeClusterInMaintenaceContinue()}
+          secondaryActionButtonContent={msg.clusterUpgradeCancelButtonText()}
 
           accessibleName='warningDialog'
           accessibleDescription='warningDialogContent'
@@ -287,16 +267,15 @@ class ClusterUpgradeWizard extends React.Component {
         id='clusterUpgradeWizard'
         show={show}
         container={container}
-        title={title}
-
         loading={isLoading}
-        loadingTitle={loadingTitle}
-        loadingMessage={loadingMessage}
 
-        cancelText={cancelButtonText}
-        backText={backButtonText}
-        nextText={nextButtonText}
-        closeText={upgradeButtonText}
+        title={msg.clusterUpgradeTitle({ clusterName: cluster.name })}
+        loadingTitle={msg.clusterUpgradeLoadingTitle()}
+        loadingMessage={msg.clusterUpgradeLoadingMessage()}
+        cancelText={msg.clusterUpgradeCancelButtonText()}
+        backText={msg.clusterUpgradeBackButtonText()}
+        nextText={msg.clusterUpgradeNextButtonText()}
+        closeText={msg.clusterUpgradeUpgradeButtonText()}
 
         steps={this.wizardSteps}
         activeStepIndex={activeStepIndex}
@@ -313,33 +292,6 @@ class ClusterUpgradeWizard extends React.Component {
   }
 }
 
-ClusterUpgradeWizard.i18nProps = {
-  title: 'Upgrade Cluster',
-  loadingTitle: 'Loading Cluster Data...',
-  loadingMessage: 'This may take a few moments.',
-
-  clusterInMaintenaceTitle: 'The cluster is currently in maintenance mode!',
-  clusterInMaintenaceMessage: `
-    The scheduling policy for the cluster is currently set to "cluster_maintenance".
-    This typically indicates maintenance is currently in progress.  It is not
-    recommeneded to run the cluster upgrade operation in this situation.
-  `,
-  clusterInMaintenaceContinue: 'Continue',
-
-  cancelButtonText: 'Cancel',
-  backButtonText: 'Back',
-  nextButtonText: 'Next',
-  upgradeButtonText: 'Upgrade',
-
-  stepSelectHostsLabel: 'Select Hosts',
-  stepUpgradeOptionsLabel: 'Upgrade Options',
-  stepReviewLabel: 'Cluster Upgrade Review',
-
-  ...SelectHosts.i18nProps,
-  ...UpgradeOptions.i18nProps,
-  ...UpgradeReview.i18nProps,
-}
-
 ClusterUpgradeWizard.propTypes = {
   // data input
   cluster: PropTypes.object,
@@ -351,25 +303,16 @@ ClusterUpgradeWizard.propTypes = {
   // wizard props
   show: PropTypes.bool,
   isLoading: PropTypes.bool,
-  ...selectKeys(WizardPattern.propTypes, [
-    'container',
-    'onExited',
-  ]),
-
-  // i18n strings
-  ...propNamesToType(ClusterUpgradeWizard.i18nProps, PropTypes.string),
+  container: WizardPattern.propTypes.container,
+  onExited: WizardPattern.propTypes.onExited,
 }
 
 ClusterUpgradeWizard.defaultProps = {
-  upgradeCluster: noop,
+  upgradeCluster: () => {},
 
   show: true,
   isLoading: false,
-  ...selectKeys(WizardPattern.defaultProps, [
-    'onExited',
-  ]),
-
-  ...ClusterUpgradeWizard.i18nProps,
+  onExited: WizardPattern.defaultProps.onExited,
 }
 
 export default ClusterUpgradeWizard
