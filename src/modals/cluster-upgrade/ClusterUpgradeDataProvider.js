@@ -181,7 +181,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => (
       // handle data loading and error scenarios
       if (fetchError) {
         getPluginApi().showToast(C.webadminToastTypes.danger, msg.clusterUpgradeDataError())
-        return React.cloneElement(child, { show: false })
+        return null
       }
       if (fetchInProgress || !data) {
         return React.cloneElement(child, { isLoading: true })

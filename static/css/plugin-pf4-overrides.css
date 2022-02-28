@@ -52,6 +52,8 @@
   --pf-c-modal-box__body--PaddingTop: 15px;
   --pf-c-modal-box__body--PaddingRight: 20px;
   --pf-c-modal-box__body--PaddingLeft: 20px;
+
+  --pf-c-modal-box--BorderSize: 0;
 }
 
 .pf-c-modal-box > .pf-c-button {
@@ -145,4 +147,9 @@
 .pf-c-chip-group__list-item {
   margin-right: var(--pf-c-chip-group__list-item--MarginRight);
   margin-bottom: var(--pf-c-chip-group__list-item--MarginBottom);
+}
+
+.pf-c-wizard__header .pf-c-title.pf-c-wizard__title {
+  font-size: var(--pf-global--FontSize--lg);
+  font-weight: var(--pf-global--FontWeight--bold);
 }

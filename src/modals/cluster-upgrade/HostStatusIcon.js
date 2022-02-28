@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Icon } from 'patternfly-react'
+import { ArrowCircleDownIcon, ArrowCircleUpIcon, UnknownIcon } from '@patternfly/react-icons'
 
 /* eslint-disable key-spacing, no-multi-spaces */
 const statusMap = {
   // 'connecting'               : { type: '', name: '', tooltip: '' },
-  'down'                     : { type: 'fa', name: 'arrow-circle-o-down', class: 'host-status-icon-red', tooltip: 'Down' },
+  'down'                     : { icon: ArrowCircleDownIcon, className: 'host-status-icon-red', tooltip: 'Down' },
   // 'error'                    : { type: '', name: '', tooltip: '' },
   // 'initializing'             : { type: '', name: '', tooltip: '' },
   // 'install_failed'           : { type: '', name: '', tooltip: '' },
@@ -19,8 +19,8 @@ const statusMap = {
   // 'preparing_for_maintenance': { type: '', name: '', tooltip: '' },
   // 'reboot'                   : { type: '', name: '', tooltip: '' },
   // 'unassigned'               : { type: '', name: '', tooltip: '' },
-  'up'                       : { type: 'fa', name: 'arrow-circle-o-up', class: 'host-status-icon-green', tooltip: 'Up' },
-  'DEFAULT'                  : { type: 'pf', name: 'unknown' },
+  'up'                       : { icon: ArrowCircleUpIcon, className: 'host-status-icon-green', tooltip: 'Up' },
+  'DEFAULT'                  : { icon: UnknownIcon },
 }
 
 /**
@@ -29,13 +29,12 @@ const statusMap = {
 const HostStatusIcon = ({ status }) => {
   const entry = statusMap[status] || statusMap.DEFAULT
   const tooltip = entry.tooltip || status
+  const EntryIcon = entry.icon
 
   return (
-    <Icon
-      type={entry.type}
-      name={entry.name}
+    <EntryIcon
       title={tooltip}
-      className={`host-status-icon ${entry.class || ''}`}
+      className={`host-status-icon ${entry.className || ''}`}
     />
   )
 }

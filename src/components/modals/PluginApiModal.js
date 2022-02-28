@@ -59,7 +59,7 @@ const PluginApiModal = ({
 
 PluginApiModal.propTypes = {
   children: PropTypes.node,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   className: PropTypes.string,
   modalId: PropTypes.string,
 
