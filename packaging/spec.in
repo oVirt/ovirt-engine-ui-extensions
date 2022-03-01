@@ -18,14 +18,14 @@ BuildRequires: rpm-build
 
 %if %{offline_build}
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.1.6-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.2.0-1
 %else
 BuildRequires: nodejs >= 14.15
 BuildRequires: yarn >= 1.22
 %endif
 
-Requires: ovirt-engine-webadmin-portal >= 4.3
-Requires: ovirt-ansible-collection >= 1.2.0
+Requires: ovirt-engine-webadmin-portal >= 4.5
+Requires: ovirt-ansible-collection >= 2.0
 
 Obsoletes: ovirt-engine-dashboard < 1.3
 Provides: ovirt-engine-dashboard = 1.3
@@ -37,6 +37,7 @@ Extensions include:
   - Dashboard
   - Cluster upgrade wizard
   - Host copy network dialog
+  - VM CPU pinning dialog
   - VM export dialog
   - VM manage GPU dialog
   - VM migrate dialog
