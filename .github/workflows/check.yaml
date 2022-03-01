@@ -38,9 +38,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
 
-      - name: Run automation/build.sh
+      - name: Run packaging/build.sh
         run: |
-          ./automation/build.sh
+          ./packaging/build.sh
 
       - name: Upload artifacts as rpm repo
         uses: ovirt/upload-rpms-action@v2
@@ -58,10 +58,22 @@ jobs:
       - name: Install yarn (online mode does not use ovirt-engine-nodejs-modules so yarn isn't installed)
         run: |
           dnf -y config-manager --add-repo https://dl.yarnpkg.com/rpm/yarn.repo
-          dnf -y install yarn
+          dnf -y --disablerepo='*' --enablerepo='yarn*' install yarn
 
       - name: Checkout sources
         uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn's work to use in the build job
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./node_modules
+          key: ${{ github.sha }}
 
       - name: Run 'yarn install' and 'yarn test'
         run: |
@@ -69,7 +81,7 @@ jobs:
           yarn test
 
   build_el8_online:
-    name: EL8 - build and publish rpm repo for the PR (online build)
+    name: EL8 - build the project the PR, but skip the rpm builds (online build)
     needs: test_el8_online
     env:
       OFFLINE_BUILD: 0
@@ -83,25 +95,28 @@ jobs:
       - name: Install yarn (online mode does not use ovirt-engine-nodejs-modules so yarn isn't installed)
         run: |
           dnf -y config-manager --add-repo https://dl.yarnpkg.com/rpm/yarn.repo
-          dnf -y install yarn
+          dnf -y --disablerepo='*' --enablerepo='yarn*' install yarn
 
       - name: Checkout sources
         uses: actions/checkout@v2
 
-      - name: Build srpm
-        run: |
-          ./automation/build.sh copr
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Install build dependencies from srpm
-        run: |
-          dnf -y builddep tmp.repos/SRPMS/ovirt-engine-ui-extensions*.src.rpm
+      - name: Cache yarn's work to use in the build job
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./node_modules
+          key: ${{ github.sha }}
 
-      - name: Build rpm directly from srpm
+      - name: Run 'yarn install' and 'yarn build'
         run: |
-          rpmbuild \
-            --define="_topdir ${PWD}/tmp.repos" \
-            --rebuild tmp.repos/SRPMS/ovirt-engine-ui-extensions*.src.rpm
+          yarn install
+          yarn build
 
-      # Note: The source tar, srpm and rpm will be under "tmp.repos/".  No need to
-      #       collect and export these since we only need 1 export per distro.  We
-      #       export the rpms from the offline build.
+      # Note: The source tar, srpm and rpm are not needed for the online build.  We only
+      #       need 1 rpm repo artifact per distro.  The rpm repo is generated from the
+      #       offline build.

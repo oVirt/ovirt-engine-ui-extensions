@@ -10,7 +10,7 @@ Source: @TAR_FILE@
 
 BuildArch: noarch
 
-# requirements for automation/build.sh (to be included in the build container)
+# requirements for packaging/build.sh (to be included in the build container)
 BuildRequires: git
 BuildRequires: jq
 BuildRequires: rpmlint
