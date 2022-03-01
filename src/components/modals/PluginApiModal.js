@@ -39,7 +39,7 @@ const PluginApiModal = ({
         })
       }
     }
-  }, [isOpen])
+  }, [isOpen, modalId])
 
   return (
     <Modal
