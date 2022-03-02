@@ -12,14 +12,14 @@ body, .containers-dashboard {
   /* dashboard CSS variables */
   --dashboard-gutter: var(--pf-global--spacer--sm);
   --dashboard-aggregate-status-header-FontSize: 14px;
-  --dashboard-aggregate-status-header-FontWeight: var(--pf-globale--FontWeight--normal);
+  --dashboard-aggregate-status-header-FontWeight: var(--pf-global--FontWeight--normal);
   --dashboard-aggregate-status-notifications-FontSize: calc(var(--pf-global--FontSize--lg) + 10px);
 
   --dashboard-cards-header-FontSize: 16px;
-  --dashboard-cards-header-FontWeight: var(--pf-globale--FontWeight--normal);
+  --dashboard-cards-header-FontWeight: var(--pf-global--FontWeight--normal);
 
   --dashboard-chart-title-FontSize: var(--pf-global--FontSize--lg);
-  --dashboard-chart-title-FontWeight: var(--pf-globale--FontWeight--normal);
+  --dashboard-chart-title-FontWeight: var(--pf-global--FontWeight--normal);
 }
 
 .pf-c-tooltip {
@@ -34,9 +34,9 @@ body, .containers-dashboard {
 }
 
 .monitoring-portal-link {
-  line-height: 1.5;
-  font-weight: 600;
-  font-size: 16px;
+  line-height: var(--pf-global--LineHeight--md);
+  font-weight: var(--pf-global--FontWeight--bold);
+  font-size: var(--pf-global--FontSize--lg);
 }
 
 /* Aggregate status card */
