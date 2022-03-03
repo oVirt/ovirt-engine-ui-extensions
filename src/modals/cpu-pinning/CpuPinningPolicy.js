@@ -4,6 +4,7 @@ const CpuPinningPolicy = {
   none: msg.cpuPinningModalVmPinningPolicyFieldNone(),
   manual: msg.cpuPinningModalVmPinningPolicyFieldManual(),
   resize_and_pin_numa: msg.cpuPinningModalVmPinningPolicyFieldResizeAndPin(),
+  dedicated: msg.cpuPinningModalVmPinningPolicyFieldDedicated(),
 
   isManual (policy) {
     return policy === 'manual'

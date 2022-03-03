@@ -1037,6 +1037,13 @@ const messageDescriptors = {
     defaultMessage: 'Resize and Pin Numa',
     description: 'Resize and Pin Numa cpu pinning policy field in the CPU Pinning dialog',
   },
+
+  cpuPinningModalVmPinningPolicyFieldDedicated: {
+    id: 'cpu.pinning.modal.field.cpupinning.policy.dedicated',
+    defaultMessage: 'Dedicated',
+    description: 'Dedicated cpu pinning policy field in the CPU Pinning dialog',
+  },
+
   cpuPinningModalVmPinningField: {
     id: 'cpu.pinning.modal.field.cpupinning',
     defaultMessage: 'CPU Pinning',
