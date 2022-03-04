@@ -38,8 +38,6 @@
     "intl-messageformat": "9.9.4",
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
-    "patternfly": "3.59.5",
-    "patternfly-react": "2.39.17",
     "prop-types": "^15.6.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0"
@@ -95,10 +93,8 @@
     "webpack-merge": "^4.2.2"
   },
   "resolutions": {
-    "patternfly/bootstrap-select": "^1.13.6",
     "glob-parent": "^5.1.2",
     "path-parse": "^1.0.7",
-    "ua-parser-js": "^0.7.22",
     "underscore": "1.13.1",
     "ansi-regex": "5.0.1"
   },
