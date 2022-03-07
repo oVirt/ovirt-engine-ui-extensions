@@ -5,6 +5,7 @@ import { dashboardDataShape } from './dataShapes'
 import { Stack, StackItem, Flex, FlexItem } from '@patternfly/react-core'
 import RefreshDataControl from './RefreshDataControl'
 import LastUpdatedLabel from './LastUpdatedLabel'
+import MonitoringPortalLink from './MonitoringPortalLink'
 import InventoryStatusCards from './InventoryStatusCards'
 import GlobalUtilizationCards from './GlobalUtilizationCards'
 import HeatMapCards from './HeatMapCards'
@@ -15,7 +16,7 @@ const Dashboard = ({ data, lastUpdated, onRefreshData }) => {
     return null
   }
 
-  const { inventory, globalUtilization, heatMapData } = data
+  const { inventory, globalUtilization, heatMapData, engineGrafanaBaseUrl } = data
   const showGluster = inventory.volume.totalCount > 0
 
   return (
@@ -27,6 +28,9 @@ const Dashboard = ({ data, lastUpdated, onRefreshData }) => {
           </FlexItem>
           <FlexItem>
             <LastUpdatedLabel date={lastUpdated} />
+          </FlexItem>
+          <FlexItem align={{ default: 'alignRight' }}>
+            <MonitoringPortalLink url={engineGrafanaBaseUrl} />
           </FlexItem>
         </Flex>
       </StackItem>

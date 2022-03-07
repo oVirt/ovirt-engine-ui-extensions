@@ -162,6 +162,12 @@ const messageDescriptors = {
     description: 'label that indicates date/time of last dashboard data update',
   },
 
+  dashboardLinkMonitoringPortal: {
+    id: 'dashboard.linkMonitoringPortal',
+    defaultMessage: 'Monitoring Portal',
+    description: 'if Grafana is installed, show a link to Grafana portal, same as on the engine welcome page',
+  },
+
   dashboardGlobalUtilizationHeading: {
     id: 'dashboard.globalUtilizationHeading',
     defaultMessage: 'Global Utilization',
