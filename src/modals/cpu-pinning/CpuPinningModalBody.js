@@ -51,7 +51,6 @@ const CpuPinningModalBody = ({ vm, hosts }) => {
 
   const cpuIdToPinnedCpuIdsMap = cpuPinningMapping()
   const allPinnedCpusValid = Array.from(cpuIdToPinnedCpuIdsMap.values()).flat().every(cpu => isPinnedCpuValid(cpu))
-
   return (
     <DescriptionList>
       <DescriptionListGroup>
@@ -59,7 +58,7 @@ const CpuPinningModalBody = ({ vm, hosts }) => {
           {msg.cpuPinningModalVmPinningPolicyField()}
         </DescriptionListTerm>
         <DescriptionListDescription>
-          {CpuPinningPolicy[vm.cpuPinningPolicy]}
+          {CpuPinningPolicy[vm.cpuPinningPolicy] || vm.cpuPinningPolicy}
         </DescriptionListDescription>
       </DescriptionListGroup>
 
@@ -103,7 +102,7 @@ const CpuPinningModalBody = ({ vm, hosts }) => {
             </DescriptionListTerm>
             <DescriptionListDescription>
               {
-                selectedHost || msg.cpuPinningModalRunsOnHostFieldPlaceholder()
+                selectedHost?.name || msg.cpuPinningModalRunsOnHostFieldPlaceholder()
               }
             </DescriptionListDescription>
           </DescriptionListGroup>
