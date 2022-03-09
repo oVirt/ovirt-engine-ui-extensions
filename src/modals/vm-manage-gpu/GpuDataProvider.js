@@ -3,17 +3,19 @@ import React from 'react'
 import { webadminToastTypes } from '_/constants'
 import { msg } from '_/intl-messages'
 import getPluginApi from '_/plugin-api'
-import { engineGet, enginePut } from '_/utils/fetch'
+import { engineDelete, engineGet, enginePost } from '_/utils/fetch'
 import { isNumber } from '_/utils/type-validation'
 import DataProvider from '_/components/helper/DataProvider'
 import { createErrorMessage } from '_/utils/error-message'
 import get from 'lodash/get'
 
 const GpuDataProvider = ({ children, vmId }) => {
-  let allCustomProperties = []
-
   const fetchVm = async () => {
     return engineGet(`api/vms/${vmId}`)
+  }
+
+  const fetchVmMdevDevices = async () => {
+    return engineGet(`api/vms/${vmId}/mediateddevices`)
   }
 
   const fetchCluster = async (clusterId) => {
@@ -61,27 +63,8 @@ const GpuDataProvider = ({ children, vmId }) => {
     return hostDevices
   }
 
-  const getCustomProperties = (vm) => {
-    if (vm.custom_properties && vm.custom_properties.custom_property) {
-      return vm.custom_properties.custom_property
-    }
-    return []
-  }
-
-  const parseMdevCustomProperty = (customProperties) => {
-    const mdevCustomProperty = customProperties.find(property => property.name === 'mdev_type')
-    if (mdevCustomProperty !== undefined) {
-      return mdevCustomProperty.value.split(',')
-    }
-    return []
-  }
-
-  const getSelectedMdevs = (customProperties) => {
-    let parsedMdevProperties = parseMdevCustomProperty(customProperties)
-    if (isNoDisplay(customProperties)) {
-      parsedMdevProperties = parsedMdevProperties.slice(1)
-    }
-
+  const getSelectedMdevs = (mdevDevices) => {
+    const parsedMdevProperties = mdevDevices?.vm_mediated_device?.map(mdev => getMdevDeviceSpecParam(mdev, 'mdevType')) || []
     const selectedMdevs = []
     parsedMdevProperties.forEach(mDevType => {
       if (mDevType in selectedMdevs) {
@@ -93,12 +76,12 @@ const GpuDataProvider = ({ children, vmId }) => {
     return selectedMdevs
   }
 
-  const isNoDisplay = (customProperties) => {
-    const parsedMdevProperties = parseMdevCustomProperty(customProperties)
-    if (parsedMdevProperties.length > 0 && parsedMdevProperties[0] === 'nodisplay') {
-      return true
-    }
-    return false
+  const isNoDisplay = (mdevDevices) => {
+    return getMdevDeviceSpecParam(mdevDevices?.vm_mediated_device?.[0], 'nodisplay') === 'true'
+  }
+
+  const getMdevDeviceSpecParam = (mdevDevice, name) => {
+    return mdevDevice?.spec_params?.property?.find(specParam => specParam.name === name)?.value
   }
 
   const createGpus = (hostMDevTypes, selectedMdevs) => {
@@ -193,54 +176,76 @@ const GpuDataProvider = ({ children, vmId }) => {
 
   const fetchData = async () => {
     const vm = await fetchVm()
+    const vmMdevDevices = await fetchVmMdevDevices()
     const cluster = await fetchCluster(vm.cluster.id)
     const hosts = await fetchHosts(cluster.name)
     const hostMDevTypes = await fetchHostsMDevTypes(hosts)
 
-    allCustomProperties = getCustomProperties(vm)
-    const selectedMdevs = getSelectedMdevs(allCustomProperties)
+    const selectedMdevs = getSelectedMdevs(vmMdevDevices)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
     countAggregatedMaxInstances(gpus)
-    const noDisplay = isNoDisplay(allCustomProperties)
+    const noDisplay = isNoDisplay(vmMdevDevices)
     return { gpus: gpus, noDisplay: noDisplay }
   }
 
-  const updateCustomProperties = (displayOn, selectedGpus) => {
-    let mdevCustomProperty = allCustomProperties.find(property => property.name === 'mdev_type')
-    if (mdevCustomProperty === undefined) {
-      mdevCustomProperty = { name: 'mdev_type' }
-      allCustomProperties.push(mdevCustomProperty)
-    }
-
-    const mDevTypes = []
-
-    selectedGpus.forEach(gpu => {
-      if (!mDevTypes.includes(gpu.mDevType)) {
-        for (let i = 0; i < gpu.requestedInstances; i++) {
-          mDevTypes.push(gpu.mDevType)
-        }
-      }
-    })
-
-    if (mDevTypes.length > 0 && !displayOn) {
-      mDevTypes.unshift('nodisplay')
-    }
-    mdevCustomProperty.value = mDevTypes.join(',')
-    if (mdevCustomProperty.value.length === 0) {
-      allCustomProperties.pop(mdevCustomProperty)
+  const deleteAllMdevDevices = async () => {
+    const mdevDevices = await fetchVmMdevDevices()
+    if (mdevDevices?.vm_mediated_device) {
+      return Promise.all(mdevDevices.vm_mediated_device.map((mdevDevice) => deleteMdevDevice(mdevDevice.id)))
+    } else {
+      return Promise.resolve()
     }
   }
 
-  const saveVm = async (displayOn, selectedGpus) => {
-    updateCustomProperties(displayOn, selectedGpus)
+  const deleteMdevDevice = async (deviceId) => {
+    return engineDelete(`api/vms/${vmId}/mediateddevices/${deviceId}`)
+  }
+
+  const addAllMdevDevices = async (displayOn, allGpus) => {
+    // the allGpus contains all gpus from all hosts, it can contain duplicate mdev type names
+    const processedMdevs = new Set()
+
+    return Promise.all(allGpus.map(gpu => {
+      if (!processedMdevs.has(gpu.mDevType)) {
+        processedMdevs.add(gpu.mDevType)
+        return addMdevDevices(gpu, displayOn)
+      } else {
+        return Promise.resolve()
+      }
+    }))
+  }
+
+  const addMdevDevices = async (gpu, displayOn) => {
+    const promises = []
+    for (let i = 0; i < gpu.requestedInstances; i++) {
+      promises.push(addMdevDevice(gpu.mDevType, displayOn))
+    }
+    return Promise.all(promises)
+  }
+
+  const addMdevDevice = async (mDevType, displayOn) => {
     const requestBody = {
-      'custom_properties': {
-        'custom_property': allCustomProperties,
+      'spec_params': {
+        'property': [
+          {
+            name: 'nodisplay',
+            value: !displayOn,
+          },
+          {
+            name: 'mdevType',
+            value: mDevType,
+          },
+        ],
       },
     }
+    return enginePost(`api/vms/${vmId}/mediateddevices`, JSON.stringify(requestBody))
+  }
 
+  const saveVm = async (displayOn, allGpus) => {
     try {
-      await enginePut(`api/vms/${vmId}`, JSON.stringify(requestBody))
+      await deleteAllMdevDevices()
+      await addAllMdevDevices(displayOn, allGpus)
+
       getPluginApi().showToast(webadminToastTypes.success, msg.vmManageGpuSaveDataOK())
     } catch (error) {
       getPluginApi().logger().severe('Error while saving the VM. ' + createErrorMessage(error))

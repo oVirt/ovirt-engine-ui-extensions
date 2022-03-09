@@ -46,6 +46,10 @@ export async function enginePost (relativePath, body, extraHeaders) {
   return engineApiRequest('POST', relativePath, body, extraHeaders)
 }
 
+export async function engineDelete (relativePath) {
+  return engineApiRequest('DELETE', relativePath)
+}
+
 /**
  * Initiate Engine HTTP `PUT` request, expecting JSON response.
  *
