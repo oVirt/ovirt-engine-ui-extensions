@@ -96,3 +96,18 @@
 .error-message {
   color: red;
 }
+
+/*
+ * Track Progress
+ */
+.pf-c-empty-state.pf-m-lg.clusterUpgradeTrackProgress-Layout {
+  --pf-c-empty-state__content--MaxWidth: 900px;
+}
+
+.simpleLogView {
+  height: 200px;
+  width: 800px;
+  overflow: auto;
+  font-family: 'Liberation Mono';
+  text-align: left;
+}

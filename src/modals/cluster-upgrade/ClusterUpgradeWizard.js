@@ -6,18 +6,23 @@ import { Wizard } from '@patternfly/react-core'
 import SelectHosts from './SelectHosts'
 import UpgradeOptions from './UpgradeOptions'
 import UpgradeReview from './UpgradeReview'
+import TrackProgress from './TrackProgress'
 
 /**
- * Injest a cluster plus a list of hosts in the cluster (plus a summary list of VMs on
- * each host), render the Cluster Upgrade Wizard and upon confirmation of the action,
- * invoke the `upgradeCluster` call back with all of the information necessary to run
- * the `ovirt-ansible-cluster-upgrade` ansible role.
+ * Using a cluster, a list of hosts in the cluster, and upgrade progress, render the
+ * Cluster Upgrade Wizard.  Host selection and option updates are handled in this
+ * component.  Upon confirmation of the update,  invoke the `upgradeCluster` call back
+ * with all of the information necessary to run the `ovirt-ansible-cluster-upgrade`
+ * ansible role.  The last `TrackProgress` step will show the progress of the upgrade
+ * as detailed in the `progress` data.
  */
 const ClusterUpgradeWizard = ({
   cluster,
   clusterHosts,
-  upgradeCluster = () => {},
-  onClose = () => {},
+  correlationId,
+  upgradeCluster,
+  onJumpToEvents,
+  onClose,
 }) => {
   //
   // hosts
@@ -58,7 +63,7 @@ const ClusterUpgradeWizard = ({
   //
   // upgrade
   //
-  const onWizardSave = async () => {
+  const doUpgradeCluster = () => {
     // build the cluster upgrade request parameters
     const data = {
       clusterId: cluster.id,
@@ -77,11 +82,8 @@ const ClusterUpgradeWizard = ({
     }
 
     // fire the callback with the request parameters
-    try {
-      await upgradeCluster(data)
+    if (!upgradeCluster(data)) {
       onClose()
-    } catch (error) {
-      console.error('UpgradeCluster call failed. data:', data, 'error:', error)
     }
   }
 
@@ -91,6 +93,7 @@ const ClusterUpgradeWizard = ({
   const isAHostSelected = selectedHostIds.length > 0
   const wizardSteps = [
     {
+      id: 0,
       name: msg.clusterUpgradeStepSelectHostsLabel(),
       component: (
         <SelectHosts
@@ -104,6 +107,7 @@ const ClusterUpgradeWizard = ({
       enableNext: isAHostSelected,
     },
     {
+      id: 1,
       name: msg.clusterUpgradeStepUpgradeOptionsLabel(),
       component: (
         <UpgradeOptions
@@ -121,6 +125,7 @@ const ClusterUpgradeWizard = ({
       enableNext: true,
     },
     {
+      id: 2,
       name: msg.clusterUpgradeStepReviewLabel(),
       component: (
         <UpgradeReview
@@ -133,11 +138,24 @@ const ClusterUpgradeWizard = ({
       enableNext: true,
       nextButtonText: msg.clusterUpgradeUpgradeButtonText(),
     },
+    {
+      id: 3,
+      component: (
+        <TrackProgress
+          cluster={cluster}
+          correlationId={correlationId}
+          onClose={onClose}
+          onJumpToEvents={onJumpToEvents}
+        />
+      ),
+      isFinishedStep: true,
+    },
   ]
 
   return (
     <Wizard
       className='clusterUpgradeWizard'
+      height={400}
 
       title={msg.clusterUpgradeTitle({ clusterName: cluster.name })}
       hideClose={false}
@@ -148,7 +166,11 @@ const ClusterUpgradeWizard = ({
 
       steps={wizardSteps}
 
-      onSave={onWizardSave}
+      onNext={({ id, name }, { prevId, prevName }) => {
+        if (prevId === 2 && id === 3) {
+          doUpgradeCluster()
+        }
+      }}
       onClose={onClose}
     />
   )
@@ -158,12 +180,14 @@ ClusterUpgradeWizard.propTypes = {
   // data input
   cluster: PropTypes.object,
   clusterHosts: PropTypes.arrayOf(PropTypes.object),
+  correlationId: PropTypes.string,
 
   // operation callback
-  upgradeCluster: PropTypes.func,
+  upgradeCluster: PropTypes.func.isRequired,
 
   // wizard props
-  onClose: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
+  onJumpToEvents: PropTypes.func.isRequired,
 }
 
 export default ClusterUpgradeWizard

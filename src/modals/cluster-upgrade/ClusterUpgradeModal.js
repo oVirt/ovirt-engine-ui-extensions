@@ -20,17 +20,17 @@ import ClusterUpgradeWizard from './ClusterUpgradeWizard'
 import './styles.css' // no module for CSS so import onces for all of the Wizard's components
 
 /**
- * Injest a cluster plus a list of hosts in the cluster (plus a summary list of VMs on
- * each host), render the Cluster Upgrade Wizard and upon confirmation of the action,
- * invoke the `upgradeCluster` call back with all of the information necessary to run
- * the `ovirt-ansible-cluster-upgrade` ansible role.
+ * For a cluster plus a list of hosts in the cluster, render one of the loading,
+ * cluster in maintenance confirm, or the upgrade wizard on a modal.
  */
 const ClusterUpgradeModal = ({
   isLoading = false,
   cluster,
   clusterHosts,
-  upgradeCluster = () => {},
-  onClose = () => {},
+  correlationId,
+  upgradeCluster = () => {}, // only needed for the wizard
+  jumpToEvents = () => {}, // only needed for the wizard
+  onClose,
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [confirmedClusterPolicy, setConfirmedClusterPolicy] = useState(false)
@@ -39,36 +39,39 @@ const ClusterUpgradeModal = ({
     return null
   }
 
-  console.log(`isLoading: ${isLoading}, cluster.name: ${cluster?.name}, clusterHosts.length: ${clusterHosts?.length}`)
-
   const close = () => {
     setOpen(false)
     onClose()
   }
 
-  const modalProps = {
-    title: undefined,
-    variant: 'small',
-    actions: undefined,
+  const onJumpToEvents = () => {
+    jumpToEvents()
+    close()
   }
-  let modalBody
 
   /*
     If we're loading data still, just show a spinner.  We need to check the cluster's
     scheduling_policy before deciding if the Wizard should be displayed.
   */
   if (isLoading) {
-    modalProps.title = msg.clusterUpgradeLoadingTitle()
-    modalBody = (
-      <EmptyState>
-        <EmptyStateIcon variant='container' component={Spinner} />
-        <Title size='lg' headingLevel='h3'>
-          {modalProps.title}
-        </Title>
-        <EmptyStateBody>
-          {msg.clusterUpgradeLoadingMessage()}
-        </EmptyStateBody>
-      </EmptyState>
+    return (
+      <PluginApiModal
+        className='clusterUpgradeWizardModal'
+        title={msg.clusterUpgradeLoadingTitle()}
+        variant='small'
+        isOpen={isOpen}
+        onClose={close}
+      >
+        <EmptyState>
+          <EmptyStateIcon variant='container' component={Spinner} />
+          <Title size='lg' headingLevel='h3'>
+            {msg.clusterUpgradeLoadingTitle()}
+          </Title>
+          <EmptyStateBody>
+            {msg.clusterUpgradeLoadingMessage()}
+          </EmptyStateBody>
+        </EmptyState>
+      </PluginApiModal>
     )
   }
 
@@ -79,59 +82,61 @@ const ClusterUpgradeModal = ({
   */
   const isClusterInMaintenace = cluster?.scheduling_policy?.name === 'cluster_maintenance'
   if (isClusterInMaintenace && !confirmedClusterPolicy) {
-    modalProps.title = msg.clusterUpgradeTitle({ clusterName: cluster.name })
-    modalProps.actions = [
-      <Button
-        key='cluster-upgrade-maintenace-continue-button'
-        variant='primary'
-        onClick={() => { setConfirmedClusterPolicy(true) }}
+    return (
+      <PluginApiModal
+        className='clusterUpgradeWizardModal'
+        title={msg.clusterUpgradeTitle({ clusterName: cluster.name })}
+        variant='small'
+        isOpen={isOpen}
+        onClose={close}
+        actions={[
+          <Button
+            key='cluster-upgrade-maintenace-continue-button'
+            variant='primary'
+            onClick={() => { setConfirmedClusterPolicy(true) }}
+          >
+            {msg.clusterUpgradeClusterInMaintenaceContinue()}
+          </Button>,
+          <Button
+            key='cluster-upgrade-maintenace-cancel-button'
+            variant='link'
+            onClick={close}
+          >
+            {msg.clusterUpgradeCancelButtonText()}
+          </Button>,
+        ]}
       >
-        {msg.clusterUpgradeClusterInMaintenaceContinue()}
-      </Button>,
-      <Button
-        key='cluster-upgrade-maintenace-cancel-button'
-        variant='link'
-        onClick={close}
-      >
-        {msg.clusterUpgradeCancelButtonText()}
-      </Button>,
-    ]
-    modalBody = (
-      <Split hasGutter>
-        <SplitItem>
-          <ExclamationTriangleIcon size='xl' />
-        </SplitItem>
-        <SplitItem>
-          <p className='lead'>{msg.clusterUpgradeClusterInMaintenaceTitle()}</p>
-          <p>{msg.clusterUpgradeClusterInMaintenaceMessage({ clusterName: cluster.name })}</p>
-        </SplitItem>
-      </Split>
+        <Split hasGutter>
+          <SplitItem>
+            <ExclamationTriangleIcon size='xl' />
+          </SplitItem>
+          <SplitItem>
+            <p className='lead'>{msg.clusterUpgradeClusterInMaintenaceTitle()}</p>
+            <p>{msg.clusterUpgradeClusterInMaintenaceMessage({ clusterName: cluster.name })}</p>
+          </SplitItem>
+        </Split>
+      </PluginApiModal>
     )
   }
 
   // Modal is open, all data is loaded, and the cluster is available to be upgraded
-  if (!modalBody) {
-    modalProps.variant = 'large'
-    modalProps.showClose = false
-    modalProps.hasNoBodyWrapper = true
-    modalBody = (
-      <ClusterUpgradeWizard
-        cluster={cluster}
-        clusterHosts={clusterHosts}
-        upgradeCluster={upgradeCluster}
-        onClose={close}
-      />
-    )
-  }
-
   return (
     <PluginApiModal
       className='clusterUpgradeWizardModal'
-      {...modalProps}
+      variant='large'
       isOpen={isOpen}
       onClose={close}
+      showClose={false}
+      hasNoBodyWrapper
     >
-      {modalBody}
+      <ClusterUpgradeWizard
+        cluster={cluster}
+        clusterHosts={clusterHosts}
+        correlationId={correlationId}
+        upgradeCluster={upgradeCluster}
+        onClose={close}
+        onJumpToEvents={onJumpToEvents}
+      />
     </PluginApiModal>
   )
 }
@@ -141,12 +146,12 @@ ClusterUpgradeModal.propTypes = {
   isLoading: PropTypes.bool,
   cluster: PropTypes.object,
   clusterHosts: PropTypes.arrayOf(PropTypes.object),
+  correlationId: PropTypes.string,
 
-  // operation callback
+  // callbacks
   upgradeCluster: PropTypes.func,
-
-  // modal props
-  onClose: PropTypes.func,
+  jumpToEvents: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
 }
 
 export default ClusterUpgradeModal
