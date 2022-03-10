@@ -5,8 +5,9 @@ import config from '_/plugin-config'
 
 import DataProvider from '_/components/helper/DataProvider'
 
-import { webadminToastTypes } from '_/constants'
+import * as C from '_/constants'
 import { engineGet, ansiblePlaybookPost } from '_/utils/fetch'
+import { randomHexString } from '_/utils/random'
 import { msg } from '_/intl-messages'
 
 //
@@ -118,9 +119,11 @@ async function upgradeCluster ({
   ...rest
 }) {
   const ansiblePayload = { clusterName, ...rest }
+  const engineCorrelationId = randomHexString(10)
 
   // https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#passing-variables-on-the-command-line
   const ansibleVariables = JSON.stringify({
+    engine_correlation_id: engineCorrelationId,
     cluster_name: ansiblePayload.clusterName,
     stop_non_migratable_vms: ansiblePayload.stopPinnedVms,
     upgrade_timeout: ansiblePayload.upgradeTimeoutInMin * 60,
@@ -133,7 +136,7 @@ async function upgradeCluster ({
 
   if (config.useFakeData) {
     getPluginApi().showToast(
-      webadminToastTypes.info,
+      C.webadminToastTypes.info,
       `Upgrade using fake data, nothing to upgrade for ${clusterName}.`
     )
     console.info('**upgradeCluster**\nplaybook: "%s",\nansibleVariables:---\n%s\n---',
@@ -144,7 +147,7 @@ async function upgradeCluster ({
   try {
     await ansiblePlaybookPost(playbookName, ansibleVariables, executionTimeoutInMin)
     getPluginApi().showToast(
-      webadminToastTypes.info,
+      C.webadminToastTypes.info,
       msg.clusterUpgradeOperationStarted({ clusterName })
     )
   } catch (error) {
@@ -153,7 +156,7 @@ async function upgradeCluster ({
       playbookName,
       ansibleVariables)
     getPluginApi().showToast(
-      webadminToastTypes.danger,
+      C.webadminToastTypes.danger,
       msg.clusterUpgradeOperationFailed({ clusterName })
     )
   }
@@ -177,7 +180,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => (
 
       // handle data loading and error scenarios
       if (fetchError) {
-        getPluginApi().showToast(webadminToastTypes.danger, msg.clusterUpgradeDataError())
+        getPluginApi().showToast(C.webadminToastTypes.danger, msg.clusterUpgradeDataError())
         return React.cloneElement(child, { show: false })
       }
       if (fetchInProgress || !data) {
