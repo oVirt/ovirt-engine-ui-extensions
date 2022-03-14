@@ -102,7 +102,7 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 - Enable Copr builds
 - Move the project to GitHub and update the relevant documentation
 - Fix translation by using `msg` within components
-- I18n: Update Zanata configurations
+- I18n: Update Zanata configuration
 
 * Wed Jun 23 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.7-1
 - Update zatana.xml to version 1.2
