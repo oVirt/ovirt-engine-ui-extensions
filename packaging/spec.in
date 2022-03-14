@@ -88,6 +88,22 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Mon Mar 14 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.1-1
+- a new dialog is added: CPU pinning dialog for a VM
+- vGPU dialog: fix the max instances
+- Export VM dialog: move button to kebab menu and rename button label
+- Cluster upgrade dialog: use correlation id for Ansible playbooks
+- RHV dashboard: add a link to the Monitoring Portal from the dashboard
+- Improve logging and error handling
+- Optimize css loading
+- Update Patternfly css import
+- Update dependencies for various packages: eslint, babel, react-intl-po, trim-off-newlines, postcss
+- Move and reordering all modal sources
+- Enable Copr builds
+- Move the project to GitHub and update the relevant documentation
+- Fix translation by using `msg` within components
+- I18n: Update Zanata configurations
+
 * Wed Jun 23 2021 Sharon Gratch <sgratch@redhat.com> - 1.2.7-1
 - Update zatana.xml to version 1.2
 - Translation update, 17-May-2021
