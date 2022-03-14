@@ -734,7 +734,7 @@ const messageDescriptors = {
   },
   exportVmButton: {
     id: 'export.vm.buttonLabel',
-    defaultMessage: 'Export',
+    defaultMessage: 'Export to Data Domain',
     description: 'label of `Export` button in VM export dialog',
   },
   exportedVmNameTextFieldLabel: {
