@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { msg } from '_/intl-messages'
-import { formatNumber0D, formatNumber1D } from '_/utils/intl'
+import { formatPercent0D, formatNumber1D } from '_/utils/intl'
 
 import { Progress, ProgressMeasureLocation, ProgressSize } from '@patternfly/react-core'
 import './styles.css'
@@ -46,7 +46,7 @@ const UtilizationBarChart = ({
       )}
       { footerLabel === 'percent' && (
         <div className='bar-chart-label' style={{ maxWidth: footerLabelWidth }}>
-          <strong>{formatNumber0D(percentUsed)}%</strong> {msg.used()}
+          <strong>{formatPercent0D(percentUsed)}</strong> {msg.used()}
         </div>
       )}
       { typeof footerLabel === 'function' && (

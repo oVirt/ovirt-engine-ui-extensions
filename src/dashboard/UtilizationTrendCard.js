@@ -4,7 +4,6 @@ import { utilizationTrend as utilizationTrendShape } from './dataShapes'
 import { storageUnitTable } from '_/constants'
 import { msg } from '_/intl-messages'
 import { formatPercent0D, formatNumber1D } from '_/utils/intl'
-import { round } from '_/utils/round'
 import { convertValue } from '_/utils/unit-conversion'
 
 import { Flex, FlexItem, Tooltip } from '@patternfly/react-core'
@@ -55,8 +54,8 @@ const UtilizationTrendCard = ({
             <div>{msg.available().toLowerCase()}</div>
             <div>
               {showValueAsPercentage
-                ? msg.dashboardUtilizationCardAvailableOfPercent({ percent: formatPercent0D(total / 100) })
-                : msg.dashboardUtilizationCardAvailableOfUnit({ total: formatNumber1D(summaryTotal), unit: summaryUnit })
+                ? msg.dashboardUtilizationCardAvailableOfPercent({ percent: total })
+                : msg.dashboardUtilizationCardAvailableOfUnit({ total: summaryTotal, unit: summaryUnit })
               }
             </div>
           </FlexItem>
@@ -65,8 +64,8 @@ const UtilizationTrendCard = ({
         <Tooltip content={msg.dashboardUtilizationCardOverCommitTooltip()} distance={5}>
           <div className='overcommit-text'>
             {msg.dashboardUtilizationCardOverCommit({
-              overcommit: round(overcommit),
-              allocated: round(allocated),
+              overcommit,
+              allocated,
             })}
           </div>
         </Tooltip>

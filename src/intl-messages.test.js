@@ -1,4 +1,4 @@
-import parser from 'intl-messageformat-parser'
+import { parse } from '@formatjs/icu-messageformat-parser'
 import messageDescriptors from './intl/messages'
 import translatedMessages from './intl/translations.json'
 
@@ -22,7 +22,7 @@ describe('verify the content of [/src/intl/messages.js]', () => {
     })
 
     it('defaultMessage successfully parses as an ICU message', () => {
-      expect(() => { parser.parse(defaultMessage) }).not.toThrow()
+      expect(() => { parse(defaultMessage) }).not.toThrow()
     })
   })
 })
@@ -58,7 +58,7 @@ function parseIcuArgumentsForMessage (message) {
   const args = {}
 
   try {
-    const parsed = parser.parse(message)
+    const parsed = parse(message)
     if (parsed.type === 'messageFormatPattern') {
       parsed.elements.forEach(element => {
         if (element.type === 'argumentElement') {
@@ -92,7 +92,7 @@ describe('verify the content of [src/intl/translations.json]', () => {
       Object.entries(translatedMessages[locale])
     )('verify translation [%s]', (key, message) => {
       it('parses as an ICU message', () => {
-        expect(() => { parser.parse(message) }).not.toThrow()
+        expect(() => { parse(message) }).not.toThrow()
       })
 
       it('translation ICU arguments match English ICU arguments', () => {

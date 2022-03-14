@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
-import { formatNumber1D, formatPercent0D, formatPercent1D } from '_/utils/intl'
+import { formatNumber1D, formatPercent0D } from '_/utils/intl'
 
 import { ChartDonutUtilization, ChartThemeColor } from '@patternfly/react-charts'
 
@@ -32,8 +32,8 @@ const DonutChart = ({
   const colors = [{ value: thresholds.error }, { value: thresholds.warning }]
 
   const percentUsed = total === 0 ? 0 : used / total
-  const usedLabel = msg.dashboardUtilizationCardAmountUsedTooltip({ percent: formatPercent1D(percentUsed) })
-  const availableLabel = msg.dashboardUtilizationCardAmountAvailableTooltip({ percent: formatPercent1D(1 - percentUsed) })
+  const usedLabel = msg.dashboardUtilizationCardAmountUsedTooltip({ percent: percentUsed })
+  const availableLabel = msg.dashboardUtilizationCardAmountAvailableTooltip({ percent: (1 - percentUsed) })
 
   return (
     <div className='donut-chart'>

@@ -86,12 +86,6 @@ const messageDescriptors = {
     description: 'label that indicates current usage in various components',
   },
 
-  percentUsed: {
-    id: 'common.percentUsed',
-    defaultMessage: '{value, number}% Used',
-    description: 'label that indicates current usage in various components',
-  },
-
   available: {
     id: 'common.available',
     defaultMessage: 'Available',
@@ -102,18 +96,6 @@ const messageDescriptors = {
     id: 'common.unitAvailable',
     defaultMessage: '{unit} Available',
     description: 'label that indicates available (total - used) value in various components',
-  },
-
-  percentAvailable: {
-    id: 'common.percentAvailable',
-    defaultMessage: '{value, number}% Available',
-    description: 'label that indicates available (total - used) value in various components',
-  },
-
-  usedOfTotal: {
-    id: 'common.usedOfTotal',
-    defaultMessage: '{used, number} of {total, number}',
-    description: 'text shown to compare currently used vs. total value',
   },
 
   nonAvailableValue: {
@@ -270,31 +252,31 @@ const messageDescriptors = {
 
   dashboardUtilizationCardAvailableOfPercent: {
     id: 'dashboard.utilizationCardAvailableOfPercent',
-    defaultMessage: 'of {percent}',
+    defaultMessage: 'of {percent, number, :: scale/0.01 % .  0 ,_ }',
     description: 'part of utilization card\'s summary',
   },
 
   dashboardUtilizationCardAvailableOfUnit: {
     id: 'dashboard.utilizationCardAvailableOfUnit',
-    defaultMessage: 'of {total, number} {unit}',
+    defaultMessage: 'of {total, number, :: .0 0 ,_ } {unit}',
     description: 'part of utilization card\'s summary',
   },
 
   dashboardUtilizationCardAmountAvailableTooltip: {
     id: 'dashboard.utilizationCardAmountAvailableTooltip',
-    defaultMessage: '{percent} Available',
+    defaultMessage: '{percent, number, :: % .0 0 ,_ } Available',
     description: 'tooltip for amount available on the utilization donut chart',
   },
 
   dashboardUtilizationCardAmountUsedTooltip: {
     id: 'dashboard.utilizationCardAmountUsedTooltip',
-    defaultMessage: '{percent} Used',
+    defaultMessage: '{percent, number, :: % .0 0 ,_ } Used',
     description: 'tooltip for amount used on the utilization donut chart',
   },
 
   dashboardUtilizationCardOverCommit: {
     id: 'dashboard.utilizationCardOverCommit',
-    defaultMessage: 'Virtual resources - Committed: {overcommit, number}%, Allocated: {allocated, number}%',
+    defaultMessage: 'Virtual resources - Committed: {overcommit, number, :: scale/0.01 . % ,_}, Allocated: {allocated, number, :: scale/0.01 . % ,_}',
     description: 'shown below utilization card\'s summary',
   },
 
@@ -308,7 +290,7 @@ const messageDescriptors = {
 
   dashboardUtilizationCardDialogHostListTitle: {
     id: 'dashboard.utilizationCardDialogHostListTitle',
-    defaultMessage: 'Hosts ({hostCount, number})',
+    defaultMessage: 'Hosts ({hostCount, number, ::. })',
     description: 'title of `Hosts` list in utilization card\'s dialog',
   },
 
@@ -320,7 +302,7 @@ const messageDescriptors = {
 
   dashboardUtilizationCardDialogStorageListTitle: {
     id: 'dashboard.utilizationCardDialogStorageListTitle',
-    defaultMessage: 'Storage Domains ({storageCount, number})',
+    defaultMessage: 'Storage Domains ({storageCount, number, ::. })',
     description: 'title of `Storage Domains` list in utilization card\'s dialog',
   },
 
@@ -332,7 +314,7 @@ const messageDescriptors = {
 
   dashboardUtilizationCardDialogVmListTitle: {
     id: 'dashboard.utilizationCardDialogVmListTitle',
-    defaultMessage: 'Virtual Machines ({vmCount, number})',
+    defaultMessage: 'Virtual Machines ({vmCount, number, ::. })',
     description: 'title of `Virtual Machines` list in utilization card\'s dialog',
   },
 
@@ -388,7 +370,7 @@ const messageDescriptors = {
 
   migrateVmInfoLabel: {
     id: 'migrate.vm.vmInfoLabel',
-    defaultMessage: 'Select a host to migrate {value, number} virtual machine(s) to:',
+    defaultMessage: 'Select a host to migrate {value, number, ::. } virtual machine(s) to:',
     description: 'label shown above the target host dropdown, informing the user about VMs that are about to be migrated',
   },
 
@@ -666,7 +648,7 @@ const messageDescriptors = {
 
   clusterUpgradeHostsLabel: {
     id: 'cluster.upgrade.HostsLabel',
-    defaultMessage: '{count,number} {count, plural, one {Host} other {Hosts}}',
+    defaultMessage: '{count,number, ::.} {count, plural, one {Host} other {Hosts}}',
     description: 'cluster upgrade Wizard Step 3 - host count title (ICU formatted message)',
   },
 
@@ -678,7 +660,7 @@ const messageDescriptors = {
 
   clusterUpgradeNonMigratableLabel: {
     id: 'cluster.upgrade.NonMigratableLabel',
-    defaultMessage: '{count,number} Pinned VMs',
+    defaultMessage: '{count,number, ::.} Pinned VMs',
     description: 'cluster upgrade Wizard Step 3 - pinned VM (non-migratable VM) count title (ICU formatted message)',
   },
 
@@ -690,7 +672,7 @@ const messageDescriptors = {
 
   clusterUpgradeMigrateLabel: {
     id: 'cluster.upgrade.MigrateLabel',
-    defaultMessage: '{count,number} VMs',
+    defaultMessage: '{count,number, ::.} VMs',
     description: 'cluster upgrade Wizard Step 3 - count of VMs to be migrated during upgrade title (ICU formatted message)',
   },
 
