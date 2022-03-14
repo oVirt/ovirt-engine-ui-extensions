@@ -106,6 +106,11 @@ interface ActionButtonInterface {
    */
   id?: string;
 
+  /**
+   * Determines if the action button will be a menu item in the 'more items'
+   * (kebab) menu of the action panel
+   */
+   moreMenu?: Boolean;
 }
 
 interface OvirtLogger {

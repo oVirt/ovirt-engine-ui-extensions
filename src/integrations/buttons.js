@@ -95,8 +95,9 @@ function addVmExportButton () {
       )
     },
 
-    index: 4,
+    index: 13,
     id: 'VmExport',
+    moreMenu: true,
   })
 }
 
