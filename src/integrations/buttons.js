@@ -13,6 +13,7 @@ function isVmUp (vm) {
   return vmUpStates.includes(vm.status)
 }
 
+// for the time being the vGPU dialog will be available on both, vm devices tab and host devices tab
 function addVmManageGpuButton () {
   getPluginApi().addDetailPlaceActionButton(entityTypes.vm, entityTypes.hostDevices, msg.vmManageGpuButton(), {
     onClick: function (_selectedItems, parent) {
@@ -21,6 +22,13 @@ function addVmManageGpuButton () {
 
     index: 2,
     id: 'VmManageGpu',
+  })
+
+  getPluginApi().addDetailPlaceActionButton(entityTypes.vm, entityTypes.vmDevices, msg.vmManageGpuButton(), {
+    onClick: function (_selectedItems, parent) {
+      showVmManageGpuModal(parent)
+    },
+    id: 'VmManageGpuVmDevicesView',
   })
 }
 

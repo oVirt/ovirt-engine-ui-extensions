@@ -1,13 +1,14 @@
+import get from 'lodash/get'
 import PropTypes from 'prop-types'
 import React from 'react'
+import DataProvider from '_/components/helper/DataProvider'
 import { webadminToastTypes } from '_/constants'
 import { msg } from '_/intl-messages'
 import getPluginApi from '_/plugin-api'
+import CompatibilityVersion from '_/utils/CompatibilityVersion'
+import { createErrorMessage } from '_/utils/error-message'
 import { engineDelete, engineGet, enginePost } from '_/utils/fetch'
 import { isNumber } from '_/utils/type-validation'
-import DataProvider from '_/components/helper/DataProvider'
-import { createErrorMessage } from '_/utils/error-message'
-import get from 'lodash/get'
 
 const GpuDataProvider = ({ children, vmId }) => {
   const fetchVm = async () => {
@@ -77,7 +78,44 @@ const GpuDataProvider = ({ children, vmId }) => {
   }
 
   const isNoDisplay = (mdevDevices) => {
-    return getMdevDeviceSpecParam(mdevDevices?.vm_mediated_device?.[0], 'nodisplay') === 'true'
+    if (!mdevDevices?.vm_mediated_device) {
+      return false
+    }
+    return mdevDevices.vm_mediated_device.some(mdev => isNoDisplaySpecParam(mdev))
+  }
+
+  const isNoDisplaySpecParam = (mdevDevice) => {
+    return getMdevDeviceSpecParam(mdevDevice, 'nodisplay') === 'true'
+  }
+
+  const isNoDisplayConsistent = (noDisplay, mdevDevices) => {
+    if (!mdevDevices?.vm_mediated_device) {
+      return true
+    }
+    return mdevDevices.vm_mediated_device.every(mdev => {
+      return noDisplay === isNoDisplaySpecParam(mdev)
+    })
+  }
+
+  const getDriverParams = (mdevDevices) => {
+    if (!mdevDevices?.vm_mediated_device) {
+      return undefined
+    }
+    const mdevWithDriverParams = mdevDevices.vm_mediated_device.find(mdev => getDriverParamsSpecParam(mdev) !== undefined)
+    return getDriverParamsSpecParam(mdevWithDriverParams)
+  }
+
+  const getDriverParamsSpecParam = (mdevDevice) => {
+    return getMdevDeviceSpecParam(mdevDevice, 'driverParams')
+  }
+
+  const isDriverParamsConsistent = (driverParams, mdevDevices) => {
+    if (!mdevDevices?.vm_mediated_device) {
+      return true
+    }
+    return mdevDevices?.vm_mediated_device?.every(mdev => {
+      return driverParams === getDriverParamsSpecParam(mdev)
+    })
   }
 
   const getMdevDeviceSpecParam = (mdevDevice, name) => {
@@ -99,6 +137,14 @@ const GpuDataProvider = ({ children, vmId }) => {
       })
     })
     return gpus
+  }
+
+  const getNonExistingSelectedMdevs = (selectedMdevs, gpus) => {
+    const nonExisting = []
+    for (const mdevType in selectedMdevs) {
+      gpus.find(gpu => gpu.mDevType === mdevType) || nonExisting.push(mdevType)
+    }
+    return nonExisting
   }
 
   const countAggregatedMaxInstances = (gpus) => {
@@ -174,6 +220,11 @@ const GpuDataProvider = ({ children, vmId }) => {
     return undefined
   }
 
+  const getCompatibilityVersion = (vm, cluster) => {
+    const versionObject = vm.custom_compatibility_version || cluster.version
+    return new CompatibilityVersion(versionObject.major, versionObject.minor)
+  }
+
   const fetchData = async () => {
     const vm = await fetchVm()
     const vmMdevDevices = await fetchVmMdevDevices()
@@ -183,9 +234,23 @@ const GpuDataProvider = ({ children, vmId }) => {
 
     const selectedMdevs = getSelectedMdevs(vmMdevDevices)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
+    const nonExistingSelectedMdevs = getNonExistingSelectedMdevs(selectedMdevs, gpus)
     countAggregatedMaxInstances(gpus)
     const noDisplay = isNoDisplay(vmMdevDevices)
-    return { gpus: gpus, noDisplay: noDisplay }
+    const noDisplayConsistent = isNoDisplayConsistent(noDisplay, vmMdevDevices)
+    const driverParams = getDriverParams(vmMdevDevices)
+    const driverParamsConsistent = isDriverParamsConsistent(driverParams, vmMdevDevices)
+    const compatibilityVersion = getCompatibilityVersion(vm, cluster)
+
+    return {
+      gpus: gpus,
+      noDisplay: noDisplay,
+      driverParams: driverParams,
+      compatibilityVersion: compatibilityVersion,
+      nonExistingSelectedMdevs: nonExistingSelectedMdevs,
+      noDisplayConsistent: noDisplayConsistent,
+      driverParamsConsistent: driverParamsConsistent,
+    }
   }
 
   const deleteAllMdevDevices = async () => {
@@ -201,29 +266,29 @@ const GpuDataProvider = ({ children, vmId }) => {
     return engineDelete(`api/vms/${vmId}/mediateddevices/${deviceId}`)
   }
 
-  const addAllMdevDevices = async (displayOn, allGpus) => {
+  const addAllMdevDevices = async (displayOn, driverParams, allGpus) => {
     // the allGpus contains all gpus from all hosts, it can contain duplicate mdev type names
     const processedMdevs = new Set()
 
     return Promise.all(allGpus.map(gpu => {
       if (!processedMdevs.has(gpu.mDevType)) {
         processedMdevs.add(gpu.mDevType)
-        return addMdevDevices(gpu, displayOn)
+        return addMdevDevices(displayOn, driverParams, gpu)
       } else {
         return Promise.resolve()
       }
     }))
   }
 
-  const addMdevDevices = async (gpu, displayOn) => {
+  const addMdevDevices = async (displayOn, driverParams, gpu) => {
     const promises = []
     for (let i = 0; i < gpu.requestedInstances; i++) {
-      promises.push(addMdevDevice(gpu.mDevType, displayOn))
+      promises.push(addMdevDevice(displayOn, driverParams, gpu.mDevType))
     }
     return Promise.all(promises)
   }
 
-  const addMdevDevice = async (mDevType, displayOn) => {
+  const addMdevDevice = async (displayOn, driverParams, mDevType) => {
     const requestBody = {
       'spec_params': {
         'property': [
@@ -238,13 +303,21 @@ const GpuDataProvider = ({ children, vmId }) => {
         ],
       },
     }
+
+    if (driverParams) {
+      requestBody.spec_params.property.push({
+        name: 'driverParams',
+        value: driverParams,
+      })
+    }
+
     return enginePost(`api/vms/${vmId}/mediateddevices`, JSON.stringify(requestBody))
   }
 
-  const saveVm = async (displayOn, allGpus) => {
+  const saveVm = async (displayOn, driverParams, allGpus) => {
     try {
       await deleteAllMdevDevices()
-      await addAllMdevDevices(displayOn, allGpus)
+      await addAllMdevDevices(displayOn, driverParams, allGpus)
 
       getPluginApi().showToast(webadminToastTypes.success, msg.vmManageGpuSaveDataOK())
     } catch (error) {
@@ -274,6 +347,11 @@ const GpuDataProvider = ({ children, vmId }) => {
         return React.cloneElement(child, {
           gpus: data.gpus,
           displayOn: !data.noDisplay,
+          driverParams: data.driverParams,
+          compatibilityVersion: data.compatibilityVersion,
+          nonExistingSelectedMdevs: data.nonExistingSelectedMdevs,
+          noDisplayConsistent: data.noDisplayConsistent,
+          driverParamsConsistent: data.driverParamsConsistent,
           onSelectButtonClick: saveVm,
         })
       }}

@@ -70,6 +70,7 @@ export const entityTypes = {
   host: 'Host',
   vm: 'VirtualMachine',
   hostDevices: 'HostDevice',
+  vmDevices: 'VirtualMachineDevice',
 }
 
 export const heatMapThresholds = {

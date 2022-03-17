@@ -770,6 +770,42 @@ const messageDescriptors = {
     description: 'title of Manage vGPU dialog',
   },
 
+  vmManageGpuDialogMissingMDevWarningTitle: {
+    id: 'vm.gpu.warningTitle.missing.mdevs',
+    defaultMessage: 'Unsupported MDev Type(s)',
+    description: 'title of warning about the missing mdev type in Manage vGPU dialog',
+  },
+
+  vmManageGpuDialogMissingMDevWarning: {
+    id: 'vm.gpu.warning.missing.mdevs',
+    defaultMessage: 'The current configuration of the VM specifies a MDev Type(s) that are not provided by any host in the cluster ({ mdevs }). If you save the dialog, the existing configuration will be overwritten..',
+    description: 'warning about the missing mdev type in Manage vGPU dialog',
+  },
+
+  vmManageGpuDialogInconsistentNodisplayWarningTitle: {
+    id: 'vm.gpu.warningTitle.inconsistent.nodisplay',
+    defaultMessage: 'Inconsistent Secondary display adapter for VNC settings',
+    description: 'title of warning about the inconsistent nodisplay in Manage vGPU dialog',
+  },
+
+  vmManageGpuDialogInconsistentNodisplayWarning: {
+    id: 'vm.gpu.warning.inconsistent.nodisplay',
+    defaultMessage: 'The current configuration of the VM specifies MDev devices with various configurations of the Secondary display adapter for VNC. The Manage vGPU dialog requires the MDev devices to have the same configurations. If you save the dialog, the existing configuration will be overwritten.',
+    description: 'warning about the inconsistent nodisplay in Manage vGPU dialog',
+  },
+
+  vmManageGpuDialogInconsistentDriverParamsWarningTitle: {
+    id: 'vm.gpu.warningTitle.inconsistent.driver.params',
+    defaultMessage: 'Inconsistent Driver parameters settings',
+    description: 'title of warning about the inconsistent driver params in Manage vGPU dialog',
+  },
+
+  vmManageGpuDialogInconsistentDriverParamsWarning: {
+    id: 'vm.gpu.warning.inconsistent.driver.params',
+    defaultMessage: 'The current configuration of the VM specifies MDev devices with various configurations of the Driver parameters. The Manage vGPU dialog requires the MDev devices to have the same configurations. If you save the dialog, the existing configuration will be overwritten.',
+    description: 'warning about the inconsistent driver params in Manage vGPU dialog',
+  },
+
   vmManageGpuEmptyStateTitle: {
     id: 'vm.gpu.emptyState.title',
     defaultMessage: 'No hosts with vGPUs attached',
@@ -804,6 +840,18 @@ const messageDescriptors = {
     id: 'vm.gpu.body.display.switch.off',
     defaultMessage: 'Off',
     description: 'Manage vGPU dialog Display on switch off`',
+  },
+
+  vmManageGpuBodyDriverParams: {
+    id: 'vm.gpu.body.driver.properties',
+    defaultMessage: 'Optional driver parameters',
+    description: 'Manage vGPU dialog Optional driver parameters label`',
+  },
+
+  vmManageGpuBodyDriverParamsHelperText: {
+    id: 'vm.gpu.body.driver.properties.helper.text',
+    defaultMessage: 'Available since 4.7 compatibility version',
+    description: 'Manage vGPU dialog Optional driver parameters helper text`',
   },
 
   vmManageGpuBodySubTitleSelectionsCards: {

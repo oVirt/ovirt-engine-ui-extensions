@@ -4,8 +4,9 @@ import { msg } from '_/intl-messages'
 
 import PluginApiModal from '_/components/modals/PluginApiModal'
 import { Spinner } from 'patternfly-react'
-import { Button } from '@patternfly/react-core'
+import { Alert, Button } from '@patternfly/react-core'
 import ManageGpuModalBody from './ManageGpuModalBody'
+import CompatibilityVersion from '_/utils/CompatibilityVersion'
 
 function gpuArrayToSelectedMap (gpus) {
   const mdevTypesToRequestedInstances = {}
@@ -27,11 +28,17 @@ const ManageGpuModal = ({
   isLoading = false,
   gpus = [],
   displayOn = true,
+  driverParams,
+  compatibilityVersion,
+  nonExistingSelectedMdevs,
+  noDisplayConsistent,
+  driverParamsConsistent,
   onSelectButtonClick = () => {},
   onClose = () => {},
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [displayOn_, setDisplayOn_] = useState(undefined)
+  const [driverParams_, setDriverParams_] = useState(undefined)
   const [selectedMDevTypes, setSelectedMDevTypes] = useState(gpuArrayToSelectedMap(gpus))
 
   useEffect(() => {
@@ -47,6 +54,10 @@ const ManageGpuModal = ({
     setDisplayOn_(isSelected)
   }
 
+  const onDriverParamsChange = (params) => {
+    setDriverParams_(params)
+  }
+
   const onGpuSelectionChange = (mDevType, requestedInstances) => {
     const tmpSelectedMDevTypes = {}
     for (const selectedMDevType in selectedMDevTypes) {
@@ -54,6 +65,13 @@ const ManageGpuModal = ({
     }
     tmpSelectedMDevTypes[mDevType] = requestedInstances
     setSelectedMDevTypes(tmpSelectedMDevTypes)
+  }
+
+  const getDriverParams = () => {
+    if (compatibilityVersion >= CompatibilityVersion.VERSION_4_7) {
+      return driverParams_ === undefined ? driverParams : driverParams_
+    }
+    return undefined
   }
 
   const onSelect = () => {
@@ -65,8 +83,7 @@ const ManageGpuModal = ({
 
     const allSelectedGpus = gpus.filter(gpu => gpu.requestedInstances > 0)
     const d = displayOn_ === undefined ? displayOn : displayOn_
-
-    onSelectButtonClick(d, allSelectedGpus)
+    onSelectButtonClick(d, getDriverParams(), allSelectedGpus)
     close()
   }
 
@@ -96,11 +113,35 @@ const ManageGpuModal = ({
       ]}
     >
       <Spinner loading={isLoading}>
+        {
+          nonExistingSelectedMdevs && nonExistingSelectedMdevs.length > 0 && (
+            <Alert variant='warning' isInline title={msg.vmManageGpuDialogMissingMDevWarningTitle()}>
+              {msg.vmManageGpuDialogMissingMDevWarning({ mdevs: nonExistingSelectedMdevs.join(',') })}
+            </Alert>
+          )
+        }
+        {
+          !noDisplayConsistent && (
+            <Alert variant='warning' isInline title={msg.vmManageGpuDialogInconsistentNodisplayWarningTitle()}>
+              {msg.vmManageGpuDialogInconsistentNodisplayWarning()}
+            </Alert>
+          )
+        }
+        {
+          !driverParamsConsistent && (
+            <Alert variant='warning' isInline title={msg.vmManageGpuDialogInconsistentDriverParamsWarningTitle()}>
+              {msg.vmManageGpuDialogInconsistentDriverParamsWarning()}
+            </Alert>
+          )
+        }
         <ManageGpuModalBody
           gpus={gpus}
           displayOn={displayOn_ === undefined ? displayOn : displayOn_}
+          driverParams={getDriverParams()}
+          compatibilityVersion={compatibilityVersion}
           selectedMDevTypes={selectedMDevTypes}
           onDisplayOnChange={onDisplayOnChange}
+          onDriverParamsChange={onDriverParamsChange}
           onGpuSelectionChange={onGpuSelectionChange}
         />
       </Spinner>
@@ -128,6 +169,11 @@ ManageGpuModal.propTypes = {
       address: PropTypes.string,
     })),
   displayOn: PropTypes.bool,
+  driverParams: PropTypes.string,
+  compatibilityVersion: PropTypes.instanceOf(CompatibilityVersion),
+  nonExistingSelectedMdevs: PropTypes.array,
+  noDisplayConsistent: PropTypes.bool,
+  driverParamsConsistent: PropTypes.bool,
 
   onSelectButtonClick: PropTypes.func,
   onClose: PropTypes.func,

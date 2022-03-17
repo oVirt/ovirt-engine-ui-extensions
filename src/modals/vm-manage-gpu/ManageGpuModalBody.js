@@ -2,12 +2,14 @@ import {
   Bullseye,
   Chip,
   ChipGroup,
+  DescriptionList,
+  DescriptionListTerm,
+  DescriptionListGroup,
+  DescriptionListDescription,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Stack,
-  StackItem,
   Switch,
   TextInput,
   Title,
@@ -16,11 +18,19 @@ import { SearchIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { msg } from '_/intl-messages'
+import CompatibilityVersion from '_/utils/CompatibilityVersion'
 import GpuTable from './GpuTable'
 import './vgpu.css'
 
 const ManageGpuModalBody = ({
-  gpus, displayOn, selectedMDevTypes, onDisplayOnChange, onGpuSelectionChange,
+  gpus,
+  displayOn,
+  driverParams,
+  compatibilityVersion,
+  selectedMDevTypes,
+  onDisplayOnChange,
+  onDriverParamsChange,
+  onGpuSelectionChange,
 }) => {
   const [searchText, setSearchText] = React.useState('')
 
@@ -51,66 +61,90 @@ const ManageGpuModalBody = ({
 
   const filteredGpus =
     gpus.filter(gpu => searchText === '' ||
-    gpu.mDevType.toLowerCase().includes(searchText.toLowerCase()) ||
-    gpu.host.toLowerCase().includes(searchText.toLowerCase()))
+      gpu.mDevType.toLowerCase().includes(searchText.toLowerCase()) ||
+      gpu.host.toLowerCase().includes(searchText.toLowerCase()))
+
+  const driverParamsEnabled = compatibilityVersion >= CompatibilityVersion.VERSION_4_7
 
   return (
-    <Stack hasGutter>
-      <StackItem>
-        <span className='vgpu-modal-description'>
-          {msg.vmManageGpuBodyDescription()}
-        </span>
-      </StackItem>
-      <StackItem>
-        <span className='vgpu-modal-body-label'>
-          {msg.vmManageGpuBodyDisplaySwitchLabel()}
-        </span>
-        <Switch
-          id='vgpu-display-on-switch'
-          label={msg.vmManageGpuBodyDisplaySwitchOn()}
-          labelOff={msg.vmManageGpuBodyDisplaySwitchOff()}
-          isChecked={displayOn}
-          onChange={value => onDisplayOnChange(value)}
-        />
-      </StackItem>
-      <StackItem>
-        <span className='vgpu-modal-body-label'>
-          {msg.vmManageGpuBodySubTitleSelectionsCards()}
-        </span>
-        { !selectedMDevType && (
-          <span className='vgpu-modal-body-label'>
-            {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
-          </span>
-        )}
-        { selectedMDevType && (
-          <ChipGroup>
-            {selectedMDevTypeInstances.map(selectedMDevTypeInstance => (
-              <Chip key={selectedMDevTypeInstance} onClick={() => onGpuSelectionChange(selectedMDevType, selectedMDevTypes[selectedMDevType] - 1)}>
-                {selectedMDevType}
-              </Chip>
-            ))}
-          </ChipGroup>
-        )}
-      </StackItem>
-      <StackItem>
-        <TextInput
-          value={searchText}
-          placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
-          type='search'
-          onChange={value => onSearchBoxInput(value)}
-          aria-label='text input'
-          className='vgpu-search-box'
-        />
-      </StackItem>
-      <StackItem className='vgpu-table-wrapper'>
+    <div>
+      <span className='vgpu-modal-description'>
+        {msg.vmManageGpuBodyDescription()}
+      </span>
+      <DescriptionList isHorizontal className='vgpu-description-list'>
+        <DescriptionListGroup>
+          <DescriptionListTerm className='vgpu-description-list-term'>
+            {msg.vmManageGpuBodyDisplaySwitchLabel()}
+          </DescriptionListTerm>
+          <DescriptionListDescription className='vgpu-description-list-description'>
+            <Switch
+              id='vgpu-display-on-switch'
+              label={msg.vmManageGpuBodyDisplaySwitchOn()}
+              labelOff={msg.vmManageGpuBodyDisplaySwitchOff()}
+              isChecked={displayOn}
+              onChange={value => onDisplayOnChange(value)}
+            />
+          </DescriptionListDescription>
+        </DescriptionListGroup>
+        <DescriptionListGroup>
+          <DescriptionListTerm className='vgpu-description-list-term'>
+            {msg.vmManageGpuBodyDriverParams()}
+          </DescriptionListTerm>
+          <DescriptionListDescription className='vgpu-description-list-description'>
+            <TextInput
+              value={driverParams || ''}
+              type='text'
+              isDisabled={!driverParamsEnabled}
+              onChange={onDriverParamsChange}
+              aria-label='text input'
+            />
+            {!driverParamsEnabled && (
+              <div>
+                {msg.vmManageGpuBodyDriverParamsHelperText()}
+              </div>
+            )}
+          </DescriptionListDescription>
+        </DescriptionListGroup>
+        <DescriptionListGroup>
+          <DescriptionListTerm className='vgpu-description-list-term'>
+            {msg.vmManageGpuBodySubTitleSelectionsCards()}
+          </DescriptionListTerm>
+          <DescriptionListDescription className='vgpu-description-list-description'>
+            {!selectedMDevType && (
+              <span className='vgpu-modal-body-label'>
+                {msg.vmManageGpuBodySubTitleSelectionsCardsEmpty()}
+              </span>
+            )}
+            {selectedMDevType && (
+              <ChipGroup>
+                {selectedMDevTypeInstances.map(selectedMDevTypeInstance => (
+                  <Chip key={selectedMDevTypeInstance} onClick={() => onGpuSelectionChange(selectedMDevType, selectedMDevTypes[selectedMDevType] - 1)}>
+                    {selectedMDevType}
+                  </Chip>
+                ))}
+              </ChipGroup>
+            )}
+          </DescriptionListDescription>
+        </DescriptionListGroup>
+        </DescriptionList>
+
+      <TextInput
+        value={searchText}
+        placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
+        type='search'
+        onChange={value => onSearchBoxInput(value)}
+        aria-label='text input'
+        className='vgpu-search-box'
+      />
+      <div className='.vgpu-table-wrapper'>
         <GpuTable
           gpus={filteredGpus}
           selectedMDevTypes={selectedMDevTypes}
           onGpuSelectionChange={onGpuSelectionChange}
           className='vgpu-body-element'
         />
-      </StackItem>
-    </Stack>
+      </div>
+    </div>
   )
 }
 
@@ -133,8 +167,11 @@ ManageGpuModalBody.propTypes = {
       address: PropTypes.string,
     })),
   displayOn: PropTypes.bool,
+  driverParams: PropTypes.string,
+  compatibilityVersion: PropTypes.instanceOf(CompatibilityVersion),
   selectedMDevTypes: PropTypes.any,
   onDisplayOnChange: PropTypes.func,
+  onDriverParamsChange: PropTypes.func,
   onGpuSelectionChange: PropTypes.func,
 }
 
