@@ -116,7 +116,9 @@ const mapVmToPinnedEntity = (vm) => {
   const cpuToPinnedCpuMap = getCpuToPinnedCpuMapForVm(vm)
   const topology = new Topology()
   if (sockets && cores && threads) {
-    // cpuId is globally unique and is counted incrementally through sockets, cores and threads
+    // lets generate the VM's cpuIds based on the nubmer of sockets, cores and threads. The ids are 
+    // for display only and they change when the topology changes
+    // cpuId are globally unique and are counted incrementally through sockets, cores and threads
     let currentCpuId = 0
     for (let s = 0; s < sockets; s++) {
       for (let c = 0; c < cores; c++) {
