@@ -1,27 +1,23 @@
-import { msg } from '_/intl-messages'
-
-const CpuPinningPolicy = {
-  none: msg.cpuPinningModalVmPinningPolicyFieldNone(),
-  manual: msg.cpuPinningModalVmPinningPolicyFieldManual(),
-  resize_and_pin_numa: msg.cpuPinningModalVmPinningPolicyFieldResizeAndPin(),
-  dedicated: msg.cpuPinningModalVmPinningPolicyFieldDedicated(),
-
-  isManual (policy) {
-    return policy === 'manual'
-  },
-
-  isNone (policy) {
-    return policy === 'none'
-  },
-
-  isDynamic (policy) {
-    return policy && !this.isManual(policy) && !this.isNone(policy)
-  },
-
-  isExclusive (policy) {
-    return policy === 'dedicated'
-  },
+export function isNone (policy) {
+  return policy === 'none'
 }
 
-Object.freeze(CpuPinningPolicy)
-export default CpuPinningPolicy
+export function isManual (policy) {
+  return policy === 'manual'
+}
+
+export function isResizeAndPinNuma (policy) {
+  return policy === 'resize_and_pin_numa'
+}
+
+export function isDedicated (policy) {
+  return policy === 'dedicated'
+}
+
+export function isDynamic (policy) {
+  return policy && !isManual(policy) && !isNone(policy)
+}
+
+export function isExclusive (policy) {
+  return isDedicated(policy)
+}

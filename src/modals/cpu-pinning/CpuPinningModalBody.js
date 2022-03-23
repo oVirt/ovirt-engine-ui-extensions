@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { msg } from '_/intl-messages'
-import CpuPinningPolicy from './CpuPinningPolicy'
+import * as CpuPinningPolicy from './CpuPinningPolicy'
 import CpuTopology from './CpuTopology'
 import PinnedEntity from './PinnedEntity'
 
@@ -56,6 +56,22 @@ const CpuPinningModalBody = ({
     return true
   }
 
+  const cpuPinningPolicyLabel = (policy) => {
+    if (CpuPinningPolicy.isNone(policy)) {
+      return msg.cpuPinningModalVmPinningPolicyFieldNone()
+    }
+    if (CpuPinningPolicy.isManual(policy)) {
+      return msg.cpuPinningModalVmPinningPolicyFieldManual()
+    }
+    if (CpuPinningPolicy.isResizeAndPinNuma(policy)) {
+      return msg.cpuPinningModalVmPinningPolicyFieldResizeAndPin()
+    }
+    if (CpuPinningPolicy.isDedicated(policy)) {
+      return msg.cpuPinningModalVmPinningPolicyFieldDedicated()
+    }
+    return ''
+  }
+
   const allPinnedCpusValid = validateAllCpus()
 
   return (
@@ -67,7 +83,7 @@ const CpuPinningModalBody = ({
               {msg.cpuPinningModalVmPinningPolicyField()}
             </DescriptionListTerm>
             <DescriptionListDescription>
-              {CpuPinningPolicy[mainEntity.cpuPinningPolicy]}
+              {cpuPinningPolicyLabel(mainEntity.cpuPinningPolicy)}
             </DescriptionListDescription>
           </DescriptionListGroup>
         )

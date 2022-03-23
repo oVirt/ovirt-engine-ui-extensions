@@ -3,7 +3,7 @@ import React from 'react'
 import DataProvider from '_/components/helper/DataProvider'
 import { webadminToastTypes } from '_/constants'
 import { msg } from '_/intl-messages'
-import CpuPinningPolicy from './CpuPinningPolicy'
+import { isExclusive } from './CpuPinningPolicy'
 import getPluginApi from '_/plugin-api'
 import { engineGet } from '_/utils/fetch'
 import { parse } from './cpuPinningParser'
@@ -137,6 +137,15 @@ const mapVmToPinnedEntity = (vm) => {
   })
 }
 
+const getCpuCount = (host) => {
+  let cpuCount = 0
+  if (host.cpu?.topology) {
+    const topology = host.cpu.topology
+    cpuCount = topology.sockets * topology.cores * topology.threads
+  }
+  return cpuCount
+}
+
 const createCpuPinningTopology = (cpuUnits) => {
   const cpuPinningTopology = new Topology()
 
@@ -147,7 +156,7 @@ const createCpuPinningTopology = (cpuUnits) => {
     runs_vdsm: runsVDSM,
     vms,
   }) => {
-    const exclusivelyPinned = vms?.vm.some(vm => CpuPinningPolicy.isExclusive(vm.cpu_pinning_policy))
+    const exclusivelyPinned = vms?.vm.some(vm => isExclusive(vm.cpu_pinning_policy))
     const pinnedEntities = (vms?.vm.map(vm => vm.name) || []).sort()
     if (runsVDSM) {
       pinnedEntities.unshift('VDS Manager')
@@ -160,16 +169,12 @@ const createCpuPinningTopology = (cpuUnits) => {
 }
 
 const mapHostToPinnedEntity = (host, cpuUnits) => {
-  const pinned = new PinnedEntity({ id: host.id, name: host.name })
-
-  if (host.cpu?.topology) {
-    const topology = host.cpu.topology
-    pinned.cpuCount = topology.sockets * topology.cores * topology.threads
-  }
-
-  pinned.cpuPinningTopology = createCpuPinningTopology(cpuUnits)
-
-  return pinned
+  return new PinnedEntity({
+    id: host.id,
+    name: host.name,
+    cpuCount: getCpuCount(host),
+    cpuPinningTopology: createCpuPinningTopology(cpuUnits),
+  })
 }
 
 const mapHostsToPinnedEntities = (hosts) => {

@@ -21,7 +21,7 @@ const CpuPinningModal = ({
   onClose = () => {},
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(true)
-  console.log(mainEntity)
+
   const handleCloseModal = () => {
     setIsModalOpen(false)
     onClose()
