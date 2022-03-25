@@ -3,8 +3,12 @@ import React from 'react'
 import DataProvider from '_/components/helper/DataProvider'
 import { webadminToastTypes } from '_/constants'
 import { msg } from '_/intl-messages'
+import { isExclusive } from './CpuPinningPolicy'
 import getPluginApi from '_/plugin-api'
 import { engineGet } from '_/utils/fetch'
+import { parse } from './cpuPinningParser'
+import PinnedEntity from './PinnedEntity'
+import { Topology } from './PinnedEntityTopology'
 
 const fetchVm = async (vmId) => {
   return engineGet(`api/vms/${vmId}`)
@@ -14,32 +18,54 @@ const fetchHost = async (hostId) => {
   return engineGet(`api/hosts/${hostId}`)
 }
 
+const fetchHostCpuUnits = async (hostId) => {
+  return engineGet(`api/hosts/${hostId}/cpuunits`)
+}
+
 const fetchHosts = async (hostsIds) => {
   return Promise.all(hostsIds.map((hostId) => fetchHost(hostId)))
 }
 
 const getSockets = (vm) => {
   if (vm.dynamic_cpu?.topology) {
-    return vm.dynamic_cpu.topology.sockets
+    return +vm.dynamic_cpu.topology.sockets
   } else {
-    return vm.cpu.topology.sockets
+    return +vm.cpu.topology.sockets
   }
 }
 
 const getCores = (vm) => {
   if (vm.dynamic_cpu?.topology) {
-    return vm.dynamic_cpu.topology.cores
+    return +vm.dynamic_cpu.topology.cores
   } else {
-    return vm.cpu.topology.cores
+    return +vm.cpu.topology.cores
   }
 }
 
 const getThreads = (vm) => {
   if (vm.dynamic_cpu?.topology) {
-    return vm.dynamic_cpu.topology.threads
+    return +vm.dynamic_cpu.topology.threads
   } else {
-    return vm.cpu.topology.threads
+    return +vm.cpu.topology.threads
   }
+}
+
+const getCpuPinningString = (vm) => {
+  // e.g 0#0_1#1-4,^2
+  return getPinnings(vm)
+    .map(({ vcpu, cpuSet }) => `${vcpu}#${cpuSet}`)
+    .join('_')
+}
+
+const getCpuToPinnedCpuMapForVm = (vm) => {
+  return getPinnings(vm).reduce(
+    (mapping, pinning) => {
+      const [vcpu, pcpus] = parse(pinning)
+      mapping.set(vcpu, [...pcpus])
+      return mapping
+    },
+    new Map()
+  )
 }
 
 const getPinnings = (vm) => {
@@ -83,47 +109,105 @@ const getPlacementPolicyHostsIds = (vm) => {
   return hostsIds
 }
 
-const getCpus = (host) => {
-  const topology = host.cpu?.topology
-  if (topology) {
-    return topology.sockets * topology.cores * topology.threads
+const mapVmToPinnedEntity = (vm) => {
+  const sockets = getSockets(vm)
+  const cores = getCores(vm)
+  const threads = getThreads(vm)
+  const cpuToPinnedCpuMap = getCpuToPinnedCpuMapForVm(vm)
+  const topology = new Topology()
+  if (sockets && cores && threads) {
+    // lets generate the VM's cpuIds based on the nubmer of sockets, cores and threads. The ids are
+    // for display only and they change when the topology changes
+    // cpuId are globally unique and are counted incrementally through sockets, cores and threads
+    let currentCpuId = 0
+    for (let s = 0; s < sockets; s++) {
+      for (let c = 0; c < cores; c++) {
+        for (let t = 0; t < threads; t++) {
+          topology.add(s, c, currentCpuId, cpuToPinnedCpuMap.get(currentCpuId))
+          currentCpuId++
+        }
+      }
+    }
   }
-  return 0
-}
-
-const mapVmToModel = (vm) => {
-  return {
+  return new PinnedEntity({
     id: vm.id,
     name: vm.name,
-    cpuTopology: {
-      sockets: parseInt(getSockets(vm)),
-      cores: parseInt(getCores(vm)),
-      threads: parseInt(getThreads(vm)),
-    },
+    cpuCount: sockets * cores * threads,
+    cpuPinningTopology: topology,
     cpuPinningPolicy: vm.cpu_pinning_policy,
-    cpuPinnings: getPinnings(vm),
-  }
+    cpuPinningString: getCpuPinningString(vm),
+  })
 }
 
-const mapHostToModel = (host) => {
-  return {
+const getCpuCount = (host) => {
+  let cpuCount = 0
+  if (host.cpu?.topology) {
+    const topology = host.cpu.topology
+    cpuCount = topology.sockets * topology.cores * topology.threads
+  }
+  return cpuCount
+}
+
+const createCpuPinningTopology = (cpuUnits) => {
+  const cpuPinningTopology = new Topology()
+
+  cpuUnits?.host_cpu_unit?.forEach(({
+    socket_id: socketId,
+    core_id: coreId,
+    cpu_id: cpuId,
+    runs_vdsm: runsVDSM,
+    vms,
+  }) => {
+    const exclusivelyPinned = vms?.vm.some(vm => isExclusive(vm.cpu_pinning_policy))
+    const pinnedEntities = (vms?.vm.map(vm => vm.name) || []).sort()
+    if (runsVDSM) {
+      pinnedEntities.unshift('VDS Manager')
+    }
+
+    cpuPinningTopology.add(socketId, coreId, cpuId, pinnedEntities, exclusivelyPinned)
+  })
+
+  return cpuPinningTopology
+}
+
+const mapHostToPinnedEntity = (host, cpuUnits) => {
+  return new PinnedEntity({
     id: host.id,
     name: host.name,
-    cpus: getCpus(host),
-  }
+    cpuCount: getCpuCount(host),
+    cpuPinningTopology: createCpuPinningTopology(cpuUnits),
+  })
 }
 
-const mapHostsToModel = (hosts) => {
-  return hosts.map((host) => mapHostToModel(host))
+const mapHostsToPinnedEntities = (hosts) => {
+  return hosts.map((host) => mapHostToPinnedEntity(host))
 }
 
-const CpuPinningDataProvider = ({ children, vmId }) => {
+const CpuPinningDataProvider = ({ children, vmId, hostId }) => {
   const fetchData = async () => {
+    if (vmId) {
+      return fetchDataVmView()
+    } else if (hostId) {
+      return fetchDataHostView()
+    } else {
+      throw new Error('At least one of vmId, hostId needs to be specified')
+    }
+  }
+
+  const fetchDataVmView = async () => {
     const vm = await fetchVm(vmId)
     const hosts = await fetchHosts(getHostIds(vm))
     return {
-      vm: mapVmToModel(vm),
-      hosts: mapHostsToModel(hosts),
+      mainEntity: mapVmToPinnedEntity(vm),
+      pinnedEntities: mapHostsToPinnedEntities(hosts),
+    }
+  }
+
+  const fetchDataHostView = async () => {
+    const [host, cpuUnits] = await Promise.all([fetchHost(hostId), fetchHostCpuUnits(hostId)])
+    return {
+      mainEntity: mapHostToPinnedEntity(host, cpuUnits),
+      pinnedEntities: [],
     }
   }
 
@@ -148,8 +232,8 @@ const CpuPinningDataProvider = ({ children, vmId }) => {
 
         // pass relevant data and operations to child component
         return React.cloneElement(child, {
-          vm: data.vm,
-          hosts: data.hosts,
+          mainEntity: data.mainEntity,
+          pinnedEntities: data.pinnedEntities,
         })
       }}
     </DataProvider>
@@ -158,7 +242,8 @@ const CpuPinningDataProvider = ({ children, vmId }) => {
 
 CpuPinningDataProvider.propTypes = {
   children: PropTypes.element.isRequired,
-  vmId: PropTypes.string.isRequired,
+  vmId: PropTypes.string,
+  hostId: PropTypes.string,
 }
 
 export default CpuPinningDataProvider

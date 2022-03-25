@@ -1,4 +1,3 @@
-import times from 'lodash/times'
 import CpuTopologyCore from './CpuTopologyCore'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -6,56 +5,54 @@ import {
   Title,
 } from '@patternfly/react-core'
 import './cpu-topology.css'
+import { Socket } from './PinnedEntityTopology'
 
 const CpuTopologySocket = ({
-  socketId,
-  cores,
-  threads,
-  cpuIdToPinnedCpuIdsMap,
+  socket,
   socketLabelProvider,
   coreLabelProvider,
   cpuLabelProvider,
   pinnedCpuLabelProvider,
   isPinnedCpuValid,
+  pinnedEntityIcon,
+  variant,
 }) => {
   return (
     <div className='cpu-socket'>
       <Title headingLevel="h6" size="md">
-        { socketLabelProvider(socketId) }
+        { socketLabelProvider(socket.socketId) }
       </Title>
-      {
-        times(cores, (i) => {
-          const coreId = socketId * cores + i
-          const startCpuIndex = socketId * cores * threads + i * threads
-          return (
-            <CpuTopologyCore
-              key={`core_${coreId}`}
-              coreId={coreId}
-              threads={threads}
-              startCpuIndex={startCpuIndex}
-              cpuIdToPinnedCpuIdsMap={cpuIdToPinnedCpuIdsMap}
-              coreLabelProvider={coreLabelProvider}
-              cpuLabelProvider={cpuLabelProvider}
-              pinnedCpuLabelProvider={pinnedCpuLabelProvider}
-              isPinnedCpuValid={isPinnedCpuValid}
-            />
-          )
-        })
-      }
+      <div className='cpu-socket-body'>
+        {
+          socket.toArray().map((core) => {
+            return (
+              <CpuTopologyCore
+                variant={variant}
+                key={`core_${core.coreId}`}
+                core={core}
+                coreLabelProvider={coreLabelProvider}
+                cpuLabelProvider={cpuLabelProvider}
+                pinnedCpuLabelProvider={pinnedCpuLabelProvider}
+                isPinnedCpuValid={isPinnedCpuValid}
+                pinnedEntityIcon={pinnedEntityIcon}
+              />
+            )
+          })
+        }
+      </div>
     </div>
   )
 }
 
 CpuTopologySocket.propTypes = {
-  socketId: PropTypes.number,
-  cores: PropTypes.number,
-  threads: PropTypes.number,
-  cpuIdToPinnedCpuIdsMap: PropTypes.instanceOf(Map).isRequired,
+  socket: PropTypes.instanceOf(Socket),
   socketLabelProvider: PropTypes.func,
   coreLabelProvider: PropTypes.func,
   cpuLabelProvider: PropTypes.func,
   pinnedCpuLabelProvider: PropTypes.func,
   isPinnedCpuValid: PropTypes.func,
+  pinnedEntityIcon: PropTypes.element,
+  variant: PropTypes.string,
 }
 
 export default CpuTopologySocket

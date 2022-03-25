@@ -2,9 +2,22 @@
     min-height: 300px;
 }
 
+.cpu-pinning-body-description {
+    margin-bottom: 10px;
+    font-size: var(--pf-global--FontSize--sm);
+    color: var(--pf-global--Color--300)
+}
+
 .cpu-socket {
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.cpu-socket-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
 }
 
 .cpu-core {
@@ -13,24 +26,70 @@
     padding: 10px;
 }
 
+.cpu-core-variant-small {
+    width: 100%;
+}
+
+.cpu-core-variant-medium {
+    width: calc(33% - 20px); /* Lets have 3 cores per line, width minus margins */
+}
+
 .cpu-core-body {
     display: flex;
-    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: stretch;
     padding: 10px;
+}
+
+.cpu-core-body-variant-small {
+    flex-direction: row;
+}
+
+.cpu-core-body-variant-medium {
+    flex-direction: column;
 }
 
 .cpu-thread {
     display: inline-block;
     background-color: white;
     box-shadow: var(--pf-global--BoxShadow--md);
-    width: 130px;
-    min-height: 130px;
     padding: 5px;
     margin: 5px;
 }
 
+.cpu-thread-variant-small {
+    width: 130px;
+    min-height: 130px;
+}
+
+.cpu-thread-variant-medium {
+    width: calc (100% - 10);
+    min-height: 200px;
+}
+
+.cpu-thread-exclusively-pinned {
+    background-color: var(--pf-global--palette--blue-100);
+}
+
 .cpu-thread-body {
+    clear: both;
     padding-top: 5px;
+}
+
+.cpu-thread-header {
+    float: left;
+    margin-right: 5px;
+}
+
+.cpu-thread-header-hint {
+    font-size: var(--pf-global--FontSize--xs);
+    font-weight: var(--pf-global--FontWeight--light);
+    color: var(--pf-global--Color--300)
+}
+
+.cpu-thread-body-label {
+    padding-left: 5px;
+    text-align: left;
+    white-space: normal;
+    word-wrap: break-word;
 }

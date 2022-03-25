@@ -3,33 +3,45 @@ import {
   LabelGroup,
   Title,
 } from '@patternfly/react-core'
-import { CpuIcon } from '@patternfly/react-icons'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { msg } from '_/intl-messages'
 import './cpu-topology.css'
+import { Thread } from './PinnedEntityTopology'
 
 const CpuTopologyThread = ({
-  cpuId,
-  pinnedCpuIds,
+  thread,
   cpuLabelProvider,
   pinnedCpuLabelProvider,
   isPinnedCpuValid,
+  pinnedEntityIcon,
+  variant,
 }) => {
+  const exclusivelyPinnedClassName = thread.exclusivelyPinned ? 'cpu-thread-exclusively-pinned' : ''
+  const labelVariant = thread.exclusivelyPinned ? 'filled' : 'outline'
+
   return (
-    <div className='cpu-thread'>
-      <Title headingLevel="h6" size="md">
-        { cpuLabelProvider(cpuId) }
+    <div className={`cpu-thread cpu-thread-variant-${variant} ${exclusivelyPinnedClassName}`}>
+      <Title headingLevel="h6" size="md" className='cpu-thread-header'>
+        { cpuLabelProvider(thread.cpuId) }
       </Title>
+      {
+        thread.exclusivelyPinned && (
+          <div className='cpu-thread-header-hint'> {`(${msg.cpuPinningModalExclusivePinning()})`} </div>
+        )
+      }
       <div className='cpu-thread-body'>
         <LabelGroup isVertical>
-          {pinnedCpuIds.map((pinnedCpuId) => (
+          {thread.pinnedEntities.map((pinnedEntity) => (
             <Label
-              key={pinnedCpuId}
-              variant='outline'
-              color={isPinnedCpuValid(pinnedCpuId) ? 'blue' : 'red'}
-              icon={<CpuIcon />}
+              key={pinnedEntity}
+              variant={labelVariant}
+              color={isPinnedCpuValid(pinnedEntity) ? 'blue' : 'red'}
+              icon={pinnedEntityIcon}
             >
-              { pinnedCpuLabelProvider(pinnedCpuId) }
+              <div className='cpu-thread-body-label' >
+                { pinnedCpuLabelProvider(pinnedEntity) }
+              </div>
             </Label>
           ))}
         </LabelGroup>
@@ -39,11 +51,12 @@ const CpuTopologyThread = ({
 }
 
 CpuTopologyThread.propTypes = {
-  cpuId: PropTypes.number,
-  pinnedCpuIds: PropTypes.array,
+  thread: PropTypes.instanceOf(Thread),
   isPinnedCpuValid: PropTypes.func,
   cpuLabelProvider: PropTypes.func,
   pinnedCpuLabelProvider: PropTypes.func,
+  pinnedEntityIcon: PropTypes.element,
+  variant: PropTypes.string,
 }
 
 export default CpuTopologyThread
