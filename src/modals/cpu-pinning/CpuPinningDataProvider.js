@@ -116,7 +116,7 @@ const mapVmToPinnedEntity = (vm) => {
   const cpuToPinnedCpuMap = getCpuToPinnedCpuMapForVm(vm)
   const topology = new Topology()
   if (sockets && cores && threads) {
-    // lets generate the VM's cpuIds based on the nubmer of sockets, cores and threads. The ids are 
+    // lets generate the VM's cpuIds based on the nubmer of sockets, cores and threads. The ids are
     // for display only and they change when the topology changes
     // cpuId are globally unique and are counted incrementally through sockets, cores and threads
     let currentCpuId = 0
@@ -204,8 +204,7 @@ const CpuPinningDataProvider = ({ children, vmId, hostId }) => {
   }
 
   const fetchDataHostView = async () => {
-    const host = await fetchHost(hostId)
-    const cpuUnits = await fetchHostCpuUnits(hostId)
+    const [host, cpuUnits] = await Promise.all([fetchHost(hostId), fetchHostCpuUnits(hostId)])
     return {
       mainEntity: mapHostToPinnedEntity(host, cpuUnits),
       pinnedEntities: [],
