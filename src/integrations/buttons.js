@@ -8,6 +8,7 @@ import { showVmMigrateModal } from './showVmMigrate'
 import { showClusterUpgradeWizard } from './showClusterUpgrade'
 import { showVmExportModal } from './showVmExport'
 import { showHostCopyNetworksModal } from './showHostCopyNetworks'
+import { showStorageConnectionsModal } from './showStorageConnectionsModal'
 
 function isVmUp (vm) {
   return vmUpStates.includes(vm.status)
@@ -160,6 +161,27 @@ function addHostCpuPinningButton () {
   })
 }
 
+/**
+ * "Connections" button in the Storage Domains list. Enabled when exactly 1 iSCSI domain is selected
+ */
+function addManageStorageConnectionsButton () {
+  getPluginApi().addMenuPlaceActionButton(entityTypes.storage, msg.storageConnectionsManageButton(), {
+    onClick: function ([selectedDomain]) {
+      showStorageConnectionsModal(selectedDomain)
+    },
+
+    isEnabled: function (selectedDomains) {
+      return (
+        selectedDomains.length === 1 &&
+        selectedDomains[0]?.type?.toLowerCase() === 'iscsi'
+      )
+    },
+
+    index: 4,
+    id: 'StorageConnectionsButton',
+  })
+}
+
 export function addButtons () {
   addVmManageGpuButton()
   addVmCpuPinningButton()
@@ -169,4 +191,5 @@ export function addButtons () {
   addClusterUpgradeButton()
   addHostCopyNetworksButton()
   addHostCpuPinningButton()
+  addManageStorageConnectionsButton()
 }
