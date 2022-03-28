@@ -4,13 +4,26 @@
 
 .vgpu-modal-description {
     font-size: var(--pf-global--FontSize--sm);
-    color: var(--pf-global--Color--300)
+    color: var(--pf-global--Color--300);
 }
 
 .vgpu-modal-body-label {
     font-size: var(--pf-global--FontSize--sm);
     color: var(--pf-global--Color--100);
     padding-right: 20px;
+}
+
+.vgpu-description-list {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.vgpu-description-list-term {
+    width: 250px;
+}
+
+.vgpu-description-list-description {
+    margin-left: 200px;
 }
 
 #vgpu-display-on-switch > span {
