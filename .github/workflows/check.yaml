@@ -16,6 +16,10 @@ jobs:
       image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
+      - name: Ensure latest ovirt-engine-nodejs-modules is installed
+        run: |
+          dnf -y --disablerepo='*' --enablerepo='*ovirt*' upgrade ovirt-engine-nodejs-modules
+
       - name: Checkout sources
         uses: actions/checkout@v2
 
@@ -35,6 +39,10 @@ jobs:
       image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
+      - name: Ensure latest ovirt-engine-nodejs-modules is installed
+        run: |
+          dnf -y --disablerepo='*' --enablerepo='*ovirt*' upgrade ovirt-engine-nodejs-modules
+
       - name: Checkout sources
         uses: actions/checkout@v2
 
