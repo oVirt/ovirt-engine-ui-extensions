@@ -18,7 +18,7 @@ BuildRequires: rpm-build
 
 %if %{offline_build}
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.2.0-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.2.3-1
 %else
 BuildRequires: nodejs >= 14.15
 BuildRequires: yarn >= 1.22
@@ -38,9 +38,12 @@ Extensions include:
   - Cluster upgrade wizard
   - Host copy network dialog
   - VM CPU pinning dialog
+  - Host CPU pinning dialog
   - VM export dialog
-  - VM manage GPU dialog
+  - VM manage GPU dialog via vm devices
+  - VM manage GPU dialog via host devices
   - VM migrate dialog
+  - Manage Storage Connections dialogs
 
 %prep
 
@@ -88,6 +91,16 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Mar 29 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.2-1
+- A new dialog is added: vm-manage-gpu for managing vGPUs as VM devices, accessible from VM-VM devices sub tab
+- A new dialog is added: host's CPU pinning dialog for viewing host's cpu topology. accessible from hosts-hosts devices sub tab
+- A new dialog is added: manage storage connection dialogs for managing iSCSI connections, accessible from the storage domains grid
+- Cluster upgrade wizard dialog: migrate the wizard to use PatternFly 4 and add to the dialog a progress tracking indication
+- Parameters passed to translated messages are now formatted in the translation layer only (not in code) and by using ICU number skeletons
+- A github action was addded such that when commits or tags lables are pushed to master, run a build
+- Fix a case of a HEAD commit having multiple tags such that existing build scripts wouldn't fail to recognize it as a tagged commit
+- Update dependencies for various packages:simple-get, ansi-regex, normalize-url and trim-off-newlines
+
 * Mon Mar 14 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.1-1
 - a new dialog is added: CPU pinning dialog for a VM
 - vGPU dialog: fix the max instances
