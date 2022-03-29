@@ -1,97 +1,46 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Format from 'intl-messageformat'
-import { propNamesToType } from '_/utils/react'
+import { msg } from '_/intl-messages'
 
 import {
   Card,
-  CardTitle, // NOTE: Can't use Card.Title due to https://github.com/patternfly/patternfly-react/issues/2931
+  CardTitle,
   CardBody,
-  Icon,
-} from 'patternfly-react'
+  Stack,
+  StackItem,
+  Title,
+} from '@patternfly/react-core'
+import { ContainerNodeIcon } from '@patternfly/react-icons'
 
 const UpgradeReview = ({
+  heading,
   hostCount,
-  nonMigratableVmCount,
-  migrateVmCount,
-
-  hostsLabel,
-  hostsDescription,
-  nonMigratableLabel,
-  nonMigratableDescription,
-  migrateLabel,
-  migrateDescription,
 }) => {
-  const hostLabelFormat = new Format(hostsLabel)
-  const nonMigratableLabelFormat = new Format(nonMigratableLabel)
-  const migrateLabelFormat = new Format(migrateLabel)
-
   return (
-    <div className='clusterUpgradeWizard-UpgradeReview'>
-
-      <Card>
-        <CardTitle>
-          <Icon type='pf' name='container-node' className='circle-icon' />
-          <div className='info-label'>
-            { hostLabelFormat.format({ count: hostCount }) }
-          </div>
-        </CardTitle>
-        <CardBody>
-          { hostsDescription }
-        </CardBody>
-      </Card>
-
-      { nonMigratableVmCount !== undefined && (
+    <Stack className='clusterUpgradeWizard-UpgradeReview'>
+      <StackItem>
+        <Title headingLevel='h2'>{heading}</Title>
+      </StackItem>
+      <StackItem isFilled className='clusterUpgradeWizard-UpgradeReview-Cards'>
         <Card>
           <CardTitle>
-            <Icon type='pf' name='virtual-machine' className='circle-icon' />
-            <div className='info-label'>
-              { nonMigratableLabelFormat.format({ count: nonMigratableVmCount }) }
+            <ContainerNodeIcon className='card-title-icon' />
+            <div className='card-title-label'>
+              { msg.clusterUpgradeHostsLabel({ count: hostCount }) }
             </div>
           </CardTitle>
           <CardBody>
-            { nonMigratableDescription }
+            { msg.clusterUpgradeHostsDescription() }
           </CardBody>
         </Card>
-      )}
-
-      { migrateVmCount !== undefined && (
-        <Card>
-          <CardTitle>
-            <Icon type='pf' name='virtual-machine' className='circle-icon' />
-            <div className='info-label'>
-              { migrateLabelFormat.format({ count: migrateVmCount }) }
-            </div>
-          </CardTitle>
-          <CardBody>
-            { migrateDescription }
-          </CardBody>
-        </Card>
-      )}
-
-    </div>
+      </StackItem>
+    </Stack>
   )
 }
 
-UpgradeReview.i18nProps = {
-  hostsLabel: '{count,number} {count, plural, one {Host} other {Hosts}}',
-  hostsDescription: 'Will be upgraded one at a time during Cluster upgrade',
-  nonMigratableLabel: '{count,number} Pinned VMs',
-  nonMigratableDescription: 'Will be stopped before Cluster upgrade',
-  migrateLabel: '{count,number} VMs',
-  migrateDescription: 'Will be migrated to a new Host before Cluster upgrade',
-}
-
 UpgradeReview.propTypes = {
+  heading: PropTypes.string.isRequired,
   hostCount: PropTypes.number.isRequired,
-  nonMigratableVmCount: PropTypes.number,
-  migrateVmCount: PropTypes.number,
-
-  ...propNamesToType(UpgradeReview.i18nProps, PropTypes.string),
-}
-
-UpgradeReview.defaultProps = {
-  ...UpgradeReview.i18nProps,
 }
 
 export default UpgradeReview

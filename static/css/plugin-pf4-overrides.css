@@ -52,6 +52,8 @@
   --pf-c-modal-box__body--PaddingTop: 15px;
   --pf-c-modal-box__body--PaddingRight: 20px;
   --pf-c-modal-box__body--PaddingLeft: 20px;
+
+  --pf-c-modal-box--BorderSize: 0;
 }
 
 .pf-c-modal-box > .pf-c-button {
@@ -90,6 +92,40 @@
   padding: 14px 15px 17px 15px;
 }
 
+/*
+  align "wizard in modal" styles with the PF3 wizard and the other PF4 modal style changes
+ */
+
+.pf-c-modal-box .pf-c-wizard__header {
+  margin: 0;
+  padding: 10px 18px;
+  background-color: #f5f5f5;
+}
+
+.pf-c-modal-box .pf-c-wizard__header .pf-c-wizard__title {
+  color: var(--pf-global--Color--dark-100);
+  font-size: var(--pf-global--FontSize--md);
+  font-weight: var(--pf-global--FontWeight--bold);
+  line-height: 1.66666667;
+}
+
+.pf-c-modal-box .pf-c-wizard__header .pf-c-wizard__close {
+  --pf-c-wizard__close--Right: 0;
+  --pf-c-wizard__close--Top: 3px;
+  --pf-c-wizard__close--FontSize: var(--pf-global--FontSize--md);
+
+  color: var(--pf-global--Color--dark-200);
+}
+
+.pf-c-modal-box .pf-c-wizard__footer {
+  --pf-c-wizard__footer--child--MarginBottom: 0;
+  padding: 14px 15px 17px 15px;
+  justify-content: flex-end;
+}
+
+/*
+  Other styles to align with webadmin / PF3 styles
+ */
 .pf-c-form {
   --pf-c-form__label--FontSize: var(--pf-global--FontSize--md);
 }

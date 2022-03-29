@@ -682,16 +682,40 @@ const messageDescriptors = {
     description: 'cluster upgrade Wizard Step 3 - count of VMs to be migrated during upgrade description',
   },
 
+  clusterUpgradeOperationPending: {
+    id: 'cluster.upgrade.OperationPending',
+    defaultMessage: 'Waiting for upgrade to start',
+    description: 'progress tracking cluster upgrade final step title when operation is pending start',
+  },
+
   clusterUpgradeOperationStarted: {
     id: 'cluster.upgrade.OperationStarted',
-    defaultMessage: 'Upgrade has started for {clusterName}.',
-    description: 'cluster upgrade operation started toast notification text',
+    defaultMessage: 'Upgrade of cluster {clusterName} is in progress...',
+    description: 'progress tracking cluster upgrade final step title when operation has been started',
+  },
+
+  clusterUpgradeOperationComplete: {
+    id: 'cluster.upgrade.OperationComplete',
+    defaultMessage: 'Upgrade complete',
+    description: 'progress tracking cluster upgrade final step title when operation completes',
   },
 
   clusterUpgradeOperationFailed: {
     id: 'cluster.upgrade.OperationFailed',
     defaultMessage: 'Failed to start the upgrade for {clusterName}.',
     description: 'cluster upgrade operation failed toast notification text',
+  },
+
+  clusterUpgradeGoToEventLog: {
+    id: 'cluster.upgrade.GoToEventLog',
+    defaultMessage: 'Go to Event Log',
+    description: 'Button on the progress tracking final step of the upgrade wizard.',
+  },
+
+  clusterUpgradeTrackProgressInfo: {
+    id: 'cluster.upgrade.TrackProgressInfo',
+    defaultMessage: 'The upgrade is running in the background and will continue if this wizard is closed before completion.',
+    description: 'Info alter that the track progress step cannot stop the upgrade.  Upgrade will not stop if the wizard is closed.',
   },
 
   exportVmTitle: {
