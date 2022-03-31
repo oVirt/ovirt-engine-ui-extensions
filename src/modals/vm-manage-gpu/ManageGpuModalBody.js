@@ -116,7 +116,7 @@ const ManageGpuModalBody = ({
             )}
           </DescriptionListDescription>
         </DescriptionListGroup>
-        </DescriptionList>
+      </DescriptionList>
 
       {
         !gpusAvailable && (

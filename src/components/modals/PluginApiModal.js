@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
-import uniqueId from 'lodash/uniqueId'
-import { getWebAdminWindow, getWebAdminDocumentBody } from '_/utils/webadmin-dom'
+import { WebAdminModalContext } from '_/utils/react-modals'
 
 import { Modal } from '@patternfly/react-core'
 
@@ -9,46 +8,47 @@ const PluginApiModal = ({
   children,
   title,
   className,
-  modalId = `pluginApiModal-${uniqueId()}`,
+  id,
   isOpen,
   onClose = () => {},
   ...restForModal
 }) => {
+  const modalContext = useContext(WebAdminModalContext)
+
   useEffect(() => {
     if (isOpen) {
-      const targetWindow = getWebAdminWindow()
       const clonedStyles = []
 
-      if (window !== targetWindow) {
+      if (window !== modalContext.targetWindow) {
         window.document.querySelectorAll('head style, head link[type="text/css"], head link[rel="stylesheet"]').forEach(style => {
           const cloned = style.cloneNode(true)
-          cloned.setAttribute('data-style-for', modalId)
+          cloned.setAttribute('data-style-for', id)
           clonedStyles.push(cloned)
 
           if (/ui-extensions\/css\/vendor\.[^/]*?css$/.test(cloned.href)) {
-            targetWindow.document.head.insertBefore(cloned, targetWindow.document.head.firstChild)
+            modalContext.prependCss(cloned)
           } else {
-            targetWindow.document.head.appendChild(cloned)
+            modalContext.appendCss(cloned)
           }
         })
       }
 
       return () => {
         clonedStyles.forEach(style => {
-          targetWindow.document.head.removeChild(style)
+          modalContext.removeCss(style)
         })
       }
     }
-  }, [isOpen, modalId])
+  }, [isOpen, id, modalContext])
 
   return (
     <Modal
-      id={modalId}
+      id={id}
       title={title}
       className={className}
       isOpen={isOpen}
       onClose={onClose}
-      appendTo={getWebAdminDocumentBody()}
+      appendTo={modalContext.targetContainer}
       disableFocusTrap
       {...restForModal}
     >
@@ -61,7 +61,7 @@ PluginApiModal.propTypes = {
   children: PropTypes.node,
   title: PropTypes.string,
   className: PropTypes.string,
-  modalId: PropTypes.string,
+  id: PropTypes.string.isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,

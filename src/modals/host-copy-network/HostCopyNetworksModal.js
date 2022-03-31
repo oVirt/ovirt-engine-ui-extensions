@@ -57,6 +57,7 @@ const HostCopyNetworksModal = ({
 
   return (
     <PluginApiModal
+      id='host-copy-network-modal'
       variant='large'
       title={msg.hostCopyNetworksDialogTitle()}
       isOpen={isOpen}

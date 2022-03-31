@@ -72,6 +72,7 @@ const VmExportModal = ({
 
   return (
     <PluginApiModal
+      id='vm-export-modal'
       variant='large'
       title={msg.exportVmTitle()}
       isOpen={isOpen}

@@ -70,6 +70,7 @@ const VmMigrateModal = ({
 
   return (
     <PluginApiModal
+      id='vm-migrate-modal'
       variant='large'
       title={msg.migrateVmDialogTitle()}
       isOpen={isOpen}

@@ -89,6 +89,7 @@ const ManageGpuModal = ({
 
   return (
     <PluginApiModal
+      id='vm-manage-gpu-modal'
       className='vgpu-modal'
       variant='large'
       title={msg.vmManageGpuDialogTitle()}
