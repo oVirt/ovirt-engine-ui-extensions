@@ -1,8 +1,36 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { getWebAdminWindow } from './webadmin-dom'
+import { getWebAdminWindow, getWebAdminDocumentBody } from './webadmin-dom'
 
-export const WebAdminModalContext = React.createContext()
+function createModalContextValue (
+  targetWindow = getWebAdminWindow(),
+  targetContainer = getWebAdminDocumentBody(),
+  cssContainer
+) {
+  cssContainer = cssContainer || targetWindow.document.head
+
+  return {
+    targetWindow,
+    targetContainer,
+
+    applyCss: (beforeCssNodes, afterCssNodes) => {
+      for (const cssNode of beforeCssNodes) {
+        cssContainer.insertBefore(cssNode, cssContainer.firstChild)
+      }
+      for (const cssNode of afterCssNodes) {
+        cssContainer.appendChild(cssNode)
+      }
+    },
+
+    removeCss: (cssNodes) => {
+      for (const cssNode of cssNodes) {
+        cssContainer.removeChild(cssNode)
+      }
+    },
+  }
+}
+
+export const WebAdminModalContext = React.createContext(createModalContextValue())
 WebAdminModalContext.displayName = 'WebAdminModalContext'
 
 export const renderComponent = (render, id) => {
@@ -31,19 +59,7 @@ export const renderComponent = (render, id) => {
 
   ReactDOM.render(
     <WebAdminModalContext.Provider
-      value={{
-        targetWindow,
-        targetContainer: container,
-        prependCss: (cssNode) => {
-          targetWindow.document.head.insertBefore(cssNode, targetWindow.document.head.firstChild)
-        },
-        appendCss: (cssNode) => {
-          targetWindow.document.head.appendChild(cssNode)
-        },
-        removeCss: (cssNode) => {
-          targetWindow.document.head.removeChild(cssNode)
-        },
-      }}
+      value={createModalContextValue(targetWindow, container)}
     >
       {render({ unmountComponent })}
     </WebAdminModalContext.Provider>,
