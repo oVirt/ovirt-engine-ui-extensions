@@ -27,8 +27,8 @@ function gpuArrayToSelectedMap (gpus) {
 const ManageGpuModal = ({
   isLoading = false,
   gpus = [],
-  displayOn = true,
-  driverParams,
+  displayOn: initialDisplayOn = true,
+  driverParams: initialDriverParams,
   compatibilityVersion,
   nonExistingSelectedMdevs,
   noDisplayConsistent,
@@ -37,8 +37,8 @@ const ManageGpuModal = ({
   onClose = () => {},
 }) => {
   const [isOpen, setOpen] = useState(true)
-  const [displayOn_, setDisplayOn_] = useState(undefined)
-  const [driverParams_, setDriverParams_] = useState(undefined)
+  const [displayOn, setDisplayOn] = useState(undefined)
+  const [driverParams, setDriverParams] = useState(undefined)
   const [selectedMDevTypes, setSelectedMDevTypes] = useState(gpuArrayToSelectedMap(gpus))
 
   useEffect(() => {
@@ -51,11 +51,11 @@ const ManageGpuModal = ({
   }
 
   const onDisplayOnChange = (isSelected) => {
-    setDisplayOn_(isSelected)
+    setDisplayOn(isSelected)
   }
 
   const onDriverParamsChange = (params) => {
-    setDriverParams_(params)
+    setDriverParams(params)
   }
 
   const onGpuSelectionChange = (mDevType, requestedInstances) => {
@@ -69,7 +69,7 @@ const ManageGpuModal = ({
 
   const getDriverParams = () => {
     if (compatibilityVersion >= CompatibilityVersion.VERSION_4_7) {
-      return driverParams_ === undefined ? driverParams : driverParams_
+      return driverParams === undefined ? initialDriverParams : driverParams
     }
     return undefined
   }
@@ -82,7 +82,7 @@ const ManageGpuModal = ({
     })
 
     const allSelectedGpus = gpus.filter(gpu => gpu.requestedInstances > 0)
-    const d = displayOn_ === undefined ? displayOn : displayOn_
+    const d = displayOn === undefined ? initialDisplayOn : displayOn
     onSelectButtonClick(d, getDriverParams(), allSelectedGpus)
     close()
   }
@@ -136,7 +136,7 @@ const ManageGpuModal = ({
         }
         <ManageGpuModalBody
           gpus={gpus}
-          displayOn={displayOn_ === undefined ? displayOn : displayOn_}
+          displayOn={displayOn === undefined ? initialDisplayOn : displayOn}
           driverParams={getDriverParams()}
           compatibilityVersion={compatibilityVersion}
           selectedMDevTypes={selectedMDevTypes}
