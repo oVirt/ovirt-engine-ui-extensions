@@ -17,29 +17,10 @@ const PluginApiModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      const clonedStyles = []
-
-      if (window !== modalContext.targetWindow) {
-        const cssTop = []
-        const cssBottom = []
-
-        window.document.querySelectorAll('head style, head link[type="text/css"], head link[rel="stylesheet"]').forEach(style => {
-          const cloned = style.cloneNode(true)
-          cloned.setAttribute('data-style-for', id)
-          clonedStyles.push(cloned)
-
-          if (/ui-extensions\/css\/vendor\.[^/]*?css$/.test(cloned.href)) {
-            cssTop.push(cloned)
-          } else {
-            cssBottom.push(cloned)
-          }
-        })
-
-        modalContext.applyCss(cssTop, cssBottom)
-      }
+      modalContext.applyCss(id)
 
       return () => {
-        modalContext.removeCss(clonedStyles)
+        modalContext.removeCss(id)
       }
     }
   }, [isOpen, id, modalContext])
