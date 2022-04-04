@@ -1,4 +1,4 @@
-:root {
+:root, :host {
   /* dashboard CSS variables */
   --dashboard-gutter: var(--pf-global--spacer--sm);
   --dashboard-aggregate-status-header-FontSize: 14px;
