@@ -1,7 +1,7 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { configure, mount, shallow } from 'enzyme'
-import EnzymeAdapter from 'enzyme-adapter-react-16'
+import EnzymeAdapter from '@wojtekmaj/enzyme-adapter-react-17'
 import { engineGet } from '_/utils/fetch'
 import withTargetHosts from './VmMigrateDataProvider'
 
