@@ -56,6 +56,9 @@ function createModalContextValue (
   }
 }
 
+/*
+ * The default context value supports Dashboard (places integration) based modals.
+ */
 export const WebAdminModalContext = React.createContext(createModalContextValue())
 WebAdminModalContext.displayName = 'WebAdminModalContext'
 
@@ -75,7 +78,7 @@ export const renderComponent = (render, id) => {
   if (!container) {
     container = targetWindow.document.createElement('div')
     container.setAttribute('id', id)
-    container.setAttribute('class', 'ui-extensions-plugin-approot')
+    container.setAttribute('class', 'ui-extensions-plugin-approot') // marker class
     targetWindow.document.body.appendChild(container)
   }
 

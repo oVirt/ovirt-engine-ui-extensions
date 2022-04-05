@@ -13,6 +13,10 @@ const PluginApiModal = ({
   onClose = () => {},
   ...restForModal
 }) => {
+  // Note: The `WebAdminModalContext` is only created once per action button click
+  //       and once when the Dashboard place is loaded.  Once created it will be stable
+  //       for the entire modal (or dashboard) app instance.  See `renderComponent()`
+  //       and `src/utils/react-modals.js` in general for more details.
   const modalContext = useContext(WebAdminModalContext)
 
   useEffect(() => {
