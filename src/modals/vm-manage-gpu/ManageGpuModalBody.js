@@ -38,18 +38,6 @@ const ManageGpuModalBody = ({
     setSearchText(value)
   }
 
-  if (gpus.length === 0) {
-    return (
-      <Bullseye>
-        <EmptyState variant={EmptyStateVariant.large}>
-          <EmptyStateIcon icon={SearchIcon} />
-          <Title headingLevel='h5' size='lg'>{msg.vmManageGpuEmptyStateTitle()}</Title>
-          <EmptyStateBody>{msg.vmManageGpuEmptyStateBody()}</EmptyStateBody>
-        </EmptyState>
-      </Bullseye>
-    )
-  }
-
   const selectedMDevType = Object.keys(selectedMDevTypes).find(mDevType => selectedMDevTypes[mDevType] > 0)
 
   const selectedMDevTypeInstances = []
@@ -65,6 +53,7 @@ const ManageGpuModalBody = ({
       gpu.host.toLowerCase().includes(searchText.toLowerCase()))
 
   const driverParamsEnabled = compatibilityVersion >= CompatibilityVersion.VERSION_4_7
+  const gpusAvailable = gpus.length > 0
 
   return (
     <div>
@@ -83,6 +72,7 @@ const ManageGpuModalBody = ({
               labelOff={msg.vmManageGpuBodyDisplaySwitchOff()}
               isChecked={displayOn}
               onChange={value => onDisplayOnChange(value)}
+              isDisabled={!gpusAvailable}
             />
           </DescriptionListDescription>
         </DescriptionListGroup>
@@ -94,7 +84,7 @@ const ManageGpuModalBody = ({
             <TextInput
               value={driverParams || ''}
               type='text'
-              isDisabled={!driverParamsEnabled}
+              isDisabled={!driverParamsEnabled || !gpusAvailable}
               onChange={onDriverParamsChange}
               aria-label='text input'
             />
@@ -128,22 +118,39 @@ const ManageGpuModalBody = ({
         </DescriptionListGroup>
         </DescriptionList>
 
-      <TextInput
-        value={searchText}
-        placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
-        type='search'
-        onChange={value => onSearchBoxInput(value)}
-        aria-label='text input'
-        className='vgpu-search-box'
-      />
-      <div className='.vgpu-table-wrapper'>
-        <GpuTable
-          gpus={filteredGpus}
-          selectedMDevTypes={selectedMDevTypes}
-          onGpuSelectionChange={onGpuSelectionChange}
-          className='vgpu-body-element'
-        />
-      </div>
+      {
+        !gpusAvailable && (
+          <Bullseye>
+            <EmptyState variant={EmptyStateVariant.large}>
+              <EmptyStateIcon icon={SearchIcon} />
+              <Title headingLevel='h5' size='lg'>{msg.vmManageGpuEmptyStateTitle()}</Title>
+              <EmptyStateBody>{msg.vmManageGpuEmptyStateBody()}</EmptyStateBody>
+            </EmptyState>
+          </Bullseye>
+        )
+      }
+      {
+        gpusAvailable && (
+          <div>
+            <TextInput
+              value={searchText}
+              placeholder={msg.vmManageGpuSearchButtonPlaceholder()}
+              type='search'
+              onChange={value => onSearchBoxInput(value)}
+              aria-label='text input'
+              className='vgpu-search-box'
+            />
+            <div className='.vgpu-table-wrapper'>
+              <GpuTable
+                gpus={filteredGpus}
+                selectedMDevTypes={selectedMDevTypes}
+                onGpuSelectionChange={onGpuSelectionChange}
+                className='vgpu-body-element'
+              />
+            </div>
+          </div>
+        )
+      }
     </div>
   )
 }
