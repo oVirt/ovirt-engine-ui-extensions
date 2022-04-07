@@ -4,6 +4,7 @@ class CompatibilityVersion {
     this.minor = minor + ''
   }
 
+  // allows comparing using <, <=, >=, >
   valueOf () {
     return Number(this.major.padStart(3, 0) + this.minor.padStart(3, 0))
   }

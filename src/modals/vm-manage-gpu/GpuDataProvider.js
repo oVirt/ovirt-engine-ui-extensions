@@ -1,4 +1,3 @@
-import get from 'lodash/get'
 import PropTypes from 'prop-types'
 import React from 'react'
 import DataProvider from '_/components/helper/DataProvider'
@@ -11,8 +10,12 @@ import { engineDelete, engineGet, enginePost } from '_/utils/fetch'
 import { isNumber } from '_/utils/type-validation'
 
 const GpuDataProvider = ({ children, vmId }) => {
+  const driverParamsKey = 'driverParams'
+  const mDevTypeKey = 'mdevType'
+  const nodisplayKey = 'nodisplay'
+
   const fetchVm = async () => {
-    return engineGet(`api/vms/${vmId}`)
+    return engineGet(`api/vms/${vmId}?follow=mediateddevices`)
   }
 
   const fetchVmMdevDevices = async () => {
@@ -32,7 +35,7 @@ const GpuDataProvider = ({ children, vmId }) => {
   }
 
   const fetchHostsMDevTypes = async (hostsEnvelope) => {
-    if (!hostsEnvelope || !hostsEnvelope.host) {
+    if (!hostsEnvelope?.host) {
       return []
     }
     const hostDevices = []
@@ -41,19 +44,19 @@ const GpuDataProvider = ({ children, vmId }) => {
     for (let i = 0; i < hosts.length; i++) {
       const devices = await fetchHostDevices(hosts[i].id)
 
-      if (!devices || !Array.isArray(devices.host_device)) {
+      if (!Array.isArray(devices?.host_device)) {
         continue
       }
 
       for (let y = 0; y < devices.host_device.length; y++) {
         const hostDevice = devices.host_device[y]
-        if (get(hostDevice, ['m_dev_types', 'm_dev_type']) && hostDevice.m_dev_types.m_dev_type.length > 0) {
+        if (hostDevice?.m_dev_types?.m_dev_type?.length > 0) {
           const mdevs = []
           hostDevice.m_dev_types.m_dev_type.forEach(mDevType => mdevs.push(mDevType))
           hostDevices.push({
             host: hosts[i],
-            product: get(hostDevice, ['product', 'name']),
-            vendor: get(hostDevice, ['vendor', 'name']),
+            product: hostDevice?.product?.name,
+            vendor: hostDevice?.vendor?.name,
             address: hostDevice.name,
             mDevTypes: mdevs,
           })
@@ -65,8 +68,11 @@ const GpuDataProvider = ({ children, vmId }) => {
   }
 
   const getSelectedMdevs = (mdevDevices) => {
-    const parsedMdevProperties = mdevDevices?.vm_mediated_device?.map(mdev => getMdevDeviceSpecParam(mdev, 'mdevType')) || []
-    const selectedMdevs = []
+    const parsedMdevProperties = mdevDevices
+      ?.vm_mediated_device
+      ?.map(mdev => getMdevDeviceSpecParam(mdev, mDevTypeKey)) || []
+    const selectedMdevs = {}
+
     parsedMdevProperties.forEach(mDevType => {
       if (mDevType in selectedMdevs) {
         selectedMdevs[mDevType]++
@@ -78,14 +84,13 @@ const GpuDataProvider = ({ children, vmId }) => {
   }
 
   const isNoDisplay = (mdevDevices) => {
-    if (!mdevDevices?.vm_mediated_device) {
-      return false
-    }
-    return mdevDevices.vm_mediated_device.some(mdev => isNoDisplaySpecParam(mdev))
+    return !!mdevDevices
+      ?.vm_mediated_device
+      ?.some(mdev => isNoDisplaySpecParam(mdev))
   }
 
   const isNoDisplaySpecParam = (mdevDevice) => {
-    return getMdevDeviceSpecParam(mdevDevice, 'nodisplay') === 'true'
+    return getMdevDeviceSpecParam(mdevDevice, nodisplayKey) === 'true'
   }
 
   const isNoDisplayConsistent = (noDisplay, mdevDevices) => {
@@ -97,16 +102,18 @@ const GpuDataProvider = ({ children, vmId }) => {
     })
   }
 
-  const getDriverParams = (mdevDevices) => {
-    if (!mdevDevices?.vm_mediated_device) {
-      return undefined
-    }
-    const mdevWithDriverParams = mdevDevices.vm_mediated_device.find(mdev => getDriverParamsSpecParam(mdev) !== undefined)
-    return getDriverParamsSpecParam(mdevWithDriverParams)
+  // all driverParams should be the same
+  // we check the consistency in isDriverParamsConsistent
+  const findFirstDriverParams = (mdevDevices) => {
+    return mdevDevices
+      ?.vm_mediated_device
+      ?.map(mdev => getDriverParamsSpecParam(mdev))
+      ?.filter(Boolean)
+      ?.[0]
   }
 
   const getDriverParamsSpecParam = (mdevDevice) => {
-    return getMdevDeviceSpecParam(mdevDevice, 'driverParams')
+    return getMdevDeviceSpecParam(mdevDevice, driverParamsKey)
   }
 
   const isDriverParamsConsistent = (driverParams, mdevDevices) => {
@@ -119,7 +126,11 @@ const GpuDataProvider = ({ children, vmId }) => {
   }
 
   const getMdevDeviceSpecParam = (mdevDevice, name) => {
-    return mdevDevice?.spec_params?.property?.find(specParam => specParam.name === name)?.value
+    return mdevDevice
+      ?.spec_params
+      ?.property
+      ?.find(specParam => specParam.name === name)
+      ?.value
   }
 
   const createGpus = (hostMDevTypes, selectedMdevs) => {
@@ -140,11 +151,8 @@ const GpuDataProvider = ({ children, vmId }) => {
   }
 
   const getNonExistingSelectedMdevs = (selectedMdevs, gpus) => {
-    const nonExisting = []
-    for (const mdevType in selectedMdevs) {
-      gpus.find(gpu => gpu.mDevType === mdevType) || nonExisting.push(mdevType)
-    }
-    return nonExisting
+    return Object.keys(selectedMdevs)
+      .filter(mdevType => !gpus.find(gpu => gpu.mDevType === mdevType))
   }
 
   const countAggregatedMaxInstances = (gpus) => {
@@ -167,7 +175,8 @@ const GpuDataProvider = ({ children, vmId }) => {
 
     // find the maximal number of instances of a given mdev type across all hosts
     gpus.forEach((gpu) => {
-      if (gpu.mDevType in aggregatedMaxInstances && gpu.host in aggregatedMaxInstances[gpu.mDevType]) {
+      if (gpu.mDevType in aggregatedMaxInstances &&
+          gpu.host in aggregatedMaxInstances[gpu.mDevType]) {
         const max = Math.max(...Object.values(aggregatedMaxInstances[gpu.mDevType]))
         gpu.aggregatedMaxInstances = Number.isFinite(max) ? max : undefined
       }
@@ -227,36 +236,38 @@ const GpuDataProvider = ({ children, vmId }) => {
 
   const fetchData = async () => {
     const vm = await fetchVm()
-    const vmMdevDevices = await fetchVmMdevDevices()
     const cluster = await fetchCluster(vm.cluster.id)
     const hosts = await fetchHosts(cluster.name)
     const hostMDevTypes = await fetchHostsMDevTypes(hosts)
 
+    const vmMdevDevices = vm.mediated_devices
     const selectedMdevs = getSelectedMdevs(vmMdevDevices)
     const gpus = createGpus(hostMDevTypes, selectedMdevs)
     const nonExistingSelectedMdevs = getNonExistingSelectedMdevs(selectedMdevs, gpus)
     countAggregatedMaxInstances(gpus)
     const noDisplay = isNoDisplay(vmMdevDevices)
     const noDisplayConsistent = isNoDisplayConsistent(noDisplay, vmMdevDevices)
-    const driverParams = getDriverParams(vmMdevDevices)
+    const driverParams = findFirstDriverParams(vmMdevDevices)
     const driverParamsConsistent = isDriverParamsConsistent(driverParams, vmMdevDevices)
     const compatibilityVersion = getCompatibilityVersion(vm, cluster)
 
     return {
-      gpus: gpus,
-      noDisplay: noDisplay,
-      driverParams: driverParams,
-      compatibilityVersion: compatibilityVersion,
-      nonExistingSelectedMdevs: nonExistingSelectedMdevs,
-      noDisplayConsistent: noDisplayConsistent,
-      driverParamsConsistent: driverParamsConsistent,
+      gpus,
+      noDisplay,
+      driverParams,
+      compatibilityVersion,
+      nonExistingSelectedMdevs,
+      noDisplayConsistent,
+      driverParamsConsistent,
     }
   }
 
   const deleteAllMdevDevices = async () => {
     const mdevDevices = await fetchVmMdevDevices()
     if (mdevDevices?.vm_mediated_device) {
-      return Promise.all(mdevDevices.vm_mediated_device.map((mdevDevice) => deleteMdevDevice(mdevDevice.id)))
+      return Promise.all(
+        mdevDevices.vm_mediated_device.map((mdevDevice) => deleteMdevDevice(mdevDevice.id))
+      )
     } else {
       return Promise.resolve()
     }
@@ -293,22 +304,19 @@ const GpuDataProvider = ({ children, vmId }) => {
       'spec_params': {
         'property': [
           {
-            name: 'nodisplay',
+            name: nodisplayKey,
             value: !displayOn,
           },
           {
-            name: 'mdevType',
+            name: mDevTypeKey,
             value: mDevType,
           },
-        ],
+          driverParams && {
+            name: driverParamsKey,
+            value: driverParams,
+          },
+        ].filter(Boolean),
       },
-    }
-
-    if (driverParams) {
-      requestBody.spec_params.property.push({
-        name: 'driverParams',
-        value: driverParams,
-      })
     }
 
     return enginePost(`api/vms/${vmId}/mediateddevices`, JSON.stringify(requestBody))
