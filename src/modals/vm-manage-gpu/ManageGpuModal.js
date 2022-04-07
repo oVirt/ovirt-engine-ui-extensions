@@ -99,7 +99,7 @@ const ManageGpuModal = ({
           key='manage-gpu-select-button'
           variant='primary'
           onClick={onSelect}
-          isDisabled={gpus.length === 0}
+          isDisabled={gpus.length === 0 && !nonExistingSelectedMdevs?.length}
         >
           {msg.saveButton()}
         </Button>,
