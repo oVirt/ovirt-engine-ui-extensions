@@ -15,6 +15,7 @@ const polyfillIntlFn = (resolve, reject) => {
       require('intl/locale-data/jsonp/fr')
       require('intl/locale-data/jsonp/it')
       require('intl/locale-data/jsonp/ja')
+      require('intl/locale-data/jsonp/ka')
       require('intl/locale-data/jsonp/ko')
       require('intl/locale-data/jsonp/pt')
       require('intl/locale-data/jsonp/zh')
