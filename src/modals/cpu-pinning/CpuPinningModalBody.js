@@ -153,7 +153,7 @@ const CpuPinningModalBody = ({
             !mainEntity.cpuPinningTopology.numberOfSockets() && msg.cpuPinningModalEmptyState()
           }
           {
-            mainEntity.cpuPinningTopology.numberOfSockets() && (
+            mainEntity.cpuPinningTopology.numberOfSockets() > 0 && (
               <div className='cpu-pinning-body'>
                 <div className='cpu-pinning-body-description'>{cpuTopologyDescription}</div>
                 <CpuTopology
