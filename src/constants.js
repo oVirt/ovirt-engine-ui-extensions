@@ -12,6 +12,7 @@ export const supportedLocales = [
   'fr-FR',
   'it-IT',
   'ja-JP',
+  'ka-GE',
   'ko-KR',
   'pt-BR',
   'zh-CN',
