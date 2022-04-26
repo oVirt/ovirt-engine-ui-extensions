@@ -91,6 +91,14 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Tue Apr 26 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.3-1
+- Fix a bug for minimizing CSS flashing of all ui-extensions dialogs
+- vGPU dialog: small code refactorings
+- vGPU dialog: show widgets even if the cluster doesn't contain any vGPU hosts
+- CPU pinning dialog: fix message's trailing zero in case of no CPU topology was found
+- I18n: update translations (fetch from Zanata, remove outdated translations)
+- I18n: add support for Georgian language as a community translation
+
 * Tue Mar 29 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.2-1
 - A new dialog is added: vm-manage-gpu for managing vGPUs as VM devices, accessible from VM-VM devices sub tab
 - A new dialog is added: host's CPU pinning dialog for viewing host's cpu topology. accessible from hosts-hosts devices sub tab
