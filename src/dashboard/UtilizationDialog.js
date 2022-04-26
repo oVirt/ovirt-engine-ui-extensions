@@ -21,10 +21,11 @@ const UtilizationDialog = ({
   thresholds,
 }) => (
   <PluginApiModal
+    id='over-utilization-dialog'
+    className='overutilization-dialog'
     isOpen={show}
     onClose={onClose}
     title={title}
-    className='overutilization-dialog'
     aria-label={`utilization dialog ${title}`}
     header={(
       <Title headingLevel='h1' size='xl'>

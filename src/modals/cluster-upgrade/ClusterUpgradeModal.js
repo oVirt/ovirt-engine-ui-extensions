@@ -56,6 +56,7 @@ const ClusterUpgradeModal = ({
   if (isLoading) {
     return (
       <PluginApiModal
+        id='cluster-upgrade-modal'
         className='clusterUpgradeWizardModal'
         title={msg.clusterUpgradeLoadingTitle()}
         variant='small'
@@ -84,6 +85,7 @@ const ClusterUpgradeModal = ({
   if (isClusterInMaintenace && !confirmedClusterPolicy) {
     return (
       <PluginApiModal
+        id='cluster-upgrade-modal'
         className='clusterUpgradeWizardModal'
         title={msg.clusterUpgradeTitle({ clusterName: cluster.name })}
         variant='small'
@@ -122,6 +124,7 @@ const ClusterUpgradeModal = ({
   // Modal is open, all data is loaded, and the cluster is available to be upgraded
   return (
     <PluginApiModal
+      id='cluster-upgrade-modal'
       className='clusterUpgradeWizardModal'
       variant='large'
       isOpen={isOpen}

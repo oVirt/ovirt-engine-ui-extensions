@@ -12,6 +12,7 @@ export function showStorageConnectionsModal (storageDomain) {
           onClose={unmountComponent}
         />
       </StorageConnectionsDataProvider>
-    )
+    ),
+    'show-storage-connections-modal'
   )
 }

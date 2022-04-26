@@ -102,6 +102,7 @@ const StorageConnectionsModal = ({
 
   return (
     <PluginApiModal
+      id='storage-connections-modal'
       className='storage-connections-modal'
       variant='large'
       title={

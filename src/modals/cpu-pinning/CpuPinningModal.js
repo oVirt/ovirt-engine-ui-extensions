@@ -28,9 +28,9 @@ const CpuPinningModal = ({
   }
   return (
     <PluginApiModal
+      id='cpu-pinning-modal'
       variant={variant}
       title={msg.cpuPinningModalTitle()}
-      id='CpuPinningModal'
       isOpen={isModalOpen}
       onClose={handleCloseModal}
       actions={[
