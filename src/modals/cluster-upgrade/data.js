@@ -262,7 +262,7 @@ export async function trackUpgradeProgress (correlationId, tick) {
   const track = async () => {
     // figure out data for the tick from the current set of events
     const nextEvents = await fetchNextEvents(correlationId, lastEventId)
-    lastEventId = nextEvents.length === 0 ? -1 : nextEvents[nextEvents.length - 1].id
+    lastEventId = nextEvents.length === 0 ? lastEventId : nextEvents[nextEvents.length - 1].id
 
     const eventsForLog = nextEvents.map(formatEventAsLogEntry)
     const maxPercentInEvents = nextEvents.reduce((maxPercent, event) => {
