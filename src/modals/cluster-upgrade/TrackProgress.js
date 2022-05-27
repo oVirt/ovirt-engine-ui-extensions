@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import IntlMessageFormat from 'intl-messageformat'
 import { msg } from '_/intl-messages'
 import { currentLocale } from '_/utils/intl'
-import { trackUpgradeProgress, cancelTracker } from './data'
 
 import {
   Alert,
@@ -36,31 +35,12 @@ const STATUS_TO_PROGRESS_VARIANT = {
 
 const TrackProgress = ({
   cluster,
-  correlationId,
+  upgradeStatus = 'pending',
+  upgradePercent = 0,
+  upgradeLog = [],
   onJumpToEvents,
   onClose,
 }) => {
-  const [status, setStatus] = useState('pending')
-  const [percent, setPercent] = useState(0)
-  const [log, setLog] = useState([])
-
-  // track status once a correlation id is set (or changed)
-  useEffect(() => {
-    if (!correlationId) {
-      return
-    }
-
-    setStatus('started')
-    trackUpgradeProgress(correlationId, ({ isRunning, percent, log }) => {
-      setStatus(isRunning ? 'started' : 'complete')
-      setPercent(percent)
-      setLog(currentLog => [...currentLog, ...log])
-    })
-    return () => {
-      cancelTracker(correlationId)
-    }
-  }, [correlationId])
-
   return (
     <Stack>
       <StackItem>
@@ -71,18 +51,18 @@ const TrackProgress = ({
           <EmptyState className='clusterUpgradeTrackProgress-Layout' variant='large'>
             <EmptyStateIcon icon={CogsIcon} />
             <Title headingLevel='h4' size='lg'>
-              {STATUS_TO_TITLE[status](cluster.name)}
+              {STATUS_TO_TITLE[upgradeStatus](cluster.name)}
             </Title>
             <EmptyStateBody>
               <Progress
-                value={percent}
+                value={upgradePercent}
                 measureLocation='outside'
-                variant={STATUS_TO_PROGRESS_VARIANT[status]}
+                variant={STATUS_TO_PROGRESS_VARIANT[upgradeStatus]}
               />
             </EmptyStateBody>
-            { log.length > 0 && (
+            { upgradeLog.length > 0 && (
               <EmptyStateBody>
-                <SimpleLogView logItems={log} />
+                <SimpleLogView logItems={upgradeLog} />
               </EmptyStateBody>
             )}
             <EmptyStateSecondaryActions>
@@ -99,10 +79,15 @@ const TrackProgress = ({
     </Stack>
   )
 }
-
 TrackProgress.propTypes = {
   cluster: PropTypes.object.isRequired,
-  correlationId: PropTypes.string,
+  upgradeStatus: PropTypes.string,
+  upgradePercent: PropTypes.number,
+  upgradeLog: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    time: PropTypes.number,
+    description: PropTypes.string,
+  })),
 
   onClose: PropTypes.func.isRequired,
   onJumpToEvents: PropTypes.func.isRequired,
@@ -126,9 +111,5 @@ const SimpleLogView = ({ logItems }) => {
   )
 }
 SimpleLogView.propTypes = {
-  logItems: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
-    time: PropTypes.number,
-    description: PropTypes.string,
-  })),
+  logItems: TrackProgress.propTypes.upgradeLog,
 }

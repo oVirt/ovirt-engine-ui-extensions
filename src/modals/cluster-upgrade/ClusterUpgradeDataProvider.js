@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import * as C from '_/constants'
@@ -12,6 +12,8 @@ import {
   fetchData,
   upgradeCluster,
   jumpToEvents,
+  trackUpgradeProgress,
+  cancelTracker,
 } from './data'
 
 /**
@@ -31,6 +33,26 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => {
   })
 
   const [correlationId, setCorrelationId] = useState()
+  const [upgradeStatus, setUpgradeStatus] = useState('pending')
+  const [upgradePercent, setUpgradePercent] = useState(0)
+  const [upgradeLog, setUpgradeLog] = useState([])
+
+  // track status once a correlation id is set (or changed)
+  useEffect(() => {
+    if (!correlationId) {
+      return
+    }
+
+    trackUpgradeProgress(cluster.id, correlationId, ({ isRunning, percent, log }) => {
+      setUpgradeStatus(isRunning ? 'started' : 'complete')
+      setUpgradePercent(percent)
+      setUpgradeLog(currentLog => [...currentLog, ...log])
+    })
+    return () => {
+      cancelTracker(correlationId)
+    }
+  }, [cluster.id, correlationId])
+
   const upgradeAndTrack = (upgradePayload) => {
     const cid = randomHexString(10)
     if (upgradeCluster({ ...upgradePayload, engineCorrelationId: cid })) {
@@ -56,7 +78,9 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => {
   return React.cloneElement(child, {
     cluster: data.cluster,
     clusterHosts: data.hosts,
-    correlationId,
+    upgradeStatus,
+    upgradePercent,
+    upgradeLog,
 
     upgradeCluster: (upgradePayload) => upgradeAndTrack(upgradePayload),
     jumpToEvents: () => { if (correlationId) jumpToEvents(correlationId) },

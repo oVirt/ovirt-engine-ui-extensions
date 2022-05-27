@@ -254,7 +254,7 @@ function formatEventAsLogEntry ({ id, description, time }) {
   return { id, description, time }
 }
 
-export async function trackUpgradeProgress (correlationId, tick) {
+export async function trackUpgradeProgress (clusterId, correlationId, tick) {
   const progressRegEx = /^Cluster upgrade progress: (\d+)%(, Cluster: (.*?))?(, Host: (.*?))? \[(.*)\]$/
   let lastEventId = -1
   let lastPercent = 0

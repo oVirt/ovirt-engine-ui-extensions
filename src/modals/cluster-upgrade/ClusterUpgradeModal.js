@@ -27,7 +27,9 @@ const ClusterUpgradeModal = ({
   isLoading = false,
   cluster,
   clusterHosts,
-  correlationId,
+  upgradeStatus,
+  upgradePercent,
+  upgradeLog,
   upgradeCluster = () => {}, // only needed for the wizard
   jumpToEvents = () => {}, // only needed for the wizard
   onClose,
@@ -135,7 +137,10 @@ const ClusterUpgradeModal = ({
       <ClusterUpgradeWizard
         cluster={cluster}
         clusterHosts={clusterHosts}
-        correlationId={correlationId}
+        upgradeStatus={upgradeStatus}
+        upgradePercent={upgradePercent}
+        upgradeLog={upgradeLog}
+
         upgradeCluster={upgradeCluster}
         onClose={close}
         onJumpToEvents={onJumpToEvents}
@@ -149,7 +154,9 @@ ClusterUpgradeModal.propTypes = {
   isLoading: PropTypes.bool,
   cluster: PropTypes.object,
   clusterHosts: PropTypes.arrayOf(PropTypes.object),
-  correlationId: PropTypes.string,
+  upgradeStatus: PropTypes.string,
+  upgradePercent: PropTypes.number,
+  upgradeLog: PropTypes.arrayOf(PropTypes.object),
 
   // callbacks
   upgradeCluster: PropTypes.func,

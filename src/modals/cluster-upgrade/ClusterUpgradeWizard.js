@@ -19,7 +19,10 @@ import TrackProgress from './TrackProgress'
 const ClusterUpgradeWizard = ({
   cluster,
   clusterHosts,
-  correlationId,
+  upgradeStatus,
+  upgradePercent,
+  upgradeLog,
+
   upgradeCluster,
   onJumpToEvents,
   onClose,
@@ -136,7 +139,9 @@ const ClusterUpgradeWizard = ({
       component: (
         <TrackProgress
           cluster={cluster}
-          correlationId={correlationId}
+          upgradeStatus={upgradeStatus}
+          upgradePercent={upgradePercent}
+          upgradeLog={upgradeLog}
           onClose={onClose}
           onJumpToEvents={onJumpToEvents}
         />
@@ -173,7 +178,9 @@ ClusterUpgradeWizard.propTypes = {
   // data input
   cluster: PropTypes.object,
   clusterHosts: PropTypes.arrayOf(PropTypes.object),
-  correlationId: PropTypes.string,
+  upgradeStatus: PropTypes.string,
+  upgradePercent: PropTypes.number,
+  upgradeLog: PropTypes.arrayOf(PropTypes.object),
 
   // operation callback
   upgradeCluster: PropTypes.func.isRequired,
