@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_el8_offline:
-    name: EL8 - build and publish rpm repo for the PR (ovirt-engine-nodejs-modules build)
+    name: EL8 - build and publish rpm repo (ovirt-engine-nodejs-modules build)
     env:
       OFFLINE_BUILD: 1
 
@@ -18,6 +18,10 @@ jobs:
       image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
+      - name: Ensure latest ovirt-engine-nodejs-modules is installed
+        run: |
+          dnf -y --disablerepo='*' --enablerepo='*ovirt*' upgrade ovirt-engine-nodejs-modules
+
       - name: Checkout sources
         uses: actions/checkout@v2
 
