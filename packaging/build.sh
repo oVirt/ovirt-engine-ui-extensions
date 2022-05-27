@@ -40,7 +40,6 @@ sed \
   -e "s|@RPM_VERSION@|${version}|g" \
   -e "s|@RPM_SNAPSHOT@|${snapshot}|g" \
   -e "s|@TAR_FILE@|${tar_file}|g" \
-  -e "s|@OFFLINE_BUILD@|${OFFLINE_BUILD:-1}|g" \
   < "${spec_template}" \
   > "${spec_file}"
 
@@ -63,6 +62,7 @@ else
   rpmbuild \
     -ba \
     --define="_topdir ${top_dir}" \
+    $([[ ${OFFLINE_BUILD:-1} -eq 0 ]] && echo "--without ovirt_use_nodejs_modules" || :) \
     "${spec_file}"
 fi
 
