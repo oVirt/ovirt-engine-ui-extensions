@@ -8,7 +8,7 @@ test -d exported-artifacts && rm -rf exported-artifacts || :
 
 # Resolve the version and snapshot used for RPM build:
 version="$(jq -r '.version' package.json)"
-date="$(date --utc +%Y%m%d)"
+date="$(date --utc +%Y%m%d%H%M%S)"
 commit="$(git log -1 --pretty=format:%h)"
 snapshot=".${date}git${commit}"
 
