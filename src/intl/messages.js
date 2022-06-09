@@ -56,6 +56,12 @@ const messageDescriptors = {
     description: 'title `CPU` used in various components',
   },
 
+  loadingSpinnerAriaLabel: {
+    id: 'common.loadingSpinnerAriaLabel',
+    defaultMessage: 'Loading contents',
+    description: 'accessible label (aria-label) for the the Spinner on the modal loading box',
+  },
+
   memoryTitle: {
     id: 'common.memoryTitle',
     defaultMessage: 'Memory',

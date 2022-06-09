@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
-import { createErrorMessage } from '_/utils/error-message'
-import PluginApiModal from '_/components/modals/PluginApiModal'
 import getPluginApi from '_/plugin-api'
-import { Spinner } from 'patternfly-react'
+import { createErrorMessage } from '_/utils/error-message'
+
 import { Button } from '@patternfly/react-core'
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import LoadingSpinner from '_/components/helper/LoadingSpinner'
 import VmExportModalBody from './VmExportModalBody'
 
 function selectFirstId (storageDomains) {
@@ -79,7 +80,7 @@ const VmExportModal = ({
       onClose={close}
       actions={modalActions}
     >
-      <Spinner loading={isLoading}>
+      <LoadingSpinner isLoading={isLoading}>
         <VmExportModalBody
           sourceVmName={vm.name}
           exportVmName={exportVmName}
@@ -91,7 +92,7 @@ const VmExportModal = ({
           onShouldCollapseSnapshotsChange={setShouldCollapseSnapshots}
           onSelectedStorageDomainChange={setSelectedStorageDomain}
         />
-      </Spinner>
+      </LoadingSpinner>
     </PluginApiModal>
   )
 }

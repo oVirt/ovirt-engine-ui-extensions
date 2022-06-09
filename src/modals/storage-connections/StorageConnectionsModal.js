@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import PluginApiModal from '_/components/modals/PluginApiModal'
-import getPluginApi from '_/plugin-api'
 import { msg } from '_/intl-messages'
-import { Spinner } from 'patternfly-react'
-import { Button } from '@patternfly/react-core'
-import StorageConnectionsModalBody from './StorageConnectionsModalBody'
+import getPluginApi from '_/plugin-api'
 import { createErrorMessage } from '_/utils/error-message'
+
+import { Button } from '@patternfly/react-core'
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import LoadingSpinner from '_/components/helper/LoadingSpinner'
+import StorageConnectionsModalBody from './StorageConnectionsModalBody'
+
 import './connections.css'
 
 const StorageConnectionsModal = ({
@@ -114,7 +116,7 @@ const StorageConnectionsModal = ({
       onClose={close}
       actions={modalActions}
     >
-      <Spinner loading={isLoading}>
+      <LoadingSpinner isLoading={isLoading}>
         <StorageConnectionsModalBody
           storageDomain={storageDomain}
           connections={shownConnections}
@@ -128,7 +130,7 @@ const StorageConnectionsModal = ({
           onAttach={onConnectionAttach}
           onDetach={onConnectionDetach}
         />
-      </Spinner>
+      </LoadingSpinner>
     </PluginApiModal>
   )
 }

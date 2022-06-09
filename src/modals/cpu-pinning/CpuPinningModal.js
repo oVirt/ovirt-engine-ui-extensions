@@ -1,9 +1,10 @@
-import { Button } from '@patternfly/react-core'
-import { Spinner } from 'patternfly-react'
-import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import PluginApiModal from '_/components/modals/PluginApiModal'
+import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
+
+import { Button } from '@patternfly/react-core'
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import LoadingSpinner from '_/components/helper/LoadingSpinner'
 import CpuPinningModalBody from './CpuPinningModalBody'
 import PinnedEntity from './PinnedEntity'
 
@@ -43,7 +44,7 @@ const CpuPinningModal = ({
         </Button>,
       ]}
     >
-      <Spinner loading={isLoading}>
+      <LoadingSpinner isLoading={isLoading}>
         <CpuPinningModalBody
           variant={variant}
           mainEntity={mainEntity}
@@ -55,7 +56,7 @@ const CpuPinningModal = ({
           pinnedEntityIcon={pinnedEntityIcon}
           cpuTopologyDescription={cpuTopologyDescription}
         />
-      </Spinner>
+      </LoadingSpinner>
     </PluginApiModal>
   )
 }
