@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
 import { selectHostValue } from '_/constants'
 
-import PluginApiModal from '_/components/modals/PluginApiModal'
-import { Spinner } from 'patternfly-react'
 import { Button } from '@patternfly/react-core'
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import LoadingSpinner from '_/components/helper/LoadingSpinner'
 import HostCopyNetworksModalBody, { selectItemShape } from './HostCopyNetworksModalBody'
 
 const HostCopyNetworksModal = ({
@@ -64,14 +64,14 @@ const HostCopyNetworksModal = ({
       onClose={close}
       actions={modalActionButtons}
     >
-      <Spinner loading={isLoading}>
+      <LoadingSpinner isLoading={isLoading}>
         <HostCopyNetworksModalBody
           hostNames={hostNames}
           targetHostItems={targetHostItems}
           selectedHostId={hostId}
           onHostSelectionChange={value => setHostId(value)}
         />
-      </Spinner>
+      </LoadingSpinner>
     </PluginApiModal>
   )
 }

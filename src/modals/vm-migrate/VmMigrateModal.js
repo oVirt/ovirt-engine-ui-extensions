@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
-
-import PluginApiModal from '_/components/modals/PluginApiModal'
 import { autoSelectItemVal } from '_/constants'
-import { Spinner } from 'patternfly-react'
+
 import { Button } from '@patternfly/react-core'
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import LoadingSpinner from '_/components/helper/LoadingSpinner'
 import VmMigrateModalBody, { selectItemShape } from './VmMigrateModalBody'
 import withTargetHosts from './VmMigrateDataProvider'
 
@@ -77,7 +77,7 @@ const VmMigrateModal = ({
       onClose={close}
       actions={modalActionButtons}
     >
-      <Spinner loading={isLoading}>
+      <LoadingSpinner isLoading={isLoading}>
         <VmMigrateModalBody
           vmNames={vmNames}
           migrateVmsInAffinity={migrateVmsInAffinity}
@@ -88,7 +88,7 @@ const VmMigrateModal = ({
           onHostSelectionChange={value => setHostId(value)}
           onMigrateVmsInAffinityChange={onMigrateVmsInAffinityChange}
         />
-      </Spinner>
+      </LoadingSpinner>
     </PluginApiModal>
   )
 }

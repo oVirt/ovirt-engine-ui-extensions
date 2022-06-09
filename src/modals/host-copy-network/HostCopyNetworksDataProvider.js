@@ -5,20 +5,25 @@ import DataProvider from '_/components/helper/DataProvider'
 import { webadminToastTypes } from '_/constants'
 import config from '_/plugin-config'
 import { engineGet, enginePost } from '_/utils/fetch'
+import { resultAfterSleep } from '_/utils/fake-data'
 import { msg } from '_/intl-messages'
 
-const fetchTargetHostsFakeData = [
-  { id: 'dst111', name: 'dest-host-1', cluster: { id: 'xyz789' } },
-  { id: 'dst222', name: 'dest-host-2', cluster: { id: 'xyz789' } },
-  { id: 'dst333', name: 'dest-host-3', cluster: { id: 'xyz789' } },
-]
+const fetchFakeData = async () => {
+  return await resultAfterSleep(
+    [
+      { id: 'dst111', name: 'dest-host-1', cluster: { id: 'xyz789' } },
+      { id: 'dst222', name: 'dest-host-2', cluster: { id: 'xyz789' } },
+      { id: 'dst333', name: 'dest-host-3', cluster: { id: 'xyz789' } },
+    ]
+  )
+}
 
 /**
  * Fetch valid target hosts in the same cluster as source host, excluding the source host.
  */
 async function fetchTargetHosts (sourceHostId) {
   if (config.useFakeData) {
-    return fetchTargetHostsFakeData
+    return await fetchFakeData()
   }
 
   const apiHosts = await engineGet('api/hosts')
