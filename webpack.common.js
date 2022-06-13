@@ -94,7 +94,6 @@ async function common () {
 
     resolve: {
       alias: {
-        'react': path.join(__dirname, 'node_modules', 'react'), // TODO: Still needed?
         '_': path.join(__dirname, 'src'),
       },
       extensions: ['.js', '.jsx', '*'],
@@ -122,10 +121,6 @@ async function common () {
     },
 
     plugins: [
-      new webpack.ProvidePlugin({
-        jQuery: 'jquery', // Bootstrap's JavaScript implicitly requires jQuery global
-      }),
-
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify(env),

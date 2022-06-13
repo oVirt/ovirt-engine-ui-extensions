@@ -24,16 +24,6 @@ import '@patternfly/patternfly/patternfly-no-reset.css'
 import '../static/css/dashboard.css'
 import '../static/css/plugin-pf4-overrides.css'
 
-// TODO: For now, we use Bootstrap JavaScript library providing interactive
-// components via jQuery plugins. Eventually, we should use only patternfly-react
-// components and remove Bootstrap & jQuery dependencies. (Note: jQuery is loaded
-// automatically through webpack ProvidePlugin, no explicit import needed here.)
-import 'bootstrap'
-
-// Bootstrap 3.3.7 Tooltip.getPosition() function has a bug, this override fixes
-// the problem.
-import './bootstrap-overrides/tooltip-fix'
-
 const appRoot = document.getElementById('app')
 
 appInit.run().then(() => {
