@@ -14,6 +14,7 @@ import {
   jumpToEvents,
   trackUpgradeProgress,
   cancelTracker,
+  ProgressStatus,
 } from './data'
 
 /**
@@ -33,7 +34,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => {
   })
 
   const [correlationId, setCorrelationId] = useState()
-  const [upgradeStatus, setUpgradeStatus] = useState('pending')
+  const [upgradeStatus, setUpgradeStatus] = useState(ProgressStatus.PENDING)
   const [upgradePercent, setUpgradePercent] = useState(0)
   const [upgradeLog, setUpgradeLog] = useState([])
 
@@ -44,7 +45,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => {
     }
 
     trackUpgradeProgress(cluster.id, correlationId, ({ isRunning, percent, log }) => {
-      setUpgradeStatus(isRunning ? 'started' : 'complete')
+      setUpgradeStatus(isRunning ? ProgressStatus.STARTED : ProgressStatus.COMPLETE)
       setUpgradePercent(percent)
       setUpgradeLog(currentLog => [...currentLog, ...log])
     })

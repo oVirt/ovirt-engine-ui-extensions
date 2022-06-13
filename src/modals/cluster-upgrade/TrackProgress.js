@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import IntlMessageFormat from 'intl-messageformat'
 import { msg } from '_/intl-messages'
 import { currentLocale } from '_/utils/intl'
+import { ProgressStatus } from './data'
 
 import {
   Alert,
@@ -20,22 +21,22 @@ import {
 import { CogsIcon } from '@patternfly/react-icons'
 
 const STATUS_TO_TITLE = {
-  'pending': (clusterName) => msg.clusterUpgradeOperationPending({ clusterName }),
-  'started': (clusterName) => msg.clusterUpgradeOperationStarted({ clusterName }),
-  'complete': (clusterName) => msg.clusterUpgradeOperationComplete({ clusterName }),
-  'failed': (clusterName) => msg.clusterUpgradeOperationFailed({ clusterName }),
+  [ProgressStatus.PENDING]: (clusterName) => msg.clusterUpgradeOperationPending({ clusterName }),
+  [ProgressStatus.STARTED]: (clusterName) => msg.clusterUpgradeOperationStarted({ clusterName }),
+  [ProgressStatus.COMPLETE]: (clusterName) => msg.clusterUpgradeOperationComplete({ clusterName }),
+  [ProgressStatus.FAILED]: (clusterName) => msg.clusterUpgradeOperationFailed({ clusterName }),
 }
 
 const STATUS_TO_PROGRESS_VARIANT = {
-  'pending': null,
-  'started': null,
-  'complete': 'success',
-  'failed': 'warning',
+  [ProgressStatus.PENDING]: null,
+  [ProgressStatus.STARTED]: null,
+  [ProgressStatus.COMPLETE]: 'success',
+  [ProgressStatus.FAILED]: 'warning',
 }
 
 const TrackProgress = ({
   cluster,
-  upgradeStatus = 'pending',
+  upgradeStatus = ProgressStatus.PENDING,
   upgradePercent = 0,
   upgradeLog = [],
   onJumpToEvents,
@@ -81,7 +82,7 @@ const TrackProgress = ({
 }
 TrackProgress.propTypes = {
   cluster: PropTypes.object.isRequired,
-  upgradeStatus: PropTypes.string,
+  upgradeStatus: PropTypes.oneOf(Object.values(ProgressStatus)),
   upgradePercent: PropTypes.number,
   upgradeLog: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,

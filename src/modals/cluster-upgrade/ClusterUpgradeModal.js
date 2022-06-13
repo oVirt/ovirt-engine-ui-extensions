@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
+import { ProgressStatus } from './data'
 
 import {
   Button,
@@ -154,7 +155,7 @@ ClusterUpgradeModal.propTypes = {
   isLoading: PropTypes.bool,
   cluster: PropTypes.object,
   clusterHosts: PropTypes.arrayOf(PropTypes.object),
-  upgradeStatus: PropTypes.string,
+  upgradeStatus: PropTypes.oneOf(Object.values(ProgressStatus)),
   upgradePercent: PropTypes.number,
   upgradeLog: PropTypes.arrayOf(PropTypes.object),
 
