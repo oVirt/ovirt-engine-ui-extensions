@@ -1,4 +1,3 @@
-import '_/logger'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { dashboardPlaceToken } from '_/constants'
