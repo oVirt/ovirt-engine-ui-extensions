@@ -1,4 +1,3 @@
-import '_/logger'
 import getPluginApi from './plugin-api'
 import appInit from './services/app-init'
 import { addPlaces } from './integrations/places'
