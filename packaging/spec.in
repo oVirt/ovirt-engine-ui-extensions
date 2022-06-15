@@ -91,6 +91,15 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Wed Jun 15 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.4-1
+- Cluster upgrade wizard dialog: fix the selected hosts handling bug
+- Cluster upgrade wizard dialog: fix a bug in trackUpgradeProgress to always fetch events from the last point
+- Update dependencies for various packages: moment from 2.24.0 to 2.29.2, caniuse-lite for browserslist  to version 1.0.30001346
+- I18n: pull translations for Georgian (ka-GE)
+- Github actions: always upgrade nodejs-modules
+- Build issues: use hours, minutes and seconds in the RPM name, version part
+- Build issues: mark the copr make_srpm git dir as safe (git 2.35.2 security fix)
+
 * Tue Apr 26 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.3-1
 - Fix a bug for minimizing CSS flashing of all ui-extensions dialogs
 - vGPU dialog: small code refactorings
