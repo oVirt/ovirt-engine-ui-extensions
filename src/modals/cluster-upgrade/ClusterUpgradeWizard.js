@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
 
@@ -27,19 +27,10 @@ const ClusterUpgradeWizard = ({
   //
   // hosts
   //
-  const [hostIdToName, setHostIdToName] = useState({})
   const [selectedHostIds, setSelectedHostIds] = useState([])
 
-  useEffect(() => {
-    if (clusterHosts?.length > 0) {
-      setHostIdToName(clusterHosts.reduce((idMap, host) => { idMap[host.id] = host.name; return idMap }, {}))
-    } else {
-      setHostIdToName({})
-    }
-  }, [clusterHosts])
-
   const onHostSelectionChange = (newSelectedHostIds = []) => {
-    setSelectedHostIds(newSelectedHostIds.filter(hostId => hostIdToName[hostId]))
+    setSelectedHostIds(clusterHosts.filter(host => newSelectedHostIds.includes(host.id)).map(host => host.id))
   }
 
   //
@@ -56,7 +47,7 @@ const ClusterUpgradeWizard = ({
 
   const onOptionsChange = (option, value) => {
     if (option in options) {
-      setOptions({ ...options, [option]: value })
+      setOptions(options => ({ ...options, [option]: value }))
     }
   }
 
@@ -64,12 +55,14 @@ const ClusterUpgradeWizard = ({
   // upgrade
   //
   const doUpgradeCluster = () => {
+    const selectedHosts = clusterHosts.filter(host => selectedHostIds.includes(host.id))
+
     // build the cluster upgrade request parameters
     const data = {
       clusterId: cluster.id,
       clusterName: cluster.name,
 
-      hostNames: clusterHosts.filter(host => selectedHostIds[host.id]).map(host => hostIdToName[host.id]),
+      hostNames: selectedHosts.map(host => host.name),
 
       stopPinnedVms: options.stopPinnedVms,
       upgradeTimeoutInMin: Number.isNaN(options.upgradeTimeoutInMin) ? 0 : options.upgradeTimeoutInMin,
@@ -78,7 +71,7 @@ const ClusterUpgradeWizard = ({
       useMaintenanceClusterPolicy: options.useMaintenanceClusterPolicy,
       executionTimeoutInMin: Number.isNaN(options.upgradeTimeoutInMin) || options.upgradeTimeoutInMin <= 0
         ? undefined
-        : (selectedHostIds.length + 1) * options.upgradeTimeoutInMin,
+        : (selectedHosts.length + 1) * options.upgradeTimeoutInMin,
     }
 
     // fire the callback with the request parameters
