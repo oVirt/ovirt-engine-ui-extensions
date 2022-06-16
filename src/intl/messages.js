@@ -1104,6 +1104,12 @@ const messageDescriptors = {
     description: 'Dedicated cpu pinning policy field in the CPU Pinning dialog',
   },
 
+  cpuPinningModalVmPinningPolicyFieldIsolateThreads: {
+    id: 'cpu.pinning.modal.field.cpupinning.policy.isolate-threads',
+    defaultMessage: 'Isolate Threads',
+    description: 'Isolate threads cpu pinning policy field in the CPU Pinning dialog',
+  },
+
   cpuPinningModalVmPinningField: {
     id: 'cpu.pinning.modal.field.cpupinning',
     defaultMessage: 'CPU Pinning',
