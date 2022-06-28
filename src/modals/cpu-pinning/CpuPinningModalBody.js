@@ -69,6 +69,9 @@ const CpuPinningModalBody = ({
     if (CpuPinningPolicy.isDedicated(policy)) {
       return msg.cpuPinningModalVmPinningPolicyFieldDedicated()
     }
+    if (CpuPinningPolicy.isIsolateThreads(policy)) {
+      return msg.cpuPinningModalVmPinningPolicyFieldIsolateThreads()
+    }
     return ''
   }
 

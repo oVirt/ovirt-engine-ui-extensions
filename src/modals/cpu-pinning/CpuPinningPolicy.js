@@ -14,10 +14,14 @@ export function isDedicated (policy) {
   return policy === 'dedicated'
 }
 
+export function isIsolateThreads (policy) {
+  return policy === 'isolate_threads'
+}
+
 export function isDynamic (policy) {
   return policy && !isManual(policy) && !isNone(policy)
 }
 
 export function isExclusive (policy) {
-  return isDedicated(policy)
+  return isDedicated(policy) || isIsolateThreads(policy)
 }
