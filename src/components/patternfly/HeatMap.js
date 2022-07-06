@@ -1,36 +1,64 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import $ from 'jquery'
 import d3 from 'd3'
+import { Tooltip } from '@patternfly/react-core'
 
 // PatternFly reference:
-//  http://www.patternfly.org/pattern-library/data-visualization/heat-map/
+//  https://www.patternfly.org/v3/pattern-library/data-visualization/heat-map/
 
-// TODO(vs) rewrite in pure React & consider contributing to patternfly-react
-// TODO: PF4 tooltip
+function determineBlockSize ({ containerWidth, containerHeight, numberOfBlocks, maxBlockSize }) {
+  const x = containerWidth
+  const y = containerHeight
+  const n = numberOfBlocks
+  const px = Math.ceil(Math.sqrt(n * x / y))
+  const py = Math.ceil(Math.sqrt(n * y / x))
 
-class HeatMap extends React.Component {
-  componentDidMount () {
-    this._generateHeatMap(this.props)
+  let sx
+  if (Math.floor(px * y / x) * px < n) {
+    sx = y / Math.ceil(px * y / x)
+  } else {
+    sx = x / px
   }
 
-  componentDidUpdate (newProps) {
-    this._updateHeatMap(newProps)
+  let sy
+  if (Math.floor(py * x / y) * py < n) {
+    sy = x / Math.ceil(x * py / y)
+  } else {
+    sy = y / py
   }
 
-  render () {
-    return (
-      <div className='heatmap-container' style={this.props.containerStyle} ref={e => { this._heatMapContainer = e }}>
-        <svg className='heatmap-svg' />
-      </div>
-    )
-  }
+  sx = Math.min(sx, maxBlockSize)
+  sy = Math.min(sy, maxBlockSize)
 
-  _generateHeatMap ({ data, thresholds, maxBlockSize, blockPadding, onBlockClick }) {
-    const containerWidth = this._heatMapContainer.clientWidth
-    const containerHeight = this._heatMapContainer.clientHeight
+  return Math.max(sx, sy)
+}
 
-    const blockSize = this._determineBlockSize({
+export const DEFAULT_THRESHOLD_COLORS = ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000']
+
+const HeatMap = ({
+  id,
+  data,
+  thresholds = {
+    domain: [0.7, 0.8, 0.9],
+    colors: DEFAULT_THRESHOLD_COLORS,
+  },
+  maxBlockSize = 50,
+  blockPadding = 1,
+  containerStyle = {
+    height: 100,
+  },
+  onBlockClick = () => {},
+}) => {
+  const containerRef = useRef()
+  const [{ blockSize, numberOfRows }, setRenderParams] = useState({})
+  const [allBlocksActive, setAllBlocksActive] = useState(true)
+  const [mouseOverBlock, setMouseOverBlock] = useState(-1)
+
+  useEffect(() => {
+    const containerWidth = containerRef.current.clientWidth
+    const containerHeight = containerRef.current.clientHeight
+
+    const blockSize = determineBlockSize({
       containerWidth,
       containerHeight,
       numberOfBlocks: data.length,
@@ -38,78 +66,52 @@ class HeatMap extends React.Component {
     })
 
     const numberOfRows = (blockSize === 0) ? 0 : Math.floor(containerHeight / blockSize)
-    const color = d3.scale.threshold().domain(thresholds.domain).range(thresholds.colors)
 
-    function highlightBlock (block, active) {
-      block.style('fill-opacity', active ? 1 : 0.4)
-    }
+    setRenderParams({ blockSize, numberOfRows })
+  }, [data, maxBlockSize])
 
-    const svg = d3.select(this._heatMapContainer).select('svg.heatmap-svg')
-    svg.selectAll('*').remove()
+  const color = d3.scale.threshold().domain(thresholds.domain).range(thresholds.colors)
 
-    // generate heat map blocks
-    const blocks = svg.selectAll('rect').data(data).enter().append('rect')
-    blocks
-      .attr('x', (d, i) => (Math.floor(i / numberOfRows) * blockSize) + blockPadding)
-      .attr('y', (d, i) => (i % numberOfRows * blockSize) + blockPadding)
-      .attr('width', blockSize - (2 * blockPadding))
-      .attr('height', blockSize - (2 * blockPadding))
-      .style('fill', d => color(d.value))
-      .attr('data-index', (d, i) => i)
-      .attr('data-role', 'heat-map-block')
-
-    // attach event listeners
-    blocks.on('mouseover', function () {
-      blocks.call(highlightBlock, false)
-      d3.select(this).call(highlightBlock, true)
-    })
-    blocks.on('click', d => { onBlockClick(d) })
-    svg.on('mouseleave', () => { blocks.call(highlightBlock, true) })
-
-    // tooltips are done via jQuery
-    $('rect[data-role=heat-map-block]', this._heatMapContainer).tooltip({
-      animation: false,
-      container: 'body',
-      title () {
-        return data[$(this).attr('data-index')].name
-      },
-    })
-  }
-
-  _updateHeatMap (props) {
-    this._generateHeatMap(props)
-  }
-
-  _determineBlockSize ({ containerWidth, containerHeight, numberOfBlocks, maxBlockSize }) {
-    const x = containerWidth
-    const y = containerHeight
-    const n = numberOfBlocks
-    const px = Math.ceil(Math.sqrt(n * x / y))
-    const py = Math.ceil(Math.sqrt(n * y / x))
-
-    let sx
-    if (Math.floor(px * y / x) * px < n) {
-      sx = y / Math.ceil(px * y / x)
-    } else {
-      sx = x / px
-    }
-
-    let sy
-    if (Math.floor(py * x / y) * py < n) {
-      sy = x / Math.ceil(x * py / y)
-    } else {
-      sy = y / py
-    }
-
-    sx = Math.min(sx, maxBlockSize)
-    sy = Math.min(sy, maxBlockSize)
-
-    return Math.max(sx, sy)
-  }
+  return (
+    <div id={id} className='heatmap-container' style={containerStyle} ref={containerRef}>
+      <svg
+        className='heatmap-svg'
+        onMouseLeave={() => { setAllBlocksActive(true) }}
+      >
+        {blockSize && data.map((d, index) => (
+          <Tooltip
+            key={index}
+            id={`${id}-tooltip-${index}`}
+            content={d.name}
+          >
+            <rect
+              key={index}
+              x={(Math.floor(index / numberOfRows) * blockSize) + blockPadding}
+              y={(index % numberOfRows * blockSize) + blockPadding}
+              width={blockSize - (2 * blockPadding)}
+              height={blockSize - (2 * blockPadding)}
+              style={{
+                fill: color(d.value),
+                fillOpacity: allBlocksActive || mouseOverBlock === index ? 1 : 0.4,
+              }}
+              onClick={() => { onBlockClick(d) }}
+              onMouseOver={() => {
+                setAllBlocksActive(false)
+                setMouseOverBlock(index)
+              }}
+              onMouseOut={() => {
+                setMouseOverBlock(-1)
+              }}
+            />
+          </Tooltip>
+        ))}
+      </svg>
+    </div>
+  )
 }
 
-/* eslint-disable react/no-unused-prop-types */
 HeatMap.propTypes = {
+  id: PropTypes.string.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.number, // from range <0, 1>
     name: PropTypes.string,
@@ -122,19 +124,6 @@ HeatMap.propTypes = {
   blockPadding: PropTypes.number,
   containerStyle: PropTypes.object,
   onBlockClick: PropTypes.func, // (dataItem:object) => void
-}
-
-HeatMap.defaultProps = {
-  thresholds: {
-    domain: [0.7, 0.8, 0.9],
-    colors: ['#D4F0FA', '#F9D67A', '#EC7A08', '#CE0000'],
-  },
-  maxBlockSize: 50,
-  blockPadding: 1,
-  containerStyle: {
-    height: 100,
-  },
-  onBlockClick () {},
 }
 
 export default HeatMap
