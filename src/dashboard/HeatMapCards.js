@@ -45,6 +45,7 @@ const ClusterUtilizationCards = ({ cpu, memory }) => (
             <GridItem>
               <div className='heatmap-chart-title'>{msg.cpuTitle()}</div>
               <HeatMap
+                id='cluser-utilization-heatmap-cpu'
                 data={cpu}
                 thresholds={C.heatMapThresholds}
                 onBlockClick={dataItem => {
@@ -58,6 +59,7 @@ const ClusterUtilizationCards = ({ cpu, memory }) => (
             <GridItem>
               <div className='heatmap-chart-title'>{msg.memoryTitle()}</div>
               <HeatMap
+                id='cluser-utilization-heatmap-memory'
                 data={memory}
                 thresholds={C.heatMapThresholds}
                 onBlockClick={dataItem => {
@@ -93,6 +95,7 @@ const StorageUtilizationCard = ({ storage }) => (
         <StackItem className='heatmap-chart' isFilled>
           <div className='heatmap-chart-title'>{msg.storageTitle()}</div>
           <HeatMap
+            id='cluser-utilization-heatmap-storage'
             data={storage}
             thresholds={C.heatMapThresholds}
             onBlockClick={dataItem => {
@@ -125,6 +128,7 @@ const GlusterUtilizationCard = ({ vdoSavings }) => (
         <StackItem className='heatmap-chart' isFilled>
           <div className='heatmap-chart-title'>{msg.vdoSavingsTitle()}</div>
           <HeatMap
+            id='cluser-utilization-heatmap-vdoSavings'
             data={vdoSavings}
             thresholds={C.heatMapVDOThresholds}
             onBlockClick={dataItem => {
