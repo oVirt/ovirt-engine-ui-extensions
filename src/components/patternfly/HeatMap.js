@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import d3 from 'd3'
 import { useElementSize } from 'usehooks-ts'
+import { scaleThreshold } from 'd3-scale'
 import { Tooltip } from '@patternfly/react-core'
 
 // PatternFly reference:
@@ -73,7 +73,7 @@ const HeatMap = ({
     setRenderParams({ blockSize, numberOfRows })
   }, [containerWidth, containerHeight, data, maxBlockSize])
 
-  const color = d3.scale.threshold().domain(thresholds.domain).range(thresholds.colors)
+  const color = scaleThreshold().domain(thresholds.domain).range(thresholds.colors)
 
   return (
     <div id={id} className='heatmap-container' style={containerStyle} ref={containerRef}>
