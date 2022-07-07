@@ -1,30 +1,24 @@
 const path = require('path')
 const util = require('util')
 const tty = require('tty')
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
 const common = require('./webpack.common.js')
 
 // development mode
 // @see https://github.com/patternfly/patternfly-react-seed/blob/master/webpack.dev.js
 async function dev () {
-  const devConfig = merge(await common, {
+  const devConfig = merge(await common({
     mode: 'development',
     devtool: 'source-map', // 'eval-source-map' doesn't give us much in our usecase
-
+  }), {
     module: {
       rules: [
         {
           test: /\.css$/,
           oneOf: [
-            {
-              // We import @patternfly/patternfly/patternfly-no-reset.css in all
-              // entry points.  It includes ALL of the css necessary for ALL PF4
-              // components.   We do not need to import any PF4 component only style
-              // sheets.  This null-loader will make sure those css files are excluded.
-              test: /@patternfly\/react-styles\/css/,
-              use: 'null-loader',
-            },
             {
               // For dev, ONLY extract vendor css
               include: [
@@ -32,16 +26,14 @@ async function dev () {
               ],
               use: [
                 MiniCssExtractPlugin.loader,
-                {
-                  loader: 'css-loader',
-                  options: {
-                    sourceMap: true,
-                  },
-                },
+                { loader: 'css-loader', options: { sourceMap: true } },
               ],
             },
             {
-              use: ['style-loader', 'css-loader'],
+              use: [
+                'style-loader',
+                'css-loader',
+              ],
             },
           ],
         },
@@ -50,6 +42,7 @@ async function dev () {
 
     plugins: [
       new MiniCssExtractPlugin({
+        ignoreOrder: true,
         filename: 'css/[name].css',
         chunkFilename: 'css/[name].chunk.css',
       }),
