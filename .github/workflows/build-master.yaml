@@ -1,4 +1,4 @@
-name: run build on master
+name: run build on master and tags
 on:
   push:
     branches:
@@ -8,14 +8,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_el8_offline:
-    name: EL8 - build and publish rpm repo (ovirt-engine-nodejs-modules build)
+  build_offline:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: EL8
+            container-image: quay.io/ovirt/buildcontainer:el8stream
+          - name: EL9
+            container-image: quay.io/ovirt/buildcontainer:el9stream
+
+    name: ${{ matrix.name }} - test, build and publish rpm repo for the PR (ovirt-engine-nodejs-modules build)
+    container:
+      image: ${{ matrix.container-image }}
+
     env:
       OFFLINE_BUILD: 1
-
-    runs-on: ubuntu-latest
-    container:
-      image: quay.io/ovirt/buildcontainer:el8stream
 
     steps:
       - name: Ensure latest ovirt-engine-nodejs-modules is installed
