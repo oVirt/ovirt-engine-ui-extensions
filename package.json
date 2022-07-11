@@ -86,7 +86,6 @@
     "webpack-merge": "^5.8.0"
   },
   "resolutions": {
-    "glob-parent": "^5.1.2",
     "path-parse": "^1.0.7",
     "underscore": "1.13.1",
     "ansi-regex": "5.0.1"
