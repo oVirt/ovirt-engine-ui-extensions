@@ -29,7 +29,8 @@ jobs:
     steps:
       - name: Ensure latest ovirt-engine-nodejs-modules is installed
         run: |
-          dnf -y --disablerepo='*' --enablerepo='*ovirt*' upgrade ovirt-engine-nodejs-modules
+          rpm -q --quiet ovirt-engine-nodejs-modules && ACTION=upgrade || ACTION=install
+          dnf -y --disablerepo='*' --enablerepo='*ovirt*' $ACTION ovirt-engine-nodejs-modules
 
       - name: Checkout sources
         uses: actions/checkout@v2
