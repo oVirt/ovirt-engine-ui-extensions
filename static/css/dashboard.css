@@ -27,7 +27,8 @@ body {
 }
 
 #global-dashboard {
-  margin: var(--dashboard-gutter);
+  padding: var(--dashboard-gutter);
+  width: 100%;
 
   --pf-l-stack--m-gutter--MarginBottom: var(--dashboard-gutter);
 }
@@ -59,6 +60,13 @@ body {
   font-size: 18px;
 }
 
+/* Inventory status cards */
+.inventory-status-cards {
+  /* add spacing between rows when the card groups wrap (below md breakpoint) */
+  row-gap: var(--pf-l-flex--spacer--sm);
+}
+
+
 /* Aggregate status card */
 .aggregate-status-card {
   min-width: 150px;
@@ -84,6 +92,7 @@ body {
 .aggregate-status-card .aggregate-status-title {
   font-size: var(--pf-global--FontSize--lg)
 }
+
 .aggregate-status-notifications {
   display: flex;
   flex-direction: row;
@@ -95,15 +104,18 @@ body {
   font-size: var(--dashboard-aggregate-status-notifications-FontSize);
   font-weight: 300;
 }
+
 .aggregate-status-notification {
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 .aggregate-status-notification a {
   font-weight: inherit;
 }
-.aggregate-status-notification + .aggregate-status-notification:before {
+
+.aggregate-status-notification:not(:first-child):before {
   content: "";
   display: inline-block;
   background-color: #d1d1d1;
@@ -115,13 +127,6 @@ body {
 @media screen and (max-width: 992px) { /* PF4 lg breakpoint */
   .aggregate-status-card {
     min-width: 120px;
-  }
-  .aggregate-status-notifications {
-    flex-direction: column;
-    align-items: left;
-  }
-  .aggregate-status-notification + .aggregate-status-notification:before {
-    content: none;
   }
 }
 
