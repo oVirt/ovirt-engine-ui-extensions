@@ -46,7 +46,7 @@ const UtilizationBarChart = ({
       )}
       { footerLabel === 'percent' && (
         <div className='bar-chart-label' style={{ maxWidth: footerLabelWidth }}>
-          <strong>{formatPercent0D(percentUsed)}</strong> {msg.used()}
+          <strong>{formatPercent0D(percentUsed / 100)}</strong> {msg.used()}
         </div>
       )}
       { typeof footerLabel === 'function' && (
