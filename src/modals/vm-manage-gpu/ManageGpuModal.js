@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
 
-import PluginApiModal from '_/components/modals/PluginApiModal'
-import { Spinner } from 'patternfly-react'
 import { Alert, Button } from '@patternfly/react-core'
-import ManageGpuModalBody from './ManageGpuModalBody'
+import PluginApiModal from '_/components/modals/PluginApiModal'
+import LoadingSpinner from '_/components/helper/LoadingSpinner'
 import CompatibilityVersion from '_/utils/CompatibilityVersion'
+import ManageGpuModalBody from './ManageGpuModalBody'
 
 function gpuArrayToSelectedMap (gpus) {
   const mdevTypesToRequestedInstances = {}
@@ -113,39 +113,41 @@ const ManageGpuModal = ({
         </Button>,
       ]}
     >
-      <Spinner loading={isLoading}>
-        {
-          nonExistingSelectedMdevs && nonExistingSelectedMdevs.length > 0 && (
-            <Alert variant='warning' isInline title={msg.vmManageGpuDialogMissingMDevWarningTitle()}>
-              {msg.vmManageGpuDialogMissingMDevWarning({ mdevs: nonExistingSelectedMdevs.join(',') })}
-            </Alert>
-          )
-        }
-        {
-          !noDisplayConsistent && (
-            <Alert variant='warning' isInline title={msg.vmManageGpuDialogInconsistentNodisplayWarningTitle()}>
-              {msg.vmManageGpuDialogInconsistentNodisplayWarning()}
-            </Alert>
-          )
-        }
-        {
-          !driverParamsConsistent && (
-            <Alert variant='warning' isInline title={msg.vmManageGpuDialogInconsistentDriverParamsWarningTitle()}>
-              {msg.vmManageGpuDialogInconsistentDriverParamsWarning()}
-            </Alert>
-          )
-        }
-        <ManageGpuModalBody
-          gpus={gpus}
-          displayOn={displayOn === undefined ? initialDisplayOn : displayOn}
-          driverParams={getDriverParams()}
-          compatibilityVersion={compatibilityVersion}
-          selectedMDevTypes={selectedMDevTypes}
-          onDisplayOnChange={onDisplayOnChange}
-          onDriverParamsChange={onDriverParamsChange}
-          onGpuSelectionChange={onGpuSelectionChange}
-        />
-      </Spinner>
+      <LoadingSpinner isLoading={isLoading}>
+        <>
+          {
+            nonExistingSelectedMdevs && nonExistingSelectedMdevs.length > 0 && (
+              <Alert variant='warning' isInline title={msg.vmManageGpuDialogMissingMDevWarningTitle()}>
+                {msg.vmManageGpuDialogMissingMDevWarning({ mdevs: nonExistingSelectedMdevs.join(',') })}
+              </Alert>
+            )
+          }
+          {
+            !noDisplayConsistent && (
+              <Alert variant='warning' isInline title={msg.vmManageGpuDialogInconsistentNodisplayWarningTitle()}>
+                {msg.vmManageGpuDialogInconsistentNodisplayWarning()}
+              </Alert>
+            )
+          }
+          {
+            !driverParamsConsistent && (
+              <Alert variant='warning' isInline title={msg.vmManageGpuDialogInconsistentDriverParamsWarningTitle()}>
+                {msg.vmManageGpuDialogInconsistentDriverParamsWarning()}
+              </Alert>
+            )
+          }
+          <ManageGpuModalBody
+            gpus={gpus}
+            displayOn={displayOn === undefined ? initialDisplayOn : displayOn}
+            driverParams={getDriverParams()}
+            compatibilityVersion={compatibilityVersion}
+            selectedMDevTypes={selectedMDevTypes}
+            onDisplayOnChange={onDisplayOnChange}
+            onDriverParamsChange={onDriverParamsChange}
+            onGpuSelectionChange={onGpuSelectionChange}
+          />
+        </>
+      </LoadingSpinner>
     </PluginApiModal>
   )
 }

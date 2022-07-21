@@ -1,10 +1,8 @@
 const path = require('path')
 
 const webpack = require('webpack')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin')
 
 const env = process.env.NODE_ENV || 'development'
 const useFakeData = process.env.FAKE_DATA === 'true'
@@ -17,26 +15,35 @@ const fetchGitInfo = require('./webpack.gitinfo.js')
 //         polyfills in the list that are NOT from `core-js/stable`.
 const commonModules = []
 
+// base Patternfly 4 package locations that hold fonts
+// @see: https://github.com/patternfly/patternfly-react-seed/blob/master/webpack.common.js
+const patternflyFontPaths = [
+  path.resolve(__dirname, 'node_modules/patternfly/dist/fonts'),
+  path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/styles/assets/fonts'),
+  path.resolve(__dirname, 'node_modules/@patternfly/react-core/dist/styles/assets/pficon'),
+  path.resolve(__dirname, 'node_modules/@patternfly/patternfly/assets/fonts'),
+  path.resolve(__dirname, 'node_modules/@patternfly/patternfly/assets/pficon'),
+]
+
 // common webpack configuration applicable to all environments
 // @see: https://github.com/patternfly/patternfly-react-seed/blob/master/webpack.common.js
-async function common () {
+async function common ({ mode, devtool }) {
   const gitInfo = await fetchGitInfo()
   const rpmInfo = process.env.RPM_PACKAGE_NAME && {
     packageName: process.env.RPM_PACKAGE_NAME,
     packageVersion: process.env.RPM_PACKAGE_VERSION,
     packageRelease: process.env.RPM_PACKAGE_RELEASE,
   }
-
-  const banner =
-    `${packageInfo.name} v${packageInfo.version}` +
-    (rpmInfo ? ` [rpm ${rpmInfo.packageName}-${rpmInfo.packageVersion}-${rpmInfo.packageRelease}]` : '') +
-    (gitInfo ? ` [git ${gitInfo.headOid}, change-id: ${gitInfo.changeId}, tags: ${gitInfo.headTags}]` : '') +
-    (gitInfo && gitInfo.hasChanges ? ` ${JSON.stringify(gitInfo)}` : '')
-
-  // define specific fonts to embed in CSS via data urls
-  let fontsToEmbed
+  const banner = `/* @buildinfo [file]: ${[
+    `${packageInfo.name} v${packageInfo.version}`,
+    rpmInfo && `[rpm ${rpmInfo.packageName}-${rpmInfo.packageVersion}-${rpmInfo.packageRelease}]`,
+    gitInfo && `[git ${gitInfo.headOid}${gitInfo.isHeadOidTagged ? `, tags: ${gitInfo.headTags}` : ''}]`,
+    gitInfo && gitInfo.hasChanges && JSON.stringify(gitInfo),
+  ].filter(Boolean).join(' ')} */`
 
   const commonConfig = {
+    mode,
+    devtool,
     bail: true,
 
     module: {
@@ -49,38 +56,33 @@ async function common () {
           },
         },
 
-        // inline base64 URLs for <= 8k images, direct URLs for the rest
-        {
-          test: /\.(png|jpg|jpeg|gif)$/,
-          use: {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-              name: 'media/[name].[hash:8].[ext]',
-            },
-          },
-        },
-
         // embed the woff2 fonts and any fonts that are used by the PF icons
         // directly in the CSS (to avoid lag applying fonts), export the rest
         // to be loaded seperately as needed
         {
-          test: fontsToEmbed = [
-            /\.woff2(\?v=[0-9].[0-9].[0-9])?$/,
-            /PatternFlyIcons-webfont\.ttf/,
-          ],
-          use: {
-            loader: 'url-loader',
-            options: {},
-          },
+          test: /\.woff2$/,
+          include: patternflyFontPaths,
+          type: 'asset/inline',
         },
         {
-          test: /\.(ttf|eot|svg|woff(?!2))(\?v=[0-9].[0-9].[0-9])?$/,
-          exclude: fontsToEmbed,
-          use: {
-            loader: 'file-loader',
-            options: {
-              name: 'fonts/[name].[hash:8].[ext]',
+          test: /\.(svg|ttf|eot|woff)$/,
+          include: patternflyFontPaths,
+          type: 'asset',
+          generator: {
+            filename: 'fonts/[name].[hash:8][ext][query]',
+          },
+        },
+
+        // inline base64 URLs for <= 8k images, direct URLs for the rest
+        {
+          test: /\.(png|jpg|jpeg|gif|svg)$/,
+          type: 'asset',
+          generator: {
+            filename: 'media/[name].[hash:8][ext][query]',
+          },
+          parser: {
+            dataUrlCondition: {
+              maxSize: 8192,
             },
           },
         },
@@ -94,21 +96,40 @@ async function common () {
 
     resolve: {
       alias: {
-        'react': path.join(__dirname, 'node_modules', 'react'), // TODO: Still needed?
         '_': path.join(__dirname, 'src'),
       },
-      extensions: ['.js', '.jsx', '*'],
+      extensions: ['.js', '.jsx', '.json'],
+      fallback: {
+        module: false,
+        dgram: false,
+        dns: false,
+        fs: false,
+        http2: false,
+        net: false,
+        tls: false,
+        child_process: false,
+      },
     },
 
     output: {
-      filename: '[name].js',
       path: path.resolve(__dirname, 'dist/ui-extensions-resources'),
+      clean: true,
+
+      filename: 'js/[name].js',
+      chunkFilename: 'js/[name].[id].chunk.js',
 
       // UI plugin resources are served through Engine
       publicPath: '/ovirt-engine/webadmin/plugin/ui-extensions/',
     },
 
     optimization: {
+      // Keep the vendor chunk id consistent between builds
+      moduleIds: 'deterministic',
+
+      // Keep the runtime chunk separated to enable long term caching
+      // runtimeChunk: 'single',
+      runtimeChunk: { name: 'webpack-manifest' },
+
       splitChunks: {
         cacheGroups: {
           vendor: {
@@ -118,37 +139,30 @@ async function common () {
           },
         },
       },
-      runtimeChunk: { name: 'webpack-manifest' },
     },
 
     plugins: [
-      new webpack.ProvidePlugin({
-        jQuery: 'jquery', // Bootstrap's JavaScript implicitly requires jQuery global
-      }),
-
       new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify(env),
-        },
+        'process.env.NODE_ENV': JSON.stringify(env),
         '__DEV__': JSON.stringify(env === 'development'),
       }),
 
-      new CleanWebpackPlugin({
-        verbose: false,
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'static/ui-extensions.json',
+            to: '../',
+            transform: (content) => content.toString().replace('"__FAKE_DATA__"', useFakeData),
+          },
+        ],
       }),
-      new CopyWebpackPlugin([
-        {
-          from: 'static/ui-extensions.json',
-          to: '../',
-          transform: (content) => content.toString().replace('"__FAKE_DATA__"', useFakeData),
-        },
-      ]),
 
       new HtmlWebpackPlugin({
         filename: 'plugin.html',
         template: 'static/html/plugin.template.ejs',
         extraParams: { gitInfo, rpmInfo },
         inject: true,
+        minify: false,
         chunks: ['webpack-manifest', 'vendor', 'plugin'],
       }),
       new HtmlWebpackPlugin({
@@ -156,22 +170,15 @@ async function common () {
         template: 'static/html/dashboard.template.ejs',
         extraParams: { gitInfo, rpmInfo },
         inject: true,
+        minify: false,
         chunks: ['webpack-manifest', 'vendor', 'dashboard'],
       }),
-      new InlineManifestWebpackPlugin('webpack-manifest'),
-
-      // This pulls all of the depends on modules out of the entry chunks and puts them
-      // together here.  Every entry then shares this chunk and it can be cached between
-      // them.  The HtmlWebpackPlugins just need to reference it so the script tag is
-      // written correctly.  HashedModuleIdsPlugin keeps the chunk id stable as long
-      // as the contents of the chunk stay the same (i.e. no new modules are used).
-      new webpack.HashedModuleIdsPlugin(),
 
       // emit banner comment at the top of each generated chunk
-      new webpack.BannerPlugin({ banner }),
+      new webpack.BannerPlugin({ banner, raw: true }),
     ],
   }
 
   return commonConfig
 }
-module.exports = common()
+module.exports = common

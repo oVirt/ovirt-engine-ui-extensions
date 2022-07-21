@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import config from '_/plugin-config'
 import { engineGet } from '_/utils/fetch'
+import { sleep } from '_/utils/fake-data'
 
 import DataProvider from '_/components/helper/DataProvider'
 
@@ -13,7 +14,10 @@ async function fetchData () {
   // 'Prefer': 'fake_data' // returns randomly generated data
   // 'Prefer': 'error'     // triggers HTTP error response
   const extraHeaders = config.useFakeData ? { 'Prefer': 'fake_data' } : {}
-  const data = await engineGet('webadmin/dashboard_data', extraHeaders)
+  const [data] = await Promise.all([
+    engineGet('webadmin/dashboard_data', extraHeaders),
+    config.useFakeData ? sleep(5000) : true,
+  ])
   return transformData(data)
 }
 

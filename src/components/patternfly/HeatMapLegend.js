@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import HeatMap from './HeatMap'
+import { DEFAULT_THRESHOLD_COLORS } from './HeatMap'
 
 // PatternFly reference:
-//  http://www.patternfly.org/pattern-library/data-visualization/heat-map/
-
-// TODO(vs) this should be an integral part of HeatMap component (needs refactor)
+//   https://www.patternfly.org/v3/pattern-library/data-visualization/heat-map/
 
 const HeatMapLegend = ({ colors, labels }) => {
   const reversedColors = colors.slice().reverse()
@@ -31,7 +29,7 @@ HeatMapLegend.propTypes = {
 }
 
 HeatMapLegend.defaultProps = {
-  colors: HeatMap.defaultProps.thresholds.colors,
+  colors: DEFAULT_THRESHOLD_COLORS,
   labels: ['< 70%', '70-80%', '80-90%', '> 90%'],
 }
 

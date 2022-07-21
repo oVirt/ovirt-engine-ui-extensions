@@ -25,17 +25,10 @@ async function tagsPointAt ({ dir, oid }) {
   return pointAt
 }
 
-function extractChangeId ({ message }) {
-  const re = /change-id: (I[a-z0-9]+)/i
-  const [, changeId] = re.exec(message) || []
-  return changeId
-}
-
 async function fetchGitInfo ({ ref, dir = '.' } = {}) {
   try {
     const [head] = await git.log({ dir, depth: 1, ref })
     const tagsPointAtHead = await tagsPointAt({ dir, oid: head.oid })
-    const changeId = extractChangeId(head)
 
     // https://isomorphic-git.org/docs/en/statusMatrix
     const fileStatus = (await git.statusMatrix({ dir })).reduce((fs, file) => {
@@ -56,7 +49,6 @@ async function fetchGitInfo ({ ref, dir = '.' } = {}) {
       hasChanges: fileStatus.length !== fileStatus.filter(status => status.unmodified).length,
       isHeadOidTagged: tagsPointAtHead.length > 0,
       headTags: tagsPointAtHead,
-      changeId,
 
       untracked: fileStatus.filter(status => status.untracked).length,
       staged: fileStatus.filter(status => status.staged).length,

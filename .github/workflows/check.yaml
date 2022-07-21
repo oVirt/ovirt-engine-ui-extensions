@@ -8,43 +8,34 @@ on:
   pull_request:
 
 jobs:
-  test_el8_offline:
-    name: EL8 - test the PR (ovirt-engine-nodejs-modules build)
-
+  build_offline:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: EL8
+            container-image: quay.io/ovirt/buildcontainer:el8stream
+          - name: EL9
+            container-image: quay.io/ovirt/buildcontainer:el9stream
+
+    name: ${{ matrix.name }} - test, build and publish rpm repo for the PR (ovirt-engine-nodejs-modules build)
     container:
-      image: quay.io/ovirt/buildcontainer:el8stream
+      image: ${{ matrix.container-image }}
 
-    steps:
-      - name: Ensure latest ovirt-engine-nodejs-modules is installed
-        run: |
-          dnf -y --disablerepo='*' --enablerepo='*ovirt*' upgrade ovirt-engine-nodejs-modules
-
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Run 'yarn install' and 'yarn test'
-        run: |
-          source /usr/share/ovirt-engine-nodejs-modules/setup-env.sh
-          yarn test
-
-  build_el8_offline:
-    name: EL8 - build and publish rpm repo for the PR (ovirt-engine-nodejs-modules build)
-    needs: test_el8_offline
     env:
       OFFLINE_BUILD: 1
 
-    runs-on: ubuntu-latest
-    container:
-      image: quay.io/ovirt/buildcontainer:el8stream
-
     steps:
       - name: Ensure latest ovirt-engine-nodejs-modules is installed
         run: |
-          dnf -y --disablerepo='*' --enablerepo='*ovirt*' upgrade ovirt-engine-nodejs-modules
+          rpm -q --quiet ovirt-engine-nodejs-modules && ACTION=upgrade || ACTION=install
+          dnf -y --disablerepo='*' --enablerepo='*ovirt*' $ACTION ovirt-engine-nodejs-modules
 
       - name: Checkout sources
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Run packaging/build.sh
         run: |
@@ -55,50 +46,25 @@ jobs:
         with:
           directory: exported-artifacts/
 
-  test_el8_online:
-    name: EL8 - test the PR (online build)
-
+  build_online:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: EL8
+            container-image: quay.io/ovirt/buildcontainer:el8stream
+          - name: EL9
+            container-image: quay.io/ovirt/buildcontainer:el9stream
+
+    name: ${{ matrix.name }} - build the project the PR, but skip the rpm builds (online build)
     container:
-      image: quay.io/ovirt/buildcontainer:el8stream
+      image: ${{ matrix.container-image }}
 
-    steps:
-      - name: Install yarn (online mode does not use ovirt-engine-nodejs-modules so yarn isn't installed)
-        run: |
-          dnf -y config-manager --add-repo https://dl.yarnpkg.com/rpm/yarn.repo
-          dnf -y --disablerepo='*' --enablerepo='yarn*' install yarn
-
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Cache yarn's work to use in the build job
-        uses: actions/cache@v2
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            ./node_modules
-          key: ${{ github.sha }}
-
-      - name: Run 'yarn install' and 'yarn test'
-        run: |
-          yarn install
-          yarn test
-
-  build_el8_online:
-    name: EL8 - build the project the PR, but skip the rpm builds (online build)
-    needs: test_el8_online
     env:
       OFFLINE_BUILD: 0
       MOVE_ARTIFACTS: 0
 
-    runs-on: ubuntu-latest
-    container:
-      image: quay.io/ovirt/buildcontainer:el8stream
-
     steps:
       - name: Install yarn (online mode does not use ovirt-engine-nodejs-modules so yarn isn't installed)
         run: |
@@ -107,6 +73,8 @@ jobs:
 
       - name: Checkout sources
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path

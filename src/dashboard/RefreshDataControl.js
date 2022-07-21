@@ -2,21 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
 
-import { Tooltip } from '@patternfly/react-core'
+import { Button, Tooltip } from '@patternfly/react-core'
+import { SyncIcon } from '@patternfly/react-icons'
 
 const RefreshDataControl = ({ onRefresh }) => {
   return (
-    <Tooltip content={msg.dashboardRefreshButtonTooltip()} position='bottom' distance={5}>
-      <div className='btn-group'>
-        <button
-          type='button'
-          className='btn btn-default'
-          onClick={event => { event.preventDefault(); onRefresh() }}
-        >
-          <i className='fa fa-refresh' />
-        </button>
-        {/* refresh configuration drop down menu would go here */}
-      </div>
+    <Tooltip content={msg.dashboardRefreshButtonTooltip()} position='right-start' distance={5}>
+      <Button
+        className='refreshButton'
+        variant='plain'
+        onClick={onRefresh}
+      >
+        <SyncIcon size='sm' />
+      </Button>
     </Tooltip>
   )
 }

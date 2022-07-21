@@ -6,6 +6,7 @@ import { webadminToastTypes } from '_/constants'
 import { msg } from '_/intl-messages'
 import { randomId } from '_/utils/random'
 import { engineGet, enginePost } from '_/utils/fetch'
+import { resultAfterSleep } from '_/utils/fake-data'
 import { useDataProvider } from '_/components/helper/DataProviderHook'
 
 function randomVms (vmCount) {
@@ -46,8 +47,9 @@ const fetchTargetHostsFakeData = (function* () {
  * Fetch Engine VMs based on their IDs.
  */
 async function fetchVms (vmIds) {
-  const json = (config.useFakeData && fetchVmsFakeData) ||
-    await engineGet(`api/vms/?search=id=${vmIds.join(' OR id=')}`)
+  const json = config.useFakeData
+    ? await resultAfterSleep(fetchVmsFakeData)
+    : await engineGet(`api/vms/?search=id=${vmIds.join(' OR id=')}`)
 
   if (!json || !Array.isArray(json.vm)) {
     throw new Error('VmMigrateDataProvider: Failed to fetch VMs')

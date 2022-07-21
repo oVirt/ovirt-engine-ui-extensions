@@ -1,14 +1,4 @@
-body, .containers-dashboard {
-    background-color: #F5F5F5
-}
-
 :root {
-  /* global PF4 overrides */
-  --pf-global--FontSize--sm: 11px;
-  --pf-global--FontSize--md: 13px;
-  --pf-global--FontSize--lg: 15px;
-  --pf-global--FontSize--xl: 16px;
-
   /* dashboard CSS variables */
   --dashboard-gutter: var(--pf-global--spacer--sm);
   --dashboard-aggregate-status-header-FontSize: 14px;
@@ -22,15 +12,35 @@ body, .containers-dashboard {
   --dashboard-chart-title-FontWeight: var(--pf-global--FontWeight--normal);
 }
 
-.pf-c-tooltip {
-  /* make the tooltips look more like PF3 font and size */
-  --pf-c-tooltip__content--FontSize: 14px;
+body {
+  background-color: #F5F5F5;
+  font-size: 12px;
+  line-height: 1.66666667;
+  color: #363636;
+}
+
+#app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 #global-dashboard {
-  margin: var(--dashboard-gutter);
+  padding: var(--dashboard-gutter);
+  width: 100%;
 
   --pf-l-stack--m-gutter--MarginBottom: var(--dashboard-gutter);
+}
+
+#global-dashboard .refreshButton {
+  height: 26px;
+  font-size: 12px;
+}
+
+.pf-c-tooltip {
+  /* make the tooltips look more like PF3 font and size */
+  --pf-c-tooltip__content--FontSize: 14px;
 }
 
 .monitoring-portal-link {
@@ -38,6 +48,24 @@ body, .containers-dashboard {
   font-weight: var(--pf-global--FontWeight--bold);
   font-size: var(--pf-global--FontSize--lg);
 }
+
+/* LoadingPlaceHolder */
+.loading-place-holder {
+  align-self: center;
+}
+.loading-place-holder .loading-place-holder-spinner {
+  margin-right: 20px;
+}
+.loading-place-holder .loading-place-holder-label {
+  font-size: 18px;
+}
+
+/* Inventory status cards */
+.inventory-status-cards {
+  /* add spacing between rows when the card groups wrap (below md breakpoint) */
+  row-gap: var(--pf-l-flex--spacer--sm);
+}
+
 
 /* Aggregate status card */
 .aggregate-status-card {
@@ -64,24 +92,30 @@ body, .containers-dashboard {
 .aggregate-status-card .aggregate-status-title {
   font-size: var(--pf-global--FontSize--lg)
 }
+
 .aggregate-status-notifications {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
 
+  margin-bottom: 10px;
+
   font-size: var(--dashboard-aggregate-status-notifications-FontSize);
   font-weight: 300;
 }
+
 .aggregate-status-notification {
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 .aggregate-status-notification a {
   font-weight: inherit;
 }
-.aggregate-status-notification + .aggregate-status-notification:before {
+
+.aggregate-status-notification:not(:first-child):before {
   content: "";
   display: inline-block;
   background-color: #d1d1d1;
@@ -93,13 +127,6 @@ body, .containers-dashboard {
 @media screen and (max-width: 992px) { /* PF4 lg breakpoint */
   .aggregate-status-card {
     min-width: 120px;
-  }
-  .aggregate-status-notifications {
-    flex-direction: column;
-    align-items: left;
-  }
-  .aggregate-status-notification + .aggregate-status-notification:before {
-    content: none;
   }
 }
 
@@ -170,11 +197,6 @@ body, .containers-dashboard {
 /* Utilization dialog */
 .overutilization-dialog {
   width: 50%;
-
-  --pf-c-modal-box--PaddingTop: var(--pf-global--spacer--md);
-  --pf-c-modal-box--PaddingRight: var(--pf-global--spacer--md);
-  --pf-c-modal-box--PaddingBottom: var(--pf-global--spacer--md);
-  --pf-c-modal-box--PaddingLeft: var(--pf-global--spacer--md);
 }
 
 
@@ -263,6 +285,6 @@ body, .containers-dashboard {
   width: 100%;
   height: 100%;
 }
-.heatmap-container rect {
+.heatmap-svg rect {
   cursor: pointer;
 }

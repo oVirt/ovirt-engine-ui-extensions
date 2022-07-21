@@ -3,18 +3,8 @@ import getPluginApi from '_/plugin-api'
 import * as C from '_/constants'
 import { msg } from '_/intl-messages'
 import { engineGet, ansiblePlaybookPost } from '_/utils/fetch'
+import { sleep } from '_/utils/fake-data'
 import { applySearch } from '_/utils/webadmin-search'
-
-//
-// for FAKE_DATA=true
-//
-const sleep = (ms) => {
-  console.log(`sleeping for ${ms}ms`)
-  return new Promise(resolve => setTimeout(() => {
-    console.log('sleeping complete!')
-    resolve()
-  }, ms))
-}
 
 const fakeHost = (clusterId, hostName, status, updateAvailable, active) => ({
   id: `1111-${hostName}-2222`,
