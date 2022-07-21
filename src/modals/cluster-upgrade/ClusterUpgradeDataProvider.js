@@ -44,7 +44,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => {
       return
     }
 
-    trackUpgradeProgress(cluster.id, correlationId, ({ isRunning, percent, log }) => {
+    trackUpgradeProgress(correlationId, ({ isRunning, percent, log }) => {
       setUpgradeStatus(isRunning ? ProgressStatus.STARTED : ProgressStatus.COMPLETE)
       setUpgradePercent(percent)
       setUpgradeLog(currentLog => [...currentLog, ...log])
@@ -52,7 +52,7 @@ const ClusterUpgradeDataProvider = ({ children, cluster }) => {
     return () => {
       cancelTracker(correlationId)
     }
-  }, [cluster.id, correlationId])
+  }, [correlationId])
 
   const upgradeAndTrack = (upgradePayload) => {
     const cid = randomHexString(10)
