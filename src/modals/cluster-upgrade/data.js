@@ -181,6 +181,13 @@ export function jumpToEvents (correlationId) {
 //
 // Functions to handle progress tracking by looking at the event log
 //
+export const ProgressStatus = {
+  PENDING: 'pending',
+  STARTED: 'started',
+  COMPLETE: 'complete',
+  FAILED: 'failed',
+}
+
 const trackerByCorrelation = {}
 
 function scheduleTrackTick (timeout, correlationId, track) {

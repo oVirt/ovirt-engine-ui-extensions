@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
+import { ProgressStatus } from './data'
 
 import { Wizard } from '@patternfly/react-core'
 import SelectHosts from './SelectHosts'
@@ -19,7 +20,10 @@ import TrackProgress from './TrackProgress'
 const ClusterUpgradeWizard = ({
   cluster,
   clusterHosts,
-  correlationId,
+  upgradeStatus,
+  upgradePercent,
+  upgradeLog,
+
   upgradeCluster,
   onJumpToEvents,
   onClose,
@@ -136,7 +140,9 @@ const ClusterUpgradeWizard = ({
       component: (
         <TrackProgress
           cluster={cluster}
-          correlationId={correlationId}
+          upgradeStatus={upgradeStatus}
+          upgradePercent={upgradePercent}
+          upgradeLog={upgradeLog}
           onClose={onClose}
           onJumpToEvents={onJumpToEvents}
         />
@@ -173,7 +179,9 @@ ClusterUpgradeWizard.propTypes = {
   // data input
   cluster: PropTypes.object,
   clusterHosts: PropTypes.arrayOf(PropTypes.object),
-  correlationId: PropTypes.string,
+  upgradeStatus: PropTypes.oneOf(Object.values(ProgressStatus)),
+  upgradePercent: PropTypes.number,
+  upgradeLog: PropTypes.arrayOf(PropTypes.object),
 
   // operation callback
   upgradeCluster: PropTypes.func.isRequired,

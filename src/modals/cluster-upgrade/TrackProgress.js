@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import IntlMessageFormat from 'intl-messageformat'
 import { msg } from '_/intl-messages'
 import { currentLocale } from '_/utils/intl'
-import { trackUpgradeProgress, cancelTracker } from './data'
+import { ProgressStatus } from './data'
 
 import {
   Alert,
@@ -21,46 +21,27 @@ import {
 import { CogsIcon } from '@patternfly/react-icons'
 
 const STATUS_TO_TITLE = {
-  'pending': (clusterName) => msg.clusterUpgradeOperationPending({ clusterName }),
-  'started': (clusterName) => msg.clusterUpgradeOperationStarted({ clusterName }),
-  'complete': (clusterName) => msg.clusterUpgradeOperationComplete({ clusterName }),
-  'failed': (clusterName) => msg.clusterUpgradeOperationFailed({ clusterName }),
+  [ProgressStatus.PENDING]: (clusterName) => msg.clusterUpgradeOperationPending({ clusterName }),
+  [ProgressStatus.STARTED]: (clusterName) => msg.clusterUpgradeOperationStarted({ clusterName }),
+  [ProgressStatus.COMPLETE]: (clusterName) => msg.clusterUpgradeOperationComplete({ clusterName }),
+  [ProgressStatus.FAILED]: (clusterName) => msg.clusterUpgradeOperationFailed({ clusterName }),
 }
 
 const STATUS_TO_PROGRESS_VARIANT = {
-  'pending': null,
-  'started': null,
-  'complete': 'success',
-  'failed': 'warning',
+  [ProgressStatus.PENDING]: null,
+  [ProgressStatus.STARTED]: null,
+  [ProgressStatus.COMPLETE]: 'success',
+  [ProgressStatus.FAILED]: 'warning',
 }
 
 const TrackProgress = ({
   cluster,
-  correlationId,
+  upgradeStatus = ProgressStatus.PENDING,
+  upgradePercent = 0,
+  upgradeLog = [],
   onJumpToEvents,
   onClose,
 }) => {
-  const [status, setStatus] = useState('pending')
-  const [percent, setPercent] = useState(0)
-  const [log, setLog] = useState([])
-
-  // track status once a correlation id is set (or changed)
-  useEffect(() => {
-    if (!correlationId) {
-      return
-    }
-
-    setStatus('started')
-    trackUpgradeProgress(correlationId, ({ isRunning, percent, log }) => {
-      setStatus(isRunning ? 'started' : 'complete')
-      setPercent(percent)
-      setLog(currentLog => [...currentLog, ...log])
-    })
-    return () => {
-      cancelTracker(correlationId)
-    }
-  }, [correlationId])
-
   return (
     <Stack>
       <StackItem>
@@ -71,18 +52,18 @@ const TrackProgress = ({
           <EmptyState className='clusterUpgradeTrackProgress-Layout' variant='large'>
             <EmptyStateIcon icon={CogsIcon} />
             <Title headingLevel='h4' size='lg'>
-              {STATUS_TO_TITLE[status](cluster.name)}
+              {STATUS_TO_TITLE[upgradeStatus](cluster.name)}
             </Title>
             <EmptyStateBody>
               <Progress
-                value={percent}
+                value={upgradePercent}
                 measureLocation='outside'
-                variant={STATUS_TO_PROGRESS_VARIANT[status]}
+                variant={STATUS_TO_PROGRESS_VARIANT[upgradeStatus]}
               />
             </EmptyStateBody>
-            { log.length > 0 && (
+            { upgradeLog.length > 0 && (
               <EmptyStateBody>
-                <SimpleLogView logItems={log} />
+                <SimpleLogView logItems={upgradeLog} />
               </EmptyStateBody>
             )}
             <EmptyStateSecondaryActions>
@@ -99,10 +80,15 @@ const TrackProgress = ({
     </Stack>
   )
 }
-
 TrackProgress.propTypes = {
   cluster: PropTypes.object.isRequired,
-  correlationId: PropTypes.string,
+  upgradeStatus: PropTypes.oneOf(Object.values(ProgressStatus)),
+  upgradePercent: PropTypes.number,
+  upgradeLog: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    time: PropTypes.number,
+    description: PropTypes.string,
+  })),
 
   onClose: PropTypes.func.isRequired,
   onJumpToEvents: PropTypes.func.isRequired,
@@ -126,9 +112,5 @@ const SimpleLogView = ({ logItems }) => {
   )
 }
 SimpleLogView.propTypes = {
-  logItems: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
-    time: PropTypes.number,
-    description: PropTypes.string,
-  })),
+  logItems: TrackProgress.propTypes.upgradeLog,
 }
