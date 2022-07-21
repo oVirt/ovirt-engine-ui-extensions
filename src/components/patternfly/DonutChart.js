@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { msg } from '_/intl-messages'
 import { formatNumber1D, formatPercent0D } from '_/utils/intl'
 
-import { ChartDonutUtilization, ChartThemeColor } from '@patternfly/react-charts'
+import { ChartDonutUtilization, ChartTooltip, ChartThemeColor } from '@patternfly/react-charts'
 
 import './styles.css'
 
@@ -38,10 +38,11 @@ const DonutChart = ({
   return (
     <div className='donut-chart'>
       <ChartDonutUtilization
-        data={{ x: 'Capacity', y: percentUsed * 100 }}
         title={donutChartText}
         subTitle={donutChartSubtitle}
         themeColor={ChartThemeColor.green}
+        labelComponent={<ChartTooltip flyoutWidth={180} />}
+        data={{ x: 'Capacity', y: percentUsed * 100 }}
         labels={({ datum }) => datum.x ? usedLabel : availableLabel}
         thresholds={colors}
         events={[{ target: 'data', eventHandlers: { onClick: onDataClick } }]}
