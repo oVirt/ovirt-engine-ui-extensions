@@ -137,9 +137,6 @@ Whenever `dependencies` are changed, they need to be pre-seeded to
 https://github.com/oVirt/ovirt-engine-nodejs-modules[ovirt-engine-nodejs-modules]
 for CI to pass offline builds.
 
-See the https://github.com/oVirt/ovirt-engine-nodejs-modules/blob/master/pre-seed/README.adoc[pre-seed documentation]
-for deatils on that process.
-
 === Package versioning
 
 * alpha and beta builds (pre-releases): `x.y.z-0.N` where version stays the same

@@ -1,4 +1,8 @@
-%define offline_build @OFFLINE_BUILD@
+# build condition `ovirt_use_nodejs_modules`
+#   - on by default, requires a build with `--without ovirt_use_nodejs_modules` to turn off
+#   - if on, the build uses `ovirt-engine-nodejs-modules`
+#   - if off, the build uses standard `yarn` accessing all node_modules packages directly
+%bcond_without ovirt_use_nodejs_modules
 
 Name: ovirt-engine-ui-extensions
 Summary: oVirt UI Extensions
@@ -16,7 +20,7 @@ BuildRequires: jq
 BuildRequires: rpmlint
 BuildRequires: rpm-build
 
-%if %{offline_build}
+%if %{with ovirt_use_nodejs_modules}
 # nodejs-modules embeds yarn and requires nodejs
 BuildRequires: ovirt-engine-nodejs-modules >= 2.2.3-1
 %else
@@ -53,7 +57,7 @@ Extensions include:
 %build
 
 # Set up Node.js environment with dependencies linked to ./node_modules:
-%if %{offline_build}
+%if %{with ovirt_use_nodejs_modules}
 source %{_datadir}/ovirt-engine-nodejs-modules/setup-env.sh
 %else
 yarn install
