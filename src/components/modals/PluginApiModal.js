@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useWebAdminContext } from '_/utils/react-modals'
 
@@ -13,15 +13,7 @@ const PluginApiModal = ({
   onClose = () => {},
   ...restForModal
 }) => {
-  const { renderContainer, buildContainer, removeContainer } = useWebAdminContext(id)
-
-  useEffect(() => {
-    if (isOpen) {
-      buildContainer()
-    } else {
-      removeContainer()
-    }
-  }, [isOpen, buildContainer, removeContainer])
+  const { renderContainer } = useWebAdminContext(id, isOpen)
 
   if (!isOpen || !renderContainer) {
     return null

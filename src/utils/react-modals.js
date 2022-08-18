@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { getWebAdminWindow } from './webadmin-dom'
 
@@ -58,35 +58,29 @@ export function buildAndAppendShadowroot ({
  * React hook to provide access to a modal `renderContainer` properly configured
  * to render in the webadmin window itself.
  */
-export function useWebAdminContext (id) {
+export function useWebAdminContext (id, isOpen = true) {
   const modalContext = useContext(WebAdminModalContext)
   const [shadowRoot, setShadowRoot] = useState(null)
 
-  if (modalContext) {
-    return {
-      renderContainer: modalContext.renderContainer,
-      buildContainer () {},
-      removeContainer () {},
+  useEffect(() => {
+    if (modalContext) {
+      return
     }
-  }
 
-  function buildContainer () {
-    if (!shadowRoot) {
-      setShadowRoot(buildAndAppendShadowroot({ renderContainerId: id }))
+    if (isOpen) {
+      if (!shadowRoot) {
+        setShadowRoot(buildAndAppendShadowroot({ renderContainerId: id }))
+      }
+    } else {
+      if (shadowRoot) {
+        shadowRoot.removeShadowRoot()
+        setShadowRoot(null)
+      }
     }
-  }
-
-  function removeContainer () {
-    if (shadowRoot) {
-      shadowRoot.removeShadowRoot()
-      setShadowRoot(null)
-    }
-  }
+  }, [id, isOpen, modalContext, shadowRoot])
 
   return {
-    renderContainer: shadowRoot?.renderContainer,
-    buildContainer,
-    removeContainer,
+    renderContainer: modalContext?.renderContainer ?? shadowRoot?.renderContainer,
   }
 }
 
