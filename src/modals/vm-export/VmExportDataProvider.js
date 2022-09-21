@@ -40,7 +40,7 @@ async function validateThinVm (vmId, sdId) {
   const vm = await engineGet(`api/vms/${vmId}`)
 
   // If a VM has both attributes set it's thin/dependent
-  if (vm.original_template.id === emptyGuid || vm.template.id === emptyGuid) {
+  if (vm.original_template?.id === emptyGuid || vm.template.id === emptyGuid) {
     return true
   }
 
