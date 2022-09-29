@@ -95,6 +95,9 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Thu Sep 29 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.6-1
+- Export VM dialog: fix a bug for avoid blocking the export vm process in case the vm original_template is set to null
+
 * Fri Jul 22 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.5-1
 - CPU pinning dialog: add the 'Isolate Threads' cpu pinning policy
 - RHV dashboard - fix the 'Top Utilized Resources CPU' percentage values
