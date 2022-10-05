@@ -14,24 +14,24 @@ WebAdminModalContext.displayName = 'WebAdminModalContext'
  * Create a shadow root base `div`, populate it with the necessary CSS, add an app
  * render container, and append the whole thing on the target window.
  */
-export function buildAndAppendShadowroot ({
+function buildAndAppendShadowroot ({
   renderContainerId,
   sourceWindow = window,
   targetWindow = getWebAdminWindow(),
-  containerId = `root-container-${renderContainerId}`,
+  containerId = `shadow-root-${renderContainerId}`,
 } = {}) {
   const renderContainer = targetWindow.document.createElement('div')
   renderContainer.setAttribute('class', 'ui-extensions-plugin-root')
   renderContainer.setAttribute('id', renderContainerId)
 
-  const shadowRoot = targetWindow.document.createElement('div')
-  shadowRoot.style.position = 'absolute'
-  shadowRoot.style.top = 0
-  shadowRoot.style.left = 0
-  shadowRoot.style.width = 0
-  shadowRoot.style.height = 0
-  shadowRoot.setAttribute('id', containerId)
-  shadowRoot.attachShadow({ mode: 'open' })
+  const shadowHost = targetWindow.document.createElement('div')
+  shadowHost.style.position = 'absolute'
+  shadowHost.style.top = 0
+  shadowHost.style.left = 0
+  shadowHost.style.width = 0
+  shadowHost.style.height = 0
+  shadowHost.setAttribute('id', containerId)
+  shadowHost.attachShadow({ mode: 'open' })
 
   sourceWindow
     .document
@@ -40,18 +40,18 @@ export function buildAndAppendShadowroot ({
       const cloned = style.cloneNode(true)
       cloned.setAttribute('data-for-container-id', containerId)
       cloned.setAttribute('data-for-render-container-id', renderContainerId)
-      shadowRoot.shadowRoot.append(cloned)
+      shadowHost.shadowRoot.append(cloned)
     })
 
-  shadowRoot.shadowRoot.append(renderContainer)
+  shadowHost.shadowRoot.append(renderContainer)
 
-  targetWindow.document.body.append(shadowRoot)
+  targetWindow.document.body.append(shadowHost)
 
   const removeShadowRoot = () => {
-    shadowRoot.remove()
+    shadowHost.remove()
   }
 
-  return { shadowRoot, removeShadowRoot, renderContainer }
+  return { shadowRoot: shadowHost, removeShadowRoot, renderContainer }
 }
 
 /**
@@ -69,7 +69,7 @@ export function useWebAdminContext (id, isOpen = true) {
 
     if (isOpen) {
       if (!shadowRoot) {
-        setShadowRoot(buildAndAppendShadowroot({ renderContainerId: id }))
+        setShadowRoot(buildAndAppendShadowroot({ renderContainerId: `container-${id}` }))
       }
     } else {
       if (shadowRoot) {
@@ -94,7 +94,7 @@ export function useWebAdminContext (id, isOpen = true) {
  * @param {string} id element id for the container div
  */
 export const renderComponent = (render, id) => {
-  const { removeShadowRoot, renderContainer } = buildAndAppendShadowroot({ renderContainerId: id })
+  const { removeShadowRoot, renderContainer } = buildAndAppendShadowroot({ renderContainerId: `container-${id}` })
 
   /*
     Immediately schedule an unmount of the rendered component.  This gives any Portal
