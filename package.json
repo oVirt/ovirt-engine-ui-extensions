@@ -72,7 +72,7 @@
     "eslint-plugin-standard": "^5.0.0",
     "fs-extra": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",
-    "isomorphic-git": "^0.67.2",
+    "isomorphic-git": "^1.8.2",
     "jest": "^25.5.3",
     "json-stable-stringify": "^1.0.1",
     "mini-css-extract-plugin": "^2.6.1",
