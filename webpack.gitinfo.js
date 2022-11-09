@@ -1,14 +1,14 @@
 // grab some info from git on the state of the repo
+// https://isomorphic-git.org/docs/en/fs
 const git = require('isomorphic-git')
 const fs = require('fs')
-git.plugins.set('fs', fs)
 
 async function tagsToCommits ({ dir }) {
   const map = {}
 
-  const tags = await git.listTags({ dir })
+  const tags = await git.listTags({ fs, dir })
   for (const tag of tags) {
-    const ref = await git.resolveRef({ dir, ref: tag })
+    const ref = await git.resolveRef({ fs, dir, ref: tag })
     map[tag] = ref
   }
 
@@ -27,11 +27,11 @@ async function tagsPointAt ({ dir, oid }) {
 
 async function fetchGitInfo ({ ref, dir = '.' } = {}) {
   try {
-    const [head] = await git.log({ dir, depth: 1, ref })
+    const [head] = await git.log({ fs, dir, depth: 1, ref })
     const tagsPointAtHead = await tagsPointAt({ dir, oid: head.oid })
 
     // https://isomorphic-git.org/docs/en/statusMatrix
-    const fileStatus = (await git.statusMatrix({ dir })).reduce((fs, file) => {
+    const fileStatus = (await git.statusMatrix({ fs, dir })).reduce((fs, file) => {
       fs.push({
         file: file[0],
         untracked: file[1] === 0 && file[2] === 2 && file[3] === 0,
