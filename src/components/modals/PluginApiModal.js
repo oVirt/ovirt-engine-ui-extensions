@@ -1,6 +1,6 @@
-import React, { useEffect, useContext } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { WebAdminModalContext } from '_/utils/react-modals'
+import { useWebAdminContext } from '_/utils/react-modals'
 
 import { Modal } from '@patternfly/react-core'
 
@@ -13,21 +13,11 @@ const PluginApiModal = ({
   onClose = () => {},
   ...restForModal
 }) => {
-  // Note: The `WebAdminModalContext` is only created once per action button click
-  //       and once when the Dashboard place is loaded.  Once created it will be stable
-  //       for the entire modal (or dashboard) app instance.  See `renderComponent()`
-  //       and `src/utils/react-modals.js` in general for more details.
-  const modalContext = useContext(WebAdminModalContext)
+  const { renderContainer } = useWebAdminContext(id, isOpen)
 
-  useEffect(() => {
-    if (isOpen) {
-      modalContext.applyCss(id)
-
-      return () => {
-        modalContext.removeCss(id)
-      }
-    }
-  }, [isOpen, id, modalContext])
+  if (!isOpen || !renderContainer) {
+    return null
+  }
 
   return (
     <Modal
@@ -36,7 +26,7 @@ const PluginApiModal = ({
       className={className}
       isOpen={isOpen}
       onClose={onClose}
-      appendTo={modalContext.targetContainer}
+      appendTo={renderContainer}
       disableFocusTrap
       {...restForModal}
     >

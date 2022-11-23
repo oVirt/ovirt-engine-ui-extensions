@@ -1,4 +1,4 @@
-:root {
+:root, :host {
   /*
     increase z-index in PF4 so it displays above PF3 components,
     especially for Modal and backdrop components
