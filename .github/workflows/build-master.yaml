@@ -33,13 +33,13 @@ jobs:
           dnf -y --disablerepo='*' --enablerepo='*ovirt*' $ACTION ovirt-engine-nodejs-modules
 
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: ovirt/checkout-action@main
 
       - name: Run packaging/build.sh
         run: |
           ./packaging/build.sh
 
       - name: Upload artifacts as rpm repo
-        uses: ovirt/upload-rpms-action@v2
+        uses: ovirt/upload-rpms-action@main
         with:
           directory: exported-artifacts/
