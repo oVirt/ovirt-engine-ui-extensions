@@ -33,7 +33,7 @@ jobs:
           dnf -y --disablerepo='*' --enablerepo='*ovirt*' $ACTION ovirt-engine-nodejs-modules
 
       - name: Checkout sources
-        uses: actions/checkout@v2
+        uses: ovirt/checkout-action@main
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
@@ -42,7 +42,7 @@ jobs:
           ./packaging/build.sh
 
       - name: Upload artifacts as rpm repo
-        uses: ovirt/upload-rpms-action@v2
+        uses: ovirt/upload-rpms-action@main
         with:
           directory: exported-artifacts/
 
@@ -72,16 +72,14 @@ jobs:
           dnf -y --disablerepo='*' --enablerepo='yarn*' install yarn
 
       - name: Checkout sources
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+        uses: ovirt/checkout-action@main
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn's work to use in the build job
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
