@@ -22,7 +22,7 @@ BuildRequires: rpm-build
 
 %if %{with ovirt_use_nodejs_modules}
 # nodejs-modules embeds yarn and requires nodejs
-BuildRequires: ovirt-engine-nodejs-modules >= 2.2.3-1
+BuildRequires: ovirt-engine-nodejs-modules >= 2.3.20-1
 %else
 BuildRequires: nodejs >= 14.15
 BuildRequires: yarn >= 1.22
@@ -95,6 +95,12 @@ ln -s "%{_datadir}/%{name}/ansible-playbooks/ovirt-cluster-upgrade.yml" "%{build
 %license LICENSE
 
 %changelog
+* Sun Dec 18 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.7-1
+- Adopt the use of shadow DOM/root for react-modals
+- Github actions: update actions versions to current supported ones
+- Update dependencies of various packages:
+  isomorphic-git from 0.67.2 to 1.8.2, loader-utils from 2.0.0 to 2.0.4, minimatch from 3.0.4 to 3.1.2, qs from 6.5.2 to 6.5.3
+
 * Thu Sep 29 2022 Sharon Gratch <sgratch@redhat.com> - 1.3.6-1
 - Export VM dialog: fix a bug for avoid blocking the export vm process in case the vm original_template is set to null
 
