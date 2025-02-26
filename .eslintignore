@@ -13,9 +13,6 @@ exported-artifacts/
 .idea/
 .vscode/
 
-# Zanata temporary files
-.zanata-cache/
-
 # mock_runner
 .bash_history
 .node-gyp/

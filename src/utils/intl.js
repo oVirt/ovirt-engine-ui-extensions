@@ -1,6 +1,5 @@
 import IntlMessageFormat from 'intl-messageformat'
 import { defaultLocale } from '../constants'
-import translatedMessages from '../intl/translations.json'
 
 // TODO(vs) this is beyond simple utility functions, extract the code into services/intl
 
@@ -12,9 +11,11 @@ export function clearMessageCache () {
 }
 
 let locale
+let translations = {}
 
 export function initLocale (currentLocale) {
   locale = currentLocale
+  loadLocalMessages(currentLocale)
 }
 
 export function currentLocale () {
@@ -38,8 +39,18 @@ export function currentTimeZone () {
   return timeZone
 }
 
+async function loadLocalMessages (currentLocale) {
+  try {
+    translations = await import(`../intl/locales/${currentLocale}.json`)
+  } catch (error) {
+    console.log(error)
+    // Fallback on English if it seems the locale can't be imported
+    translations = await import('../intl/locales/en-US.json')
+  }
+}
+
 export function translateMessage (id, defaultMessage) {
-  const translation = translatedMessages[locale] && translatedMessages[locale][id]
+  const translation = translations[id]
 
   if (!translation) {
     if (__DEV__) console.warn(`Missing [${locale}] translation for message key [${id}]`)

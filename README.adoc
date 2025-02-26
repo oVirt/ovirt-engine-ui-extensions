@@ -72,59 +72,36 @@ Open WebAdmin in your browser, you should land on *Dashboard* place automaticall
 
 === Introduction
 
-This project has the ability to render in different languages. Internally, all of the localizable
-keys are stored in `src/intl/messages.js`. The `msg` object in `intl-messages.js` wraps all of the
-localizable keys to expose them as functions. The `msg` object also wraps all of the localized
-translations loaded from `src/intl/translations.json` and uses a localized version of each key
-as required.
+This project has the ability to render in different languages. Internally all the different locales
+are saved in the intl/locales/ folder. The strings provided in these files are accessible through the `msg` object
+created in `intl-messages.js`. 
 
-The current locale used by the `intl.js` formatting functions is provided to the application via
-the `app-init.js` service and the oVirt UI plugin API.
+The locale is set in the `app-init.js` service based on the locale provided by the ovirt-engine application.
 
-We use the https://zanata.ovirt.org/[Zanata] tool instance to manage translations.
+The following languages are currently supported:
+- Czech (Czechia)
+- German (Germany)
+- English (United States)
+- Spanish (Spain)
+- French (France)
+- Italian (Italy)
+- Japanese (Japan)
+- Korean (South Korea)
+- Portuguese (Brazil)
+- Simplified Chinese (China)
+- Georgian (Georgia)
 
-=== Translation workflow
+=== Weblate setup
 
-Generally, the project is made localizable and is translated in the following workflow:
+`intl/locales/en-US.json` is the file that is used as the base for all the strings. 
+To add new strings 2 steps need to be taken:
 
-* Developers add messages as needed to `src/intl/messages.js`
-* Developers then import from `intl-messages.js` and use the `msg` object to both access and format the messages
-* When the strings are stable, the messages are converted to a GNU gettext .pot file
-* The .pot file is pushed to Zanata
-* Translators do their work for each supported language within the corresponding
-  https://zanata.ovirt.org/project/view/ovirt-engine-ui-extensions[Zanata project]
-* When translations are complete, the localized strings are pulled from Zanata as a set of GNU gettext .po files
-* The .po files are converted to a JSON file, specifically `src/intl/translations.json`
-* The JSON file is referenced in `intl.js`, providing localized messages to the `msg` object in `intl-messages.js`
-* Rebuilding the project will make the updated translations available for use
+1. Add a new entry to `intl/messages.js` as a uniquely named object containing an `id`, `defaultMessage` and `description` fields. This object name should match the parameter used for the `msg` object.
+2. Add at least the English translation in `intl/locales/en-US.json` with the id used in the previous step.
 
-=== Zanata setup
+After these steps the string will be available for the translators to be translated on Weblate.
 
-Setup your Zanata configurations in the usual way. See
-http://docs.zanata.org/en/release/client/[Zanata client setup documentation] for details.
-
-=== Commands
-
-==== Push current English source strings to Zanata
-
-Pushing the current English sources will update the project on Zanata. Any strings that have been
-added, changed or deleted will be shown as such in the Zanata UI. Here is the set of commands to
-push the changes:
-
- % yarn intl:extract
- % yarn intl:push
-
-==== Pull updated translations from Zanata
-
-To properly pull and update from Zanata, the source JSON and POT files must exist. This is done by
-running the `intl:extract` script. Standard zanata CLI pulls the data down as PO files. The PO
-files get converted into a single JSON file containing translations for all locales. This JSON
-file needs to be normalized for git diff sanity.
-
- % yarn intl:extract
- % yarn intl:pull
- % yarn intl:apply
- % yarn intl:normalize
+The Weblate site, https://translate.ovirt.tech/projects/ovirt-engine-ui-extensions/ui-extension/, is linked to a branch on github to collect changes for periodic and bundled updates to the string resources.
 
 == Instructions for maintainers
 

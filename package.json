@@ -13,13 +13,6 @@
     "dev": "NODE_ENV=development webpack --progress --config webpack.dev.js",
     "dev:analyze": "NODE_ENV=development Q=1 webpack --progress --config webpack.dev.js --profile --json > stats.json && webpack-bundle-analyzer ./stats.json",
     "dev:watch": "yarn dev --watch",
-    "intl:extract": "node zanata/extract-translations.js && rip json2pot 'extra/messages/**/*.json' -o 'extra/messages/messages.pot'",
-    "intl:push": "zanata/zanata-push.sh",
-    "intl:pull": "zanata/zanata-pull.sh",
-    "intl:apply": "rip po2json 'extra/messages/po/messages.*.po' -m 'extra/messages/**/*.json' -o 'src/intl/translations.json'",
-    "intl:normalize": "node zanata/normalize-translations.js",
-    "intl:report": "node zanata/report.js",
-    "intl:sync": "node zanata/sync-messages.js",
     "lint": "eslint . --ext js,jsx",
     "test": "yarn lint && NODE_ENV=test jest --no-watch",
     "test:watch": "NODE_ENV=test jest --watch"
