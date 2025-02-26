@@ -20,9 +20,6 @@ yarn-error.log
 .vscode/
 *.iml
 
-# Zanata temporary files
-.zanata-cache/
-
 # mock_runner
 .bash_history
 .node-gyp/

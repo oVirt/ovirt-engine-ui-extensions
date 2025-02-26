@@ -49,6 +49,5 @@ module.exports = {
     '<rootDir>/packaging',
     '<rootDir>/tmp.repos',
     '<rootDir>/rpmbuild',
-    '<rootDir>/zanata',
   ],
 }

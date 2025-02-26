@@ -1063,7 +1063,7 @@ const messageDescriptors = {
   // CPU pinning modal dialog related strings
 
   cpuPinningModalButton: {
-    id: 'cpupinning.buttonLabel',
+    id: 'cpu.pinning.buttonLabel',
     defaultMessage: 'View CPU Pinning',
     description: 'label of `View CPU Pinning` button',
   },

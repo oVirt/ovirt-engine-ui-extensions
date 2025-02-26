@@ -9,17 +9,6 @@ const polyfillIntlFn = (resolve, reject) => {
     // use dynamic import code splitting to fetch all required modules
     require.ensure([], require => {
       require('intl')
-      require('intl/locale-data/jsonp/en')
-      require('intl/locale-data/jsonp/de')
-      require('intl/locale-data/jsonp/es')
-      require('intl/locale-data/jsonp/fr')
-      require('intl/locale-data/jsonp/it')
-      require('intl/locale-data/jsonp/ja')
-      require('intl/locale-data/jsonp/ka')
-      require('intl/locale-data/jsonp/ko')
-      require('intl/locale-data/jsonp/pt')
-      require('intl/locale-data/jsonp/zh')
-      require('intl/locale-data/jsonp/cs')
       resolve()
     }, 'intl-polyfill')
       .catch(error => { reject(`failed to load intl-polyfill: ${error}`) })
