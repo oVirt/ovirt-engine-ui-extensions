@@ -14,8 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: EL8
-            container-image: quay.io/ovirt/buildcontainer:el8stream
           - name: EL9
             container-image: quay.io/ovirt/buildcontainer:el9stream
 
@@ -34,6 +32,9 @@ jobs:
 
       - name: Checkout sources
         uses: ovirt/checkout-action@main
+
+      - name: Mark git repo as safe
+        run: git config --global --add safe.directory $(pwd)
 
       - name: Run packaging/build.sh
         run: |
