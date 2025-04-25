@@ -14,8 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: EL8
-            container-image: quay.io/ovirt/buildcontainer:el8stream
           - name: EL9
             container-image: quay.io/ovirt/buildcontainer:el9stream
 
@@ -27,6 +25,8 @@ jobs:
       OFFLINE_BUILD: 1
 
     steps:
+      - name: Mark git repo as safe
+        run: git config --global --add safe.directory $(pwd)
       - name: Ensure latest ovirt-engine-nodejs-modules is installed
         run: |
           rpm -q --quiet ovirt-engine-nodejs-modules && ACTION=upgrade || ACTION=install
@@ -52,8 +52,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: EL8
-            container-image: quay.io/ovirt/buildcontainer:el8stream
           - name: EL9
             container-image: quay.io/ovirt/buildcontainer:el9stream
 
