@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 
 export function useDataProvider ({ fetchData, parameters = [], trigger, enabled = true, debugState = false }) {
   const [{ data, fetchError, fetchInProgress }, setState] = useState({
@@ -8,9 +8,9 @@ export function useDataProvider ({ fetchData, parameters = [], trigger, enabled 
   })
   const prevParams = useRef(null)
   const prevTrigger = useRef(null)
-  const params = useMemo(() => ([...parameters]), [...parameters])
+  const params = useMemo(() => ([...parameters]), [parameters])
 
-  const debug = (msg) => {
+  const debug = useCallback((msg) => {
     if (!debugState) {
       return
     }
@@ -23,7 +23,7 @@ export function useDataProvider ({ fetchData, parameters = [], trigger, enabled 
       fetchInProgress,
     }
     console.log(`${msg} in state: ${JSON.stringify(state)}`)
-  }
+  }, [data, debugState, fetchData, fetchError, fetchInProgress, parameters.length, trigger])
 
   debug('render')
 
@@ -31,13 +31,14 @@ export function useDataProvider ({ fetchData, parameters = [], trigger, enabled 
     if (fetchInProgress || !enabled) {
       return
     }
+    const paramsKey = JSON.stringify(params)
 
-    if (data && !fetchError && prevParams.current === params) {
+    if (data && !fetchError && prevParams.current === paramsKey) {
       // re-fetch when params changed
       return
     }
 
-    if (fetchError && prevParams.current === params && prevTrigger.current === trigger) {
+    if (fetchError && prevParams.current === paramsKey && prevTrigger.current === trigger) {
       // re-fetch when params or trigger changed
       return
     }
@@ -47,7 +48,7 @@ export function useDataProvider ({ fetchData, parameters = [], trigger, enabled 
       fetchError: false,
       fetchInProgress: true,
     })
-    prevParams.current = params
+    prevParams.current = paramsKey
     prevTrigger.current = trigger
     debug('start')
     fetchData(...params)
@@ -67,7 +68,7 @@ export function useDataProvider ({ fetchData, parameters = [], trigger, enabled 
           fetchInProgress: false,
         })
       })
-  })
+  }, [fetchInProgress, enabled, data, fetchError, params, trigger, debug, fetchData])
 
   return useMemo(() => ({
     data,
