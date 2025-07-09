@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Table,
@@ -46,6 +46,18 @@ const StorageConnectionsTable = ({
     ],
     // add column definitions for other types of connections here
   }
+
+  const requiredRule = useMemo(() => ({
+    name: 'required',
+    validator: val => val.trim() !== '',
+    errorText: msg.storageConnectionsFieldRequiredError(),
+  }), [])
+
+  const portRule = useMemo(() => ({
+    name: 'port',
+    validator: val => val > 0 && val <= 0xFFFF,
+    errorText: msg.storageConnectionsFieldPortError(),
+  }), [])
 
   const getColumns = () => {
     return columns[type]
@@ -168,7 +180,7 @@ const StorageConnectionsTable = ({
     })
   }
 
-  const createEditableTextCell = (val, isEditable, rules, rowIndex, cellIndex) => {
+  const createEditableTextCell = useCallback((val, isEditable, rules, rowIndex, cellIndex) => {
     return ({
       title: (value, rowIndex, cellIndex, props) => (
         <EditableTextCell
@@ -187,13 +199,13 @@ const StorageConnectionsTable = ({
         rules: rules || [],
       },
     })
-  }
+  }, [])
 
   const getCellEditableValue = (cell) => {
     return cell.props.editableValue
   }
 
-  const createIScsiCells = (connection, rowIndex) => {
+  const createIScsiCells = useCallback((connection, rowIndex) => {
     let cellIndex = 0
     if (!connection) {
       return [
@@ -210,18 +222,39 @@ const StorageConnectionsTable = ({
       createEditableTextCell(connection.port, isEditAllowed, [requiredRule, portRule], rowIndex, cellIndex++),
       createEditableTextCell(connection.target, isEditAllowed, [requiredRule], rowIndex, cellIndex++),
     ]
-  }
+  }, [createEditableTextCell, portRule, requiredRule, storageDomain])
 
-  const cellsCreator = {
+  const cellsCreator = useMemo(() => ({
     iscsi: createIScsiCells,
     // add implementations for cells creators here
-  }
+  }), [createIScsiCells])
 
   const getIsAttachedIcon = (connection) => {
     return connection.isAttachedToDomain ? <i className='fa fa-check' /> : ''
   }
 
-  const createRows = (type, connections) => {
+  const createRow = useCallback((type, connection, areActionsEnabled, rowIndex) => {
+    const createCells = cellsCreator[type]
+    const required = {
+      name: 'required',
+      validator: val => val.trim() !== '',
+      errorText: msg.storageConnectionsFieldRequiredError(),
+    }
+    const port = {
+      name: 'port',
+      validator: val => val > 0 && val <= 0xFFFF,
+      errorText: msg.storageConnectionsFieldPortError(),
+    }
+    return {
+      cells: createCells(connection, rowIndex),
+      connection: connection,
+      isHoverable: true,
+      disableActions: !areActionsEnabled,
+      rowEditValidationRules: [required, port],
+    }
+  }, [cellsCreator])
+
+  const createRows = useCallback((type, connections) => {
     const rows = []
     connections.forEach((connection, index) => {
       rows.push(createRow(type, connection, true, index + 1))
@@ -231,18 +264,7 @@ const StorageConnectionsTable = ({
       rows[0] = applyCellEdits(rows[0], 'edit', false)
     }
     return rows
-  }
-
-  const createRow = (type, connection, areActionsEnabled, rowIndex) => {
-    const createCells = cellsCreator[type]
-    return {
-      cells: createCells(connection, rowIndex),
-      connection: connection,
-      isHoverable: true,
-      disableActions: !areActionsEnabled,
-      rowEditValidationRules: validationRules,
-    }
-  }
+  }, [isNewConnectionOpened, createRow])
 
   const actionResolver = (rowData, _) => {
     return [
@@ -264,25 +286,11 @@ const StorageConnectionsTable = ({
     ]
   }
 
-  const requiredRule = {
-    name: 'required',
-    validator: val => val.trim() !== '',
-    errorText: msg.storageConnectionsFieldRequiredError(),
-  }
-
-  const portRule = {
-    name: 'port',
-    validator: val => val > 0 && val <= 0xFFFF,
-    errorText: msg.storageConnectionsFieldPortError(),
-  }
-
-  const validationRules = [requiredRule, portRule]
-
   const [rows, setRows] = useState(createRows(type, connections))
   useEffect(() => {
     const newRows = createRows(type, connections)
     setRows(newRows)
-  }, [connections, isNewConnectionOpened])
+  }, [connections, type, createRows])
 
   return (
     <Table

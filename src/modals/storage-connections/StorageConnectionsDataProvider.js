@@ -13,6 +13,25 @@ const createConnection = async (connection) => {
   )
 }
 
+const createAndAttachConnection = async (connection, domainId) => {
+  const allConnections = await engineGet('api/storageconnections')
+  const connectionsInList = allConnections.storage_connection.filter((con) => con.address === connection.address)
+  if (connectionsInList.length === 1) {
+    await attachConnection(connectionsInList[0].id, domainId)
+  } else {
+    const createdConnection = await createConnection(connection)
+    await attachConnection(createdConnection.id, domainId)
+  }
+}
+
+const findConnections = async (ip, hostId, port) => {
+  const connectionsFoundJson = await enginePost(
+    `api/hosts/${hostId}/discoveriscsi`,
+    JSON.stringify({ iscsi: { address: ip, port: port } })
+  )
+  return connectionsFoundJson.discovered_targets.iscsi_details
+}
+
 const editConnection = async (connection, connectionId) => {
   return await enginePut(
     `api/storageconnections/${connectionId}`,
@@ -36,13 +55,17 @@ const detachConnection = async (connectionId, domainId) => {
 }
 
 const fetchData = async (stgDomain) => {
+  const headers = {
+    'Cache-Control': 'no-cache',
+  }
   if (!stgDomain?.id || !stgDomain?.dataCenterId) {
     throw new Error('StorageConnectionsDataProvider: invalid Storage Domain')
   }
-  const [allConnectionsJson, storageDomain, domainConnectionsJson] = await Promise.all([
+  const [allConnectionsJson, storageDomain, domainConnectionsJson, hostsJson] = await Promise.all([
     engineGet('api/storageconnections'),
     engineGet(`api/datacenters/${stgDomain.dataCenterId}/storagedomains/${stgDomain.id}`),
     engineGet(`api/storagedomains/${stgDomain.id}/storageconnections`),
+    engineGet('api/hosts', headers),
   ])
 
   if (!storageDomain) {
@@ -51,6 +74,7 @@ const fetchData = async (stgDomain) => {
 
   const allConnections = allConnectionsJson?.storage_connection
   const domainConnections = domainConnectionsJson?.storage_connection
+  const hosts = hostsJson?.host.filter(host => host.status === 'up')
 
   if (!allConnections || allConnections.error) {
     throw new Error('StorageConnectionsDataProvider: failed to fetch storage connections')
@@ -64,16 +88,17 @@ const fetchData = async (stgDomain) => {
   const domainConnectionsIds = new Set(domainConnections.map(connection => connection.id))
   const allConnectionsByTypeSorted = allConnections
     .filter(connection => connection.type === storageDomain.storage?.type)
-    .map((conn) => {
-      return { ...conn, isAttachedToDomain: domainConnectionsIds.has(conn.id) }
+    .map((connection) => {
+      return { ...connection, isAttachedToDomain: domainConnectionsIds.has(connection.id) }
     })
-    .sort((conn1, conn2) => {
-      return (conn1.isAttachedToDomain === conn2.isAttachedToDomain) ? 0 : conn1.isAttachedToDomain ? -1 : 1
+    .sort((firstConnection, secondConnection) => {
+      return (firstConnection.isAttachedToDomain === secondConnection.isAttachedToDomain) ? 0 : firstConnection.isAttachedToDomain ? -1 : 1
     })
 
   return {
     storageDomain: storageDomain,
     connections: allConnectionsByTypeSorted,
+    hosts: hosts,
   }
 }
 
@@ -93,17 +118,20 @@ const StorageConnectionsDataProvider = ({ children, storageDomain }) => (
         return React.cloneElement(child, { isLoading: true })
       }
 
-      const { storageDomain, connections } = data
+      const { storageDomain, connections, hosts } = data
 
       return React.cloneElement(child, {
         storageDomain,
         connections,
+        hosts,
         lastUpdated,
         doConnectionCreate: createConnection,
+        doConnectionCreateAndAttach: createAndAttachConnection,
         doConnectionEdit: editConnection,
         doConnectionDelete: deleteConnection,
         doConnectionAttach: attachConnection,
         doConnectionDetach: detachConnection,
+        doConnectionSearch: findConnections,
         doRefreshConnections: () => { fetchAndUpdateData() },
       })
     }}
