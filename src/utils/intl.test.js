@@ -151,6 +151,7 @@ function extractTimeZoneName (locale, timeZone) {
 // then the formatted output is different.
 
 describe('DateTime Formatters', function () {
+  const nodeMajorVersion = parseInt(process.version.match(/^v(\d+)/)[1], 10)
   describe('format dates and date+times (en-US)', function () {
     it('format date', function () {
       initTimeZone('UTC')
@@ -180,7 +181,11 @@ describe('DateTime Formatters', function () {
         expect(currentTimeZone()).toBe('UTC')
 
         expect(formatDate(new Date(Date.UTC(1999, 11, 31)))).toBe('31/12/1999')
-        expect(formatDate(new Date(Date.UTC(2020, 6, 4)))).toBe('4/7/2020')
+        if (nodeMajorVersion < 18) {
+          expect(formatDate(new Date(Date.UTC(2020, 6, 4)))).toBe('4/7/2020')
+        } else {
+          expect(formatDate(new Date(Date.UTC(2020, 6, 4)))).toBe('04/07/2020')
+        }
       })
       it('format datetime', function () {
         initLocale('it-IT')
@@ -188,7 +193,11 @@ describe('DateTime Formatters', function () {
         const utcTzName = extractUtcTimezoneName(currentLocale())
 
         expect(formatDateTime(new Date(Date.UTC(1999, 11, 31, 16, 35, 42)))).toBe(`31/12/1999, 16:35:42 ${utcTzName}`)
-        expect(formatDateTime(new Date(Date.UTC(2020, 6, 4, 11, 12, 13)))).toBe(`4/7/2020, 11:12:13 ${utcTzName}`)
+        if (nodeMajorVersion < 18) {
+          expect(formatDateTime(new Date(Date.UTC(2020, 6, 4, 11, 12, 13)))).toBe(`4/7/2020, 11:12:13 ${utcTzName}`)
+        } else {
+          expect(formatDateTime(new Date(Date.UTC(2020, 6, 4, 11, 12, 13)))).toBe(`04/07/2020, 11:12:13 ${utcTzName}`)
+        }
       })
     })
   }
