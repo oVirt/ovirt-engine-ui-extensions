@@ -126,7 +126,7 @@ function migrateToHost (targetHostId, migrateVmsInAffinity, vms) {
 }
 
 export function useVmMigrateDataProvider (checkVmAffinity, vmIds) {
-  const memoIds = useMemo(() => ([vmIds]), [...vmIds])
+  const memoIds = useMemo(() => ([vmIds]), [vmIds])
 
   const vms = useDataProvider({ fetchData: fetchVms, parameters: memoIds })
   const hosts = useDataProvider({ fetchData: fetchTargetHosts, parameters: [vms.data, false], trigger: checkVmAffinity })
@@ -140,33 +140,25 @@ export function useVmMigrateDataProvider (checkVmAffinity, vmIds) {
   const targetHosts = checkVmAffinity ? hostsWithAffinity.data : hosts.data
   const dataLoaded = !!vms.data && !!targetHosts
 
-  const vmNames = !vms.data ? [] : vms.data.map(vm => vm.name)
-  const targetHostItems = !targetHosts
-    ? []
-    : targetHosts.map(host => ({
-      value: host.id,
-      text: host.name,
-    }))
-
   const suggestAffinity = !hostsWithAffinity.fetchError && !hosts.fetchError &&
     !!hosts.data && !!hostsWithAffinity.data &&
     !hosts.data.length && !!hostsWithAffinity.data.length
 
   return useMemo(() => ({
     vms: vms.data,
-    vmNames,
-    targetHostItems,
+    vmNames: !vms.data ? [] : vms.data.map(vm => vm.name),
+    targetHostItems: !targetHosts ? [] : targetHosts.map(host => ({ value: host.id, text: host.name })),
     suggestAffinity,
     dataLoaded,
     fetchError,
     fetchInProgress,
   }), [
     vms.data,
-    targetHosts,
     suggestAffinity,
     dataLoaded,
     fetchError,
     fetchInProgress,
+    targetHosts,
   ])
 }
 

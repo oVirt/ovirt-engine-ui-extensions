@@ -16,21 +16,27 @@ const StorageConnectionsModal = ({
   storageDomain,
   connections,
   onClose,
+  hosts,
   doConnectionCreate = () => { },
   doConnectionEdit = () => { },
   doConnectionDelete = () => { },
   doConnectionAttach = () => { },
   doConnectionDetach = () => { },
   doRefreshConnections = () => { },
+  doConnectionSearch = () => { },
+  doConnectionCreateAndAttach = () => { },
 }) => {
   const [isOpen, setOpen] = useState(true)
   const [error, setError] = useState(null)
   const [isShowAll, setShowAll] = useState(false)
   const [shownConnections, setShownConnections] = useState(null)
+  const [discoveredConnections, setDiscoveredConnections] = useState(null)
+  const [shownHosts, setShownHosts] = useState(null)
 
   useEffect(() => {
+    setShownHosts(hosts)
     setShownConnections(isShowAll || !connections ? connections : connections.filter(conn => conn.isAttachedToDomain))
-  }, [isShowAll, connections])
+  }, [isShowAll, connections, hosts])
 
   if (!connections) {
     return null
@@ -60,6 +66,27 @@ const StorageConnectionsModal = ({
       getPluginApi().logger().severe('Error while creating connection. ' + createErrorMessage(e))
       setError(e.detail)
     }
+  }
+
+  const onConnectionSearch = async (ip, hostId, port) => {
+    try {
+      setDiscoveredConnections(null)
+      const allConnections = await doConnectionSearch(ip, hostId, port)
+      const filtered = allConnections.filter(item => {
+        const match = connections.find(secondItem => secondItem.address === item.address)
+        return !match || (match && !match.isAttachedToDomain)
+      })
+      setDiscoveredConnections(filtered)
+    } catch (e) {
+      setError(e.detail)
+    }
+  }
+
+  const onConnectionCreateAndAttach = async (connection, domainId) => {
+    await doConnectionCreateAndAttach(connection, domainId)
+    doRefreshConnections()
+    const newdiscoveredList = discoveredConnections.filter(con => con.address !== connection.address)
+    setDiscoveredConnections(newdiscoveredList)
   }
 
   const onConnectionEdit = async (connection, connectionId) => {
@@ -119,7 +146,9 @@ const StorageConnectionsModal = ({
       <LoadingSpinner isLoading={isLoading}>
         <StorageConnectionsModalBody
           storageDomain={storageDomain}
+          hosts={shownHosts}
           connections={shownConnections}
+          foundConnections={discoveredConnections}
           isShowAll={isShowAll}
           setShowAll={setShowAll}
           error={error}
@@ -129,6 +158,8 @@ const StorageConnectionsModal = ({
           onDelete={onConnectionDelete}
           onAttach={onConnectionAttach}
           onDetach={onConnectionDetach}
+          onSearch={onConnectionSearch}
+          onCreateAndAttach={onConnectionCreateAndAttach}
         />
       </LoadingSpinner>
     </PluginApiModal>
@@ -138,6 +169,7 @@ const StorageConnectionsModal = ({
 StorageConnectionsModal.propTypes = {
   isLoading: PropTypes.bool,
   storageDomain: PropTypes.object,
+  hosts: PropTypes.array,
   connections: PropTypes.array,
   onClose: PropTypes.func.isRequired,
   doConnectionCreate: PropTypes.func,
@@ -145,7 +177,9 @@ StorageConnectionsModal.propTypes = {
   doConnectionDelete: PropTypes.func,
   doConnectionAttach: PropTypes.func,
   doConnectionDetach: PropTypes.func,
+  doConnectionSearch: PropTypes.func,
   doRefreshConnections: PropTypes.func,
+  doConnectionCreateAndAttach: PropTypes.func,
 }
 
 export default StorageConnectionsModal

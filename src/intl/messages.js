@@ -1226,6 +1226,18 @@ const messageDescriptors = {
     description: 'label for Storage Connections management dialog button',
   },
 
+  storageConnectionsDiscoverTargets: {
+    id: 'storage.domains.connections.discover.targets.button',
+    defaultMessage: 'Discover Targets',
+    description: 'Button to discover targets based on search input',
+  },
+
+  storageConnectionsFoundTitle: {
+    id: 'storage.domains.connections.found.title',
+    defaultMessage: 'Following connections were found:',
+    description: 'Title above found targets from search input',
+  },
+
   storageConnectionsDataError: {
     id: 'storage.domains.connections.dataError',
     defaultMessage: 'Could not fetch data needed for showing Storage Connections',
@@ -1290,6 +1302,30 @@ const messageDescriptors = {
     id: 'storage.domains.connections.connection.add.button',
     defaultMessage: 'Add',
     description: 'add Connection button',
+  },
+
+  storageConnectionsHostSelectionLabel: {
+    id: 'storage.domains.connections.connection.host.label',
+    defaultMessage: 'Select host: ',
+    description: 'Label for selection of host',
+  },
+
+  storageConnectionAddressSelectionLabel: {
+    id: 'storage.domains.connections.connection.address.label',
+    defaultMessage: 'Address: ',
+    description: 'Label for selection of address',
+  },
+
+  storageConnectionPortSelectionLabel: {
+    id: 'storage.domains.connections.connection.port.label',
+    defaultMessage: 'Port: ',
+    description: 'Label for selection of port',
+  },
+
+  storageConnectionsEmptyList: {
+    id: 'storage.domains.connections.connection.empty',
+    defaultMessage: 'No connections found that aren\'t yet active',
+    description: 'Pop up message when empty list of discovered targets is returned',
   },
 
   storageConnectionsAttachConnectionButton: {
