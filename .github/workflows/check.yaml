@@ -31,6 +31,12 @@ jobs:
     steps:
       - name: Mark git repo as safe
         run: git config --global --add safe.directory $(pwd)
+
+      - name: Install EPEL (for rpmlint on el10) and rpmlint
+        run: |
+          dnf -y install epel-release
+          dnf -y install rpmlint
+
       - name: Ensure latest ovirt-engine-nodejs-modules is installed
         run: |
           rpm -q --quiet ovirt-engine-nodejs-modules && ACTION=upgrade || ACTION=install
