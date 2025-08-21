@@ -17,7 +17,6 @@ BuildArch: noarch
 # requirements for packaging/build.sh (to be included in the build container)
 BuildRequires: git
 BuildRequires: jq
-BuildRequires: rpmlint
 BuildRequires: rpm-build
 
 %if %{with ovirt_use_nodejs_modules}
