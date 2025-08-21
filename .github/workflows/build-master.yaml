@@ -14,12 +14,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: EL9
-            container-image: quay.io/ovirt/buildcontainer:el9stream
+          - name: centos-stream-9
+            shortcut: cs9
+            container-name: el9stream
+          - name: centos-stream-10
+            shortcut: cs10
+            container-name: el10stream
 
     name: ${{ matrix.name }} - test, build and publish rpm repo for the PR (ovirt-engine-nodejs-modules build)
     container:
-      image: ${{ matrix.container-image }}
+      image: quay.io/ovirt/buildcontainer:${{ matrix.container-name }}
 
     env:
       OFFLINE_BUILD: 1
@@ -28,7 +32,7 @@ jobs:
       - name: Ensure latest ovirt-engine-nodejs-modules is installed
         run: |
           rpm -q --quiet ovirt-engine-nodejs-modules && ACTION=upgrade || ACTION=install
-          dnf -y --disablerepo='*' --enablerepo='*ovirt*' $ACTION ovirt-engine-nodejs-modules
+          dnf -y $ACTION ovirt-engine-nodejs-modules
 
       - name: Checkout sources
         uses: ovirt/checkout-action@main
