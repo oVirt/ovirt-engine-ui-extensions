@@ -7,7 +7,7 @@
 Name: ovirt-engine-ui-extensions
 Summary: oVirt UI Extensions
 Version: @RPM_VERSION@
-Release: 1@RPM_SNAPSHOT@%{?dist}
+Release: @RPM_RELEASE@%{?release_suffix}%{?dist}
 License: ASL 2.0
 URL: http://www.ovirt.org/
 Source: @TAR_FILE@

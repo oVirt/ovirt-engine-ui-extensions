@@ -1,27 +1,18 @@
 #!/bin/bash -ex
 
-[[ "${1:-foo}" == "copr" ]] && source_build=1 || source_build=0
-[[ ${MOVE_ARTIFACTS:-1} -eq 1 ]] && use_exported_artifacts=1 || use_exported_artifacts=0
-
 # Clean the artifacts directory:
 test -d exported-artifacts && rm -rf exported-artifacts || :
 
-# Resolve the version and snapshot used for RPM build:
+# Resolve the version used for RPM build from package.json:
 version="$(jq -r '.version' package.json)"
-date="$(date --utc +%Y%m%d%H%M%S)"
-commit="$(git log -1 --pretty=format:%h)"
-snapshot=".${date}git${commit}"
 
-# Check if the commit is tagged (indicates a release build):
-tag="$(git tag --points-at ${commit} | grep -v jenkins || true)"
-if [ ! -z "${tag}" ]; then
-  snapshot=""
-fi
+# The release is passed via environment variable set by the CI (default: 0.master):
+rpm_release="${PACKAGE_RPM_RELEASE:-0.master}"
 
 # Build the source tar file from git known files:
 tar_name="ovirt-engine-ui-extensions"
 tar_prefix="${tar_name}-${version}/"
-tar_file="${tar_name}-${version}${snapshot}.tar.gz"
+tar_file="${tar_name}-${version}.tar.gz"
 git archive --prefix="${tar_prefix}" --output="${tar_file}" HEAD
 
 # Create rpm build directories and place the src tar in the right place
@@ -38,7 +29,7 @@ spec_template=${spec_src}/$(test -e "spec${rpm_dist}.in" && echo "spec${rpm_dist
 spec_file="${top_dir}/SPECS/ovirt-engine-ui-extensions.spec"
 sed \
   -e "s|@RPM_VERSION@|${version}|g" \
-  -e "s|@RPM_SNAPSHOT@|${snapshot}|g" \
+  -e "s|@RPM_RELEASE@|${rpm_release}|g" \
   -e "s|@TAR_FILE@|${tar_file}|g" \
   < "${spec_template}" \
   > "${spec_file}"
@@ -51,27 +42,18 @@ if [[ $linterror -ne 0 ]]; then
     exit 6
 fi
 
-if [[ ${source_build:-0} -eq 1 ]] ; then
-  # Build the source .rpm files:
-  rpmbuild \
-    -bs \
-    --define="_topdir ${top_dir}" \
-    "${spec_file}"
-else
-  # Build the source and binary .rpm files:
-  rpmbuild \
-    -ba \
-    --define="_topdir ${top_dir}" \
-    $([[ ${OFFLINE_BUILD:-1} -eq 0 ]] && echo "--without ovirt_use_nodejs_modules" || :) \
-    "${spec_file}"
-fi
+# Build the source and binary .rpm files:
+rpmbuild \
+  -ba \
+  --define="_topdir ${top_dir}" \
+  --define="release_suffix ${RELEASE_SUFFIX:-}" \
+  $([[ ${OFFLINE_BUILD:-1} -eq 0 ]] && echo "--without ovirt_use_nodejs_modules" || :) \
+  "${spec_file}"
 
 # Copy the .tar.gz and .rpm files to the artifacts directory:
-if [[ $use_exported_artifacts -eq 1 ]] ; then
-  [[ -d exported-artifacts ]] || mkdir -p exported-artifacts
+[[ -d exported-artifacts ]] || mkdir -p exported-artifacts
 
-  for file in $(find $top_dir -type f -regex '.*\.\(tar.gz\|rpm\)'); do
-    echo "Archiving file \"$file\"."
-    mv "$file" exported-artifacts/
-  done
-fi
+for file in $(find $top_dir -type f -regex '.*\.\(tar.gz\|rpm\)'); do
+  echo "Archiving file \"$file\"."
+  mv "$file" exported-artifacts/
+done
