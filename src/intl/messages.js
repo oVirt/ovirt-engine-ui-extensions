@@ -1049,7 +1049,7 @@ const messageDescriptors = {
   hostCopyNetworksSelectHostLabel: {
     id: 'host.copy.networks.selectHostLabel',
     defaultMessage: 'Target host',
-    description: 'label for the dropdown used to select migration target host',
+    description: 'label for the dropdown used to select copy networks target host',
   },
 
   hostCopyNetworksSelectHostFieldHelp: {
